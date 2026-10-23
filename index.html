@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>REHABOOM</title>
+<meta name="description" content="Anatomisch en kinesiologisch naslagwerk voor trainers en fysiotherapeuten.">
+<meta name="theme-color" content="#14212B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>html,body{margin:0}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: smalle mobiele kolom; tegels → vlakken → bewegingskaarten; tweede tab = insufficiëntie-simulator */
+:root{
+  --bg:#ECEEE6;--surface:#FFFFFF;--ink:#14212B;--muted:#5B6560;--line:#D6DAD0;--head:#14212B;--head-fg:#F2F4EE;--head-muted:#9FB0B8;
+  --coral:#B44A27;--coral-bg:#F6E2D9;--steel:#2A6782;--steel-bg:#DCEAF0;--olive:#5A6823;--olive-bg:#E7ECD3;--plum:#7A3E62;--plum-bg:#F0E1E9;
+  --sel:#14212B;--sel-fg:#FFFFFF;
+  --f-display:'Barlow Condensed','Arial Narrow',sans-serif;--f-body:'Inter',system-ui,sans-serif;--f-mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F181F;--surface:#17232C;--ink:#E7ECE4;--muted:#9AA6A0;--line:#2B3a44;--head:#0A1117;--head-fg:#F2F4EE;--head-muted:#8FA2AB;
+  --coral:#EE8761;--coral-bg:#3B241B;--steel:#78B6D2;--steel-bg:#16303C;--olive:#B8C873;--olive-bg:#28301A;--plum:#DDA2C4;--plum-bg:#38222F;
+  --sel:#E7ECE4;--sel-fg:#0F181F;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F181F;--surface:#17232C;--ink:#E7ECE4;--muted:#9AA6A0;--line:#2B3a44;--head:#0A1117;--head-fg:#F2F4EE;--head-muted:#8FA2AB;
+  --coral:#EE8761;--coral-bg:#3B241B;--steel:#78B6D2;--steel-bg:#16303C;--olive:#B8C873;--olive-bg:#28301A;--plum:#DDA2C4;--plum-bg:#38222F;
+  --sel:#E7ECE4;--sel-fg:#0F181F;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--head)}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{background:var(--head);color:var(--head-fg)}
+header .wrap{padding-block:18px 0;display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand h1{font-family:var(--f-display);font-weight:700;font-size:34px;letter-spacing:.04em;margin:0;line-height:1}
+.brand span{font-size:12px;color:var(--head-muted);letter-spacing:.03em}
+.ver{font-family:var(--f-mono);font-size:11px;border:1px solid var(--head-muted);color:var(--head-muted);padding:1px 7px;border-radius:4px}
+.tabs{display:flex;gap:4px;position:sticky;top:env(safe-area-inset-top,0px)}
+.tab{flex:1;min-height:44px;background:transparent;border:0;border-bottom:3px solid transparent;color:var(--head-muted);font-family:var(--f-display);font-weight:600;font-size:18px;letter-spacing:.03em;cursor:pointer}
+.tab[aria-selected="true"]{color:var(--head-fg);border-bottom-color:var(--coral)}
+main .wrap{padding-block:20px 40px;display:flex;flex-direction:column;gap:22px}
+.lbl{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.joints{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.jt{min-height:56px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;justify-content:center}
+.jt b{font-family:var(--f-display);font-weight:600;font-size:18px;line-height:1.05}
+.jt small{font-size:10.5px;color:var(--muted);line-height:1.2;margin-top:2px}
+.jt[aria-pressed="true"]{background:var(--sel);border-color:var(--sel);color:var(--sel-fg)}
+.jt[aria-pressed="true"] small{color:inherit;opacity:.7}
+.seg{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.seg button{white-space:nowrap;min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 13.5px var(--f-body);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--steel);border-color:var(--steel);color:var(--surface)}
+.axis{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:13px;color:var(--muted)}
+.axis strong{color:var(--ink);font-weight:600}
+.axis svg{width:30px;height:36px;flex:none}
+.pnote{font-size:12.5px;color:var(--muted);margin-top:6px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);align-items:center}
+.legend i{font-style:normal;display:inline-flex;align-items:center;gap:5px}
+.dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+.cards{display:grid;gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;transition:box-shadow .3s,border-color .3s}
+.card.flash{border-color:var(--plum);box-shadow:0 0 0 3px var(--plum-bg)}
+.card h3{font-family:var(--f-display);font-weight:600;font-size:22px;margin:0;line-height:1.1;text-wrap:balance}
+.card .def{margin:4px 0 0;font-size:13.5px;color:var(--muted)}
+.role{display:flex;flex-direction:column;gap:6px}
+.role p{margin:0;font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:4px 10px 4px 6px;border-radius:17px;border:1px solid transparent;font:500 12.5px var(--f-body);cursor:pointer;text-align:left;line-height:1.25}
+.chip .sp{font-family:var(--f-mono);font-size:10.5px;width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;flex:none;background:var(--surface);border:1px solid currentColor}
+.r-ag p{color:var(--coral)} .r-ag .chip{background:var(--coral-bg);color:var(--coral)}
+.r-sy p{color:var(--steel)} .r-sy .chip{background:var(--steel-bg);color:var(--steel)}
+.r-st p{color:var(--olive)} .r-st .chip{background:var(--olive-bg);color:var(--olive)}
+.r-an p{color:var(--plum)} .r-an .chip{background:var(--plum-bg);color:var(--plum)}
+.chip span.n{color:var(--ink)}
+.none{font-size:12.5px;color:var(--muted);font-style:italic}
+.anta-link{align-self:flex-start;min-height:36px;background:none;border:1px dashed var(--plum);color:var(--plum);border-radius:8px;padding:0 12px;font:500 12.5px var(--f-body);cursor:pointer}
+.foot{font-size:12px;color:var(--muted)}
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+summary{cursor:pointer;font-weight:600;font-size:14px;min-height:28px}
+details ul{margin:10px 0 0;padding-left:18px;font-size:13px;display:flex;flex-direction:column;gap:6px}
+/* simulator */
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.ctrl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ctrl .seg{flex-wrap:wrap}
+.ctrl .seg button{flex:1}
+.status{display:inline-flex;align-self:flex-start;font-family:var(--f-display);font-weight:600;font-size:18px;letter-spacing:.03em;padding:4px 12px;border-radius:6px}
+.st-actief{background:var(--coral-bg);color:var(--coral)}
+.st-passief{background:var(--plum-bg);color:var(--plum)}
+.st-optimaal{background:var(--olive-bg);color:var(--olive)}
+.st-midden{background:var(--steel-bg);color:var(--steel)}
+.sim h3{font-family:var(--f-display);font-weight:600;font-size:24px;margin:0}
+.crosses{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.sim .ex{border-left:3px solid var(--line);padding-left:10px;font-size:13.5px}
+.sim .ex b{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.curve{overflow-x:auto}
+.curve svg{width:100%;max-width:520px;height:auto;display:block}
+.curve .ax{stroke:var(--line);stroke-width:1}
+.curve .band{fill:var(--olive-bg)}
+.curve .ln{fill:none;stroke:var(--ink);stroke-width:2}
+.curve text{fill:var(--muted);font-family:var(--f-mono);font-size:10px}
+.curve .mk{transition:transform .45s cubic-bezier(.3,.7,.3,1)}
+@media (prefers-reduced-motion:reduce){.curve .mk,.card{transition:none}}
+/* sheet */
+.sheet-bg{position:fixed;inset:0;background:rgba(10,17,23,.45);z-index:20}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--surface);border-radius:16px 16px 0 0;max-height:70vh;overflow:auto;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));box-shadow:0 -8px 30px rgba(0,0,0,.25)}
+.sheet h3{font-family:var(--f-display);font-size:24px;margin:0 0 4px}
+.sheet ul{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:8px}
+.sheet li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:8px;font-size:13.5px}
+.sheet li em{font-style:normal;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.close{float:right;min-height:40px;min-width:40px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:20px;cursor:pointer;font-size:16px}
+button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+@media (max-width:420px){.joints{grid-template-columns:repeat(2,minmax(0,1fr))}.ctrl{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+
+<header>
+  <div class="wrap">
+    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2</span><span>Anatomisch &amp; kinesiologisch naslagwerk</span></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-g" aria-selected="true">Op gewricht</button>
+      <button class="tab" role="tab" id="tab-i" aria-selected="false">Insufficiëntie</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap" id="view-g">
+    <section><p class="lbl">Gewricht</p><div class="joints" id="joints"></div></section>
+    <section><p class="lbl">Anatomisch vlak</p><div class="seg" id="planes"></div><div id="axis"></div></section>
+    <section>
+      <div class="legend" style="margin-bottom:12px">
+        <i><span class="dot" style="background:var(--coral)"></span>Agonist</i>
+        <i><span class="dot" style="background:var(--steel)"></span>Synergist</i>
+        <i><span class="dot" style="background:var(--olive)"></span>Stabilisator</i>
+        <i><span class="dot" style="background:var(--plum)"></span>Antagonist</i>
+        <i><b style="font-family:var(--f-mono);font-weight:500">M · B · P</b> = mono-, bi-, poly-articulair</i>
+      </div>
+      <div class="cards" id="cards"></div>
+      <p class="foot" style="margin-top:12px">Tik op een spier om te zien in welke bewegingen hij nog meer een rol speelt.</p>
+    </section>
+    <details>
+      <summary>Wat is er veranderd in v2</summary>
+      <ul>
+        <li>Nieuw: antagonisten per beweging, met een knop naar de tegenbeweging.</li>
+        <li>Nieuw: stabilisatoren (fixatoren) als aparte rol.</li>
+        <li>Nieuw: M/B/P-badge op elke spier en een spieroverzicht over alle gewrichten.</li>
+        <li>Nieuw: insufficiëntie-simulator met lengte-spanningscurve.</li>
+        <li>Fix: caput breve van de biceps femoris weg bij heupextensie, toegevoegd bij knieflexie.</li>
+        <li>Fix: "Horizontale abductie" heeft geen synoniem "retroflexie" meer.</li>
+        <li>Fix: onderbeenspieren naar de voet zijn poly-articulair (boven- en onderste spronggewricht).</li>
+        <li>Fix: M. Iliopsoas gesplitst in M. Iliacus (M) en M. Psoas Major (P); sartorius in plaats van iliopsoas bij heup-exorotatie.</li>
+        <li>Fix: typfouten en Engelse termen uit de data verwijderd.</li>
+      </ul>
+    </details>
+    <p class="foot">Prototype. Laat de inhoud door een fysiotherapeut reviewen voor klinisch gebruik.</p>
+  </div>
+
+  <div class="wrap" id="view-i" hidden>
+    <section>
+      <p class="lbl">Twee-gewrichtsspier</p>
+      <div class="seg" id="scen"></div>
+    </section>
+    <section class="sim" id="sim"></section>
+    <p class="foot">Lengtes zijn schematisch (% van rustlengte). Groene zone = 100–130%, waar een spier volgens de lengte-spanningsrelatie de meeste spanning levert.</p>
+  </div>
+</main>
+
+<div id="sheetRoot"></div>
+
+<script>
+const M='M',B='B',P='P';
+const J=[
+{id:'sh',short:'Schouder',name:'Art. Humeri',planes:[
+ {plane:'Sagittaal vlak',axis:'F',moves:[
+  {id:'s-ante',t:'Anteflexie (Flexie)',d:'Het naar voren heffen van de arm.',ag:[['M. Deltoideus (pars clavicularis)',M],['M. Pectoralis Major (pars clavicularis)',M]],sy:[['M. Coracobrachialis',M],['M. Biceps Brachii (caput longum)',B]],st:[['Rotator cuff (centreert de humeruskop)',M],['M. Serratus Anterior (opwaartse rotatie scapula)',P]],an:'s-retro'},
+  {id:'s-retro',t:'Retroflexie (Extensie)',d:'Het naar achteren bewegen van de arm.',ag:[['M. Latissimus Dorsi',P],['M. Deltoideus (pars spinalis)',M],['M. Teres Major',M]],sy:[['M. Triceps Brachii (caput longum)',B],['M. Pectoralis Major (pars sternocostalis, vanuit anteflexie)',M]],st:[['Mm. Rhomboidei (fixeren scapula)',M],['M. Trapezius (pars transversa)',P]],an:'s-ante'}]},
+ {plane:'Frontaal vlak',axis:'S',moves:[
+  {id:'s-abd',t:'Abductie',d:'Het zijwaarts van het lichaam af heffen van de arm.',ag:[['M. Deltoideus (pars acromialis)',M],['M. Supraspinatus',M]],sy:[['M. Serratus Anterior (opwaartse rotatie scapula)',P],['M. Trapezius (pars descendens & ascendens)',P]],st:[['M. Infraspinatus / Teres Minor / Subscapularis (depressie humeruskop)',M]],an:'s-add'},
+  {id:'s-add',t:'Adductie',d:'Het zijwaarts naar het lichaam toe bewegen van de arm.',ag:[['M. Latissimus Dorsi',P],['M. Pectoralis Major',M]],sy:[['M. Teres Major',M],['M. Coracobrachialis',M],['M. Triceps Brachii (caput longum)',B]],st:[['Mm. Rhomboidei (fixeren scapula)',M]],an:'s-abd'}]},
+ {plane:'Transversaal vlak',axis:'L',moves:[
+  {id:'s-endo',t:'Endorotatie',d:'Het naar binnen draaien van de bovenarm om de lengteas.',ag:[['M. Subscapularis',M],['M. Latissimus Dorsi',P],['M. Pectoralis Major',M]],sy:[['M. Teres Major',M],['M. Deltoideus (pars clavicularis)',M]],st:[],an:'s-exo'},
+  {id:'s-exo',t:'Exorotatie',d:'Het naar buiten draaien van de bovenarm om de lengteas.',ag:[['M. Infraspinatus',M],['M. Teres Minor',M]],sy:[['M. Deltoideus (pars spinalis)',M]],st:[],an:'s-endo'},
+  {id:'s-habd',t:'Horizontale abductie',d:'De arm in 90° anteflexie horizontaal naar achteren bewegen.',ag:[['M. Deltoideus (pars spinalis)',M]],sy:[['M. Infraspinatus',M],['M. Teres Minor',M]],st:[['M. Trapezius (pars transversa)',P],['Mm. Rhomboidei (retractie scapula)',M]],an:'s-hadd'},
+  {id:'s-hadd',t:'Horizontale adductie',d:'De arm in 90° anteflexie horizontaal naar voren en binnen bewegen.',ag:[['M. Pectoralis Major',M],['M. Deltoideus (pars clavicularis)',M]],sy:[['M. Coracobrachialis',M],['M. Biceps Brachii (caput breve)',B]],st:[['M. Serratus Anterior (protractie scapula)',P]],an:'s-habd'}]}]},
+{id:'el',short:'Ellenboog',name:'Art. Cubiti & Radioulnaris',planes:[
+ {plane:'Sagittaal vlak',axis:'F',moves:[
+  {id:'e-flex',t:'Flexie',d:'Het buigen van de ellenboog.',ag:[['M. Biceps Brachii',B],['M. Brachialis',M],['M. Brachioradialis',M]],sy:[['M. Pronator Teres',B]],st:[],an:'e-ext'},
+  {id:'e-ext',t:'Extensie',d:'Het strekken van de ellenboog.',ag:[['M. Triceps Brachii (caput laterale & mediale)',M],['M. Triceps Brachii (caput longum)',B]],sy:[['M. Anconeus',M]],st:[],an:'e-flex'}]},
+ {plane:'Transversaal vlak (functioneel)',axis:'L',note:'Rotatie om de lengteas van de onderarm.',moves:[
+  {id:'e-sup',t:'Supinatie',d:'De onderarm naar buiten draaien (palm omhoog, soepkom vasthouden).',ag:[['M. Supinator',M],['M. Biceps Brachii (vooral bij gebogen ellenboog)',B]],sy:[['M. Brachioradialis (vanuit pronatie)',M]],st:[],an:'e-pro'},
+  {id:'e-pro',t:'Pronatie',d:'De onderarm naar binnen draaien (palm omlaag, brood snijden).',ag:[['M. Pronator Teres',B],['M. Pronator Quadratus',M]],sy:[['M. Brachioradialis (vanuit supinatie)',M]],st:[],an:'e-sup'}]}]},
+{id:'wr',short:'Pols',name:'Art. Radiocarpalis',planes:[
+ {plane:'Sagittaal vlak',axis:'F',moves:[
+  {id:'w-pf',t:'Palmairflexie',d:'Het buigen van de hand naar de handpalmzijde.',ag:[['M. Flexor Carpi Radialis',B],['M. Flexor Carpi Ulnaris',B]],sy:[['M. Flexor Digitorum Superficialis',P],['M. Flexor Digitorum Profundus',P],['M. Palmaris Longus',B]],st:[],an:'w-df'},
+  {id:'w-df',t:'Dorsaalflexie (Extensie)',d:'Het heffen van de handrug richting de onderarm.',ag:[['M. Extensor Carpi Radialis Longus',B],['M. Extensor Carpi Radialis Brevis',B],['M. Extensor Carpi Ulnaris',B]],sy:[['M. Extensor Digitorum',P]],st:[],an:'w-pf'}]},
+ {plane:'Frontaal vlak',axis:'S',moves:[
+  {id:'w-rd',t:'Radiaaldeviatie (Abductie)',d:'De hand zijwaarts bewegen richting de duimzijde.',ag:[['M. Flexor Carpi Radialis',B],['M. Extensor Carpi Radialis Longus',B]],sy:[['M. Abductor Pollicis Longus',P],['M. Extensor Pollicis Longus',P]],st:[],an:'w-ud'},
+  {id:'w-ud',t:'Ulnairdeviatie (Adductie)',d:'De hand zijwaarts bewegen richting de pinkzijde.',ag:[['M. Flexor Carpi Ulnaris',B],['M. Extensor Carpi Ulnaris',B]],sy:[],st:[],an:'w-rd'}]}]},
+{id:'hp',short:'Heup',name:'Art. Coxae',planes:[
+ {plane:'Sagittaal vlak',axis:'F',moves:[
+  {id:'h-flex',t:'Flexie (Anteflexie)',d:'Het naar voren heffen van het bovenbeen.',ag:[['M. Iliacus',M],['M. Psoas Major',P],['M. Rectus Femoris',B]],sy:[['M. Tensor Fasciae Latae',B],['M. Sartorius',B],['M. Pectineus',M]],st:[['Buikwand (voorkomt bekkenanteversie)',P]],an:'h-ext'},
+  {id:'h-ext',t:'Extensie (Retroflexie)',d:'Het naar achteren bewegen van het bovenbeen.',ag:[['M. Gluteus Maximus',M],['Hamstrings (BF caput longum, ST, SM)',B]],sy:[['M. Adductor Magnus (dorsale deel)',M]],st:[['M. Erector Spinae (stabiliseert bekken en romp)',P]],an:'h-flex'}]},
+ {plane:'Frontaal vlak',axis:'S',moves:[
+  {id:'h-abd',t:'Abductie',d:'Het been zijwaarts van de middellijn af bewegen.',ag:[['M. Gluteus Medius',M],['M. Gluteus Minimus',M]],sy:[['M. Tensor Fasciae Latae',B],['M. Piriformis',M]],st:[],an:'h-add'},
+  {id:'h-add',t:'Adductie',d:'Het been zijwaarts naar de middellijn toe bewegen.',ag:[['M. Adductor Magnus',M],['M. Adductor Longus',M],['M. Adductor Brevis',M]],sy:[['M. Gracilis',B],['M. Pectineus',M]],st:[],an:'h-abd'}]},
+ {plane:'Transversaal vlak',axis:'L',moves:[
+  {id:'h-endo',t:'Endorotatie',d:'Het bovenbeen om de lengteas naar binnen draaien.',ag:[['M. Gluteus Minimus (anterieure vezels)',M],['M. Tensor Fasciae Latae',B]],sy:[['M. Gluteus Medius (anterieure vezels)',M]],st:[],an:'h-exo'},
+  {id:'h-exo',t:'Exorotatie',d:'Het bovenbeen om de lengteas naar buiten draaien.',ag:[['M. Gluteus Maximus',M],['Diepe exorotatoren (piriformis, obturatorii, gemelli)',M]],sy:[['M. Quadratus Femoris',M],['M. Sartorius',B]],st:[],an:'h-endo'}]}]},
+{id:'kn',short:'Knie',name:'Art. Genus',planes:[
+ {plane:'Sagittaal vlak',axis:'F',moves:[
+  {id:'k-flex',t:'Flexie',d:'Het buigen van de knie.',ag:[['Hamstrings (BF caput longum, ST, SM)',B],['M. Biceps Femoris (caput breve)',M]],sy:[['M. Gastrocnemius',P],['M. Popliteus',M],['M. Sartorius',B],['M. Gracilis',B]],st:[],an:'k-ext'},
+  {id:'k-ext',t:'Extensie',d:'Het strekken van de knie.',ag:[['M. Vastus Lateralis / Medialis / Intermedius',M],['M. Rectus Femoris',B]],sy:[['M. Tensor Fasciae Latae (via tractus iliotibialis)',B]],st:[],an:'k-flex'}]},
+ {plane:'Transversaal vlak',axis:'L',note:'Alleen mogelijk bij gebogen knie.',moves:[
+  {id:'k-endo',t:'Endorotatie onderbeen',d:'Het onderbeen ten opzichte van het bovenbeen naar binnen draaien.',ag:[['M. Semitendinosus',B],['M. Semimembranosus',B],['M. Popliteus',M]],sy:[['M. Gracilis',B],['M. Sartorius',B]],st:[],an:'k-exo'},
+  {id:'k-exo',t:'Exorotatie onderbeen',d:'Het onderbeen ten opzichte van het bovenbeen naar buiten draaien.',ag:[['M. Biceps Femoris (caput longum)',B],['M. Biceps Femoris (caput breve)',M]],sy:[],st:[],an:'k-endo'}]}]},
+{id:'an',short:'Enkel & voet',name:'Art. Talocruralis & Subtalaris',planes:[
+ {plane:'Sagittaal vlak',axis:'F',note:'Bovenste spronggewricht.',moves:[
+  {id:'a-pf',t:'Plantairflexie',d:'De voet neerwaarts bewegen (gasgeven, op de tenen staan).',ag:[['M. Gastrocnemius',P],['M. Soleus',P]],sy:[['M. Tibialis Posterior',P],['M. Peroneus Longus / Brevis',P],['M. Flexor Hallucis Longus',P],['M. Flexor Digitorum Longus',P]],st:[],an:'a-df'},
+  {id:'a-df',t:'Dorsaalflexie',d:'De voetrug omhoog trekken richting het onderbeen.',ag:[['M. Tibialis Anterior',P]],sy:[['M. Extensor Digitorum Longus',P],['M. Extensor Hallucis Longus',P],['M. Peroneus Tertius',P]],st:[],an:'a-pf'}]},
+ {plane:'Frontaal vlak',axis:'S',note:'Onderste spronggewricht.',moves:[
+  {id:'a-inv',t:'Inversie',d:'De voet kantelen zodat de binnenrand omhoog komt.',ag:[['M. Tibialis Posterior',P],['M. Tibialis Anterior',P]],sy:[['M. Flexor Hallucis Longus',P],['M. Flexor Digitorum Longus',P]],st:[],an:'a-ev'},
+  {id:'a-ev',t:'Eversie',d:'De voet kantelen zodat de buitenrand omhoog komt.',ag:[['M. Peroneus Longus',P],['M. Peroneus Brevis',P]],sy:[['M. Extensor Digitorum Longus',P],['M. Peroneus Tertius',P]],st:[],an:'a-inv'}]},
+ {plane:'Oblique as (3D, onbelast)',axis:'O',note:'Gecombineerde beweging van de onbelaste voet.',moves:[
+  {id:'a-sup',t:'Supinatie',d:'Plantairflexie + inversie + adductie.',ag:[['M. Tibialis Posterior',P],['M. Triceps Surae (gastrocnemius & soleus)',P]],sy:[['M. Flexor Digitorum Longus',P],['M. Tibialis Anterior',P]],st:[],an:'a-pro'},
+  {id:'a-pro',t:'Pronatie',d:'Dorsaalflexie + eversie + abductie.',ag:[['M. Peroneus Longus',P],['M. Peroneus Brevis',P]],sy:[['M. Extensor Digitorum Longus',P],['M. Peroneus Tertius',P]],st:[],an:'a-sup'}]}]}
+];
+const AXIS={F:'Frontale as',S:'Sagittale as',L:'Longitudinale (verticale) as',O:'Schuine (oblique) as'};
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const base=n=>n.split(' (')[0];
+const ROLE={ag:'Agonist',sy:'Synergist',st:'Stabilisator'};
+let ji=0,pi=0;
+const $=id=>document.getElementById(id);
+
+function compass(k){
+  const ax=[['F',4,22,42,22],['S',23,4,23,40],['L',10,36,36,8]];
+  return `<svg viewBox="0 0 46 44" aria-hidden="true"><circle cx="23" cy="22" r="3.5" fill="var(--ink)"/>${ax.map(a=>`<line x1="${a[1]}" y1="${a[2]}" x2="${a[3]}" y2="${a[4]}" stroke="${a[0]===k?'var(--coral)':'var(--line)'}" stroke-width="${a[0]===k?3:1.5}" stroke-linecap="round"/>`).join('')}</svg>`;
+}
+function chips(list,cls,title){
+  return `<div class="role ${cls}"><p>${title}</p>${list.length?`<div class="chips">${list.map(([n,s])=>`<button class="chip" data-m="${esc(base(n))}"><span class="sp">${s}</span><span class="n">${esc(n)}</span></button>`).join('')}</div>`:'<span class="none">Geen relevante spieren</span>'}</div>`;
+}
+function findMove(id){for(const j of J)for(const p of j.planes)for(const m of p.moves)if(m.id===id)return m}
+function renderG(){
+  $('joints').innerHTML=J.map((j,i)=>`<button class="jt" aria-pressed="${i===ji}" data-j="${i}"><b>${j.short}</b><small>${j.name}</small></button>`).join('');
+  const jt=J[ji],pl=jt.planes[pi];
+  $('planes').innerHTML=jt.planes.map((p,i)=>`<button aria-pressed="${i===pi}" data-p="${i}">${p.plane}</button>`).join('');
+  $('axis').innerHTML=`<div class="axis">${compass(pl.axis)}<span>Rotatie-as: <strong>${AXIS[pl.axis]}</strong></span></div>${pl.note?`<p class="pnote">${pl.note}</p>`:''}`;
+  $('cards').innerHTML=pl.moves.map(m=>{const o=findMove(m.an);return `<article class="card" id="c-${m.id}">
+    <div><h3>${m.t}</h3><p class="def">${m.d}</p></div>
+    ${chips(m.ag,'r-ag','Agonisten (primair)')}
+    ${chips(m.sy,'r-sy','Synergisten (ondersteunend)')}
+    ${m.st.length?chips(m.st,'r-st','Stabilisatoren (fixatoren)'):''}
+    ${chips(o.ag,'r-an','Antagonisten (remmen deze beweging af)')}
+    <button class="anta-link" data-go="${o.id}">Tegenbeweging: ${o.t} →</button>
+  </article>`}).join('');
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.j!==undefined){ji=+t.dataset.j;pi=0;renderG();}
+  else if(t.dataset.p!==undefined){pi=+t.dataset.p;renderG();}
+  else if(t.dataset.go){const c=$('c-'+t.dataset.go);if(c){c.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});c.classList.add('flash');setTimeout(()=>c.classList.remove('flash'),1400);}}
+  else if(t.dataset.m){openSheet(t.dataset.m);}
+  else if(t.dataset.s!==undefined){si=+t.dataset.s;a=0;b=0;renderI();}
+  else if(t.dataset.a!==undefined){a=+t.dataset.a;renderI();}
+  else if(t.dataset.b!==undefined){b=+t.dataset.b;renderI();}
+  else if(t.classList.contains('close')){closeSheet();}
+});
+function openSheet(name){
+  const rows=[];
+  for(const j of J)for(const p of j.planes)for(const m of p.moves){
+    for(const r of ['ag','sy','st'])for(const [n] of m[r])if(base(n)===name)rows.push({j:j.short,m:m.t,r});
+  }
+  const col={ag:'var(--coral)',sy:'var(--steel)',st:'var(--olive)'};
+  $('sheetRoot').innerHTML=`<div class="sheet-bg" data-close></div><div class="sheet" role="dialog" aria-label="${esc(name)}"><button class="close" aria-label="Sluiten">×</button><h3>${esc(name)}</h3><p class="foot">Rol in ${rows.length} beweging${rows.length===1?'':'en'}</p><ul>${rows.map(r=>`<li><span>${r.j} · ${r.m}</span><em style="color:${col[r.r]}">${ROLE[r.r]}</em></li>`).join('')}</ul></div>`;
+  document.querySelector('.sheet-bg').onclick=closeSheet;
+}
+function closeSheet(){$('sheetRoot').innerHTML='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();});
+
+/* ---------- Insufficiëntie ---------- */
+const S=[
+{k:'Kuit',muscle:'M. Gastrocnemius',cross:'Knie + bovenste & onderste spronggewricht',A:['Knie',['Gebogen','Gestrekt']],B:['Enkel',['Plantairflexie','Dorsaalflexie']],
+ st:[[{s:'actief',l:62,x:'De gastrocnemius is aan beide uiteinden verkort en levert nauwelijks kracht. De soleus kruist de knie niet en neemt de plantairflexie over.',e:'Zittende kuitheffing traint vooral de soleus.'},
+      {s:'midden',l:96,x:'De knie ontlast de gastrocnemius, de enkel rekt hem. De rek ligt nu vooral op de soleus.',e:'Kuitrek met gebogen knie (soleus-bias).'}],
+     [{s:'optimaal',l:114,x:'De gestrekte knie geeft voorrek, de enkel verkort. De gastrocnemius levert hier de meeste kracht.',e:'Staande kuitheffing; afzet bij sprint en sprong.'},
+      {s:'passief',l:150,x:'Maximale rek over knie en enkel. De gastrocnemius beperkt verdere dorsaalflexie.',e:'Kuitrek tegen de muur met gestrekte knie. Vergelijk dorsaalflexie met gestrekte en gebogen knie (Silfverskiöld-principe).'}]]},
+{k:'Hamstrings',muscle:'Hamstrings (BF caput longum, ST, SM)',cross:'Heup + knie',A:['Heup',['Flexie','Extensie']],B:['Knie',['Flexie','Extensie']],
+ st:[[{s:'optimaal',l:112,x:'Heupflexie geeft voorrek aan de heupzijde. Daardoor buigen de hamstrings de knie krachtig.',e:'Zittende leg curl is sterker dan liggende.'},
+      {s:'passief',l:150,x:'Maximale rek over heup en knie. De hamstrings beperken verdere heupflexie bij een gestrekte knie.',e:'Passieve straight leg raise, eindstand RDL, late zwaaifase bij sprinten (blessuremoment).'}],
+     [{s:'actief',l:62,x:'Verkort aan beide uiteinden: weinig kracht en kans op kramp. Het caput breve (mono-articulair) blijft wel effectief.',e:'Leg curl met de heup in extensie, eindstand liggende leg curl.'},
+      {s:'midden',l:100,x:'Middenlengte. Heupextensie komt hier vooral van de gluteus maximus.',e:'Lockout van de deadlift.'}]]},
+{k:'Rectus femoris',muscle:'M. Rectus Femoris',cross:'Heup + knie',A:['Heup',['Flexie','Extensie']],B:['Knie',['Flexie','Extensie']],
+ st:[[{s:'midden',l:96,x:'Verkort aan de heupzijde, voorrek aan de kniezijde.',e:'Startpositie zittende leg extension.'},
+      {s:'actief',l:62,x:'Verkort over heup en knie. De vasti nemen de knie-extensie over.',e:'Eindstand zittende leg extension; actieve straight leg raise.'}],
+     [{s:'passief',l:150,x:'Maximale rek over heup en knie. De rectus femoris beperkt verdere knieflexie bij een gestrekte heup.',e:'Knielende heupflexorrek met gebogen knie; test van Ely.'},
+      {s:'optimaal',l:114,x:'De heup in extensie geeft voorrek. De rectus femoris draagt sterk bij aan de knie-extensie.',e:'Afzetfase bij sprinten; leg extension in ruglig met heup gestrekt.'}]]},
+{k:'Biceps',muscle:'M. Biceps Brachii (caput longum)',cross:'Schouder + ellenboog',A:['Schouder',['Anteflexie','Retroflexie']],B:['Ellenboog',['Flexie','Extensie']],
+ st:[[{s:'actief',l:62,x:'Verkort over schouder en ellenboog. In de topcontractie gaat veel kracht verloren.',e:'Bovenkant preacher curl of spider curl.'},
+      {s:'midden',l:100,x:'Verkort aan de schouderzijde, verlengd aan de ellenboogzijde.',e:'Onderste stand preacher curl.'}],
+     [{s:'optimaal',l:114,x:'Voorrek aan de schouderzijde. De biceps buigt krachtig op lengte.',e:'Incline dumbbell curl, middenbereik.'},
+      {s:'passief',l:150,x:'Maximale rek over schouder en ellenboog.',e:'Onderste stand incline dumbbell curl; bicepsrek tegen een deurpost.'}]]},
+{k:'Triceps',muscle:'M. Triceps Brachii (caput longum)',cross:'Schouder + ellenboog',A:['Schouder',['Anteflexie (boven hoofd)','Retroflexie']],B:['Ellenboog',['Flexie','Extensie']],
+ st:[[{s:'passief',l:150,x:'Het caput longum staat over schouder en ellenboog maximaal op rek.',e:'Onderste stand overhead triceps extension.'},
+      {s:'optimaal',l:114,x:'Voorrek aan de schouderzijde. Krachtige ellenboogextensie.',e:'Bovenkant overhead triceps extension.'}],
+     [{s:'midden',l:100,x:'Middenlengte.',e:'Startpositie triceps kickback.'},
+      {s:'actief',l:62,x:'Verkort over schouder en ellenboog. Caput laterale en mediale leveren het werk.',e:'Eindstand triceps kickback.'}]]}
+];
+const STL={actief:'Actief insufficiënt',passief:'Passief insufficiënt',optimaal:'Optimale lengte',midden:'Middenlengte'};
+let si=0,a=0,b=0;
+const X=v=>36+(v-50)/(160-50)*(300-36), Y=f=>120-f*95;
+const F=v=>Math.exp(-Math.pow((v-115)/30,2));
+function curve(l){
+  let d='';for(let v=50;v<=160;v+=2)d+=(v===50?'M':'L')+X(v).toFixed(1)+' '+Y(F(v)).toFixed(1)+' ';
+  const tick=[50,100,130,160].map(v=>`<line class="ax" x1="${X(v)}" y1="120" x2="${X(v)}" y2="124"/><text x="${X(v)}" y="136" text-anchor="middle">${v}%</text>`).join('');
+  return `<svg viewBox="0 0 320 150" role="img" aria-label="Lengte-spanningscurve, spier op ${l}% van rustlengte">
+   <rect class="band" x="${X(100)}" y="20" width="${X(130)-X(100)}" height="100"/>
+   <line class="ax" x1="36" y1="120" x2="300" y2="120"/><line class="ax" x1="36" y1="18" x2="36" y2="120"/>
+   <text x="30" y="24" text-anchor="end">kracht</text>${tick}
+   <text x="300" y="148" text-anchor="end">lengte (% rustlengte)</text>
+   <path class="ln" d="${d}"/>
+   <g class="mk" style="transform:translate(${X(l)}px,${Y(F(l))}px)"><circle r="7" fill="var(--coral)" stroke="var(--surface)" stroke-width="2.5"/></g>
+  </svg>`;
+}
+function renderI(){
+  $('scen').innerHTML=S.map((s,i)=>`<button aria-pressed="${i===si}" data-s="${i}">${s.k}</button>`).join('');
+  const s=S[si],r=s.st[a][b];
+  $('sim').innerHTML=`<div><h3>${s.muscle}</h3><p class="crosses">Kruist: ${s.cross}</p></div>
+   <div class="ctrl">
+    <div><p class="lbl">${s.A[0]}</p><div class="seg">${s.A[1].map((o,i)=>`<button aria-pressed="${i===a}" data-a="${i}">${o}</button>`).join('')}</div></div>
+    <div><p class="lbl">${s.B[0]}</p><div class="seg">${s.B[1].map((o,i)=>`<button aria-pressed="${i===b}" data-b="${i}">${o}</button>`).join('')}</div></div>
+   </div>
+   <span class="status st-${r.s}">${STL[r.s]}</span>
+   <p style="margin:0">${r.x}</p>
+   <div class="ex"><b>In de praktijk</b>${r.e}</div>
+   <div class="curve">${curve(r.l)}</div>`;
+}
+$('tab-g').onclick=()=>switchTab(0);$('tab-i').onclick=()=>switchTab(1);
+function switchTab(i){$('view-g').hidden=i!==0;$('view-i').hidden=i!==1;$('tab-g').setAttribute('aria-selected',i===0);$('tab-i').setAttribute('aria-selected',i===1);try{localStorage.setItem('rb-tab',i)}catch(e){}}
+renderG();renderI();
+try{if(localStorage.getItem('rb-tab')==='1')switchTab(1)}catch(e){}
+</script>
+
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+</script>
+</body>
+</html>
