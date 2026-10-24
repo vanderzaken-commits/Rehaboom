@@ -163,6 +163,31 @@ details ul{margin:10px 0 0;padding-left:18px;font-size:13px;display:flex;flex-di
 .why{font-size:13.5px;border-left:3px solid var(--line);padding-left:10px}
 .ext{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border:1px solid var(--steel);border-radius:8px;color:var(--steel);text-decoration:none;font:500 13px var(--f-body)}
 button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+.cmode{margin-left:auto;align-self:center;min-height:36px;padding:0 12px;border-radius:18px;border:1px solid var(--head-muted);background:transparent;color:var(--head-fg);font:500 12.5px var(--f-body);cursor:pointer}
+.cmode[aria-pressed="true"]{background:var(--coral);border-color:var(--coral);color:#fff}
+.excats{display:flex;flex-direction:column;gap:12px}
+.exgrid{display:flex;flex-wrap:wrap;gap:6px}
+.ex{min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 13.5px var(--f-body);cursor:pointer}
+.ex[aria-pressed="true"]{background:var(--sel);border-color:var(--sel);color:var(--sel-fg)}
+.card .jump{width:100%;display:flex;justify-content:space-between;gap:10px;align-items:center;background:none;border:0;border-bottom:1px solid var(--line);padding:6px 0 8px;min-height:40px;color:var(--ink);font:400 13.5px var(--f-body);text-align:left;cursor:pointer}
+.card .jump b{font-weight:600}
+.jump em{font-style:normal;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.tc{color:var(--coral)} .ti{color:var(--olive)}
+.whyl{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.cue{background:var(--steel-bg);border-radius:10px;padding:10px 12px;font-size:13.5px}
+.cue b{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);margin-bottom:2px}
+.cue.big{font-size:16px;line-height:1.5}
+.archrow{display:flex;gap:12px;align-items:flex-start}
+.archrow svg{width:44px;height:44px;flex:none;fill:none;stroke:var(--coral);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;background:var(--coral-bg);border-radius:8px;padding:4px}
+.archrow strong{font-size:14px}
+.archrow p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.fact.arch b{color:var(--coral)}
+:root[data-client] .chip .sp{display:none}
+:root[data-client] .chip{padding-left:12px;font-size:14px;min-height:40px}
+:root[data-client] .mrow b{font-size:16px}
+.md-top.client .md-img img{max-height:340px}
+.md-top.client .locator{width:96px}.md-top.client .locator svg{width:96px}
+@media (max-width:520px){.tagl{display:none}}
 @media (max-width:420px){.joints{grid-template-columns:repeat(2,minmax(0,1fr))}.ctrl{grid-template-columns:1fr}.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
@@ -171,12 +196,13 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <header>
   <div class="wrap">
-    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.2</span><span>Anatomisch &amp; kinesiologisch naslagwerk</span></div>
+    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.3</span><span class="tagl">Anatomisch &amp; kinesiologisch naslagwerk</span><button class="cmode" id="cmode" aria-pressed="false">Cliëntweergave</button></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="0" aria-selected="true">Gewricht</button>
       <button class="tab" role="tab" data-tab="1" aria-selected="false">Spieren</button>
-      <button class="tab" role="tab" data-tab="2" aria-selected="false">Testen</button>
-      <button class="tab" role="tab" data-tab="3" aria-selected="false">Insufficiëntie</button>
+      <button class="tab" role="tab" data-tab="2" aria-selected="false">Oefeningen</button>
+      <button class="tab" role="tab" data-tab="3" aria-selected="false">Testen</button>
+      <button class="tab" role="tab" data-tab="4" aria-selected="false">Insufficiëntie</button>
     </div>
   </div>
 </header>
@@ -199,6 +225,9 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
     <details>
       <summary>Wat is er veranderd in v2</summary>
       <ul>
+        <li>v2.3: tab "Oefeningen": 22 oefeningen met gewrichtsacties, hoofd-, ondersteunende en stabiliserende spieren, kinesiologisch inzicht en coachingcue.</li>
+        <li>v2.3: vezelarchitectuur (parallel, spoelvormig, convergent, uni-, bi-, multipennaat) bij 44 spieren met een eenduidige indeling.</li>
+        <li>v2.3: cliëntweergave met volksnamen en eenvoudige uitleg voor alle 91 spieren.</li>
         <li>v2.2: nek, schoudergordel en romp &amp; wervelkolom toegevoegd; alle 91 spieren hebben nu een rol in een beweging.</li>
         <li>v2.2: regio-tegels (bovenste extremiteit, romp &amp; nek, onderste extremiteit) en een mannequin per vlak en as.</li>
         <li>v2.2: voet volgens de Nederlandse conventie: supinatie/pronatie = kanteling, inversie/eversie = combinatiebeweging.</li>
@@ -233,6 +262,12 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
     <p class="foot">Afbeeldingen: Gray's Anatomy (publiek domein) en Anatomography (CC BY-SA 2.1 Japan), via Wikimedia Commons.</p>
   </div>
 
+  <div class="wrap" id="view-o" hidden>
+    <section id="excats" class="excats"></section>
+    <section id="exdetail"></section>
+    <p class="foot">Spieren zijn afgeleid uit de bewegingskaarten van de gewrichtentab. Tik op een gewrichtsactie om die kaart te openen.</p>
+  </div>
+
   <div class="wrap" id="view-t" hidden>
     <section><p class="lbl">Gewricht</p><div class="seg" id="tj"></div></section>
     <section class="cards" id="tests"></section>
@@ -251,7 +286,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <div id="sheetRoot"></div>
 
-<script src="data.js?v=22"></script>
+<script src="data.js?v=23"></script>
 <script>
 const M='M',B='B',P='P';
 const J=[
@@ -402,6 +437,10 @@ document.addEventListener('click',e=>{
   else if(t.dataset.s!==undefined){si=+t.dataset.s;a=0;b=0;renderI();}
   else if(t.dataset.a!==undefined){a=+t.dataset.a;renderI();}
   else if(t.dataset.b!==undefined){b=+t.dataset.b;renderI();}
+  else if(t.dataset.e!==undefined){ei=+t.dataset.e;renderO();$('exdetail').scrollIntoView({behavior:'auto',block:'start'});}
+  else if(t.dataset.ex!==undefined){closeSheet();ei=+t.dataset.ex;switchTab(2);renderO();}
+  else if(t.dataset.sim!==undefined){si=+t.dataset.sim;a=0;b=0;switchTab(4);renderI();}
+  else if(t.id==='cmode'){setClient(!client);}
   else if(t.classList.contains('close')){closeSheet();}
 });
 
@@ -443,23 +482,45 @@ function rolesOf(k,name){
   }
   return rows;
 }
+const ARCH_ICON={
+ parallel:'<path d="M8 12h32M8 20h32M8 28h32M8 36h32"/>',
+ fusiform:'<path d="M4 24C14 10 34 10 44 24C34 38 14 38 4 24Z"/><path d="M8 24h32M12 18c8-3 16-3 24 0M12 30c8 3 16 3 24 0"/>',
+ convergent:'<path d="M6 6L42 24M6 15L42 24M6 24h36M6 33L42 24M6 42L42 24"/>',
+ uni:'<path d="M4 34h40"/><path d="M10 34l8-14M18 34l8-14M26 34l8-14M34 34l8-14"/>',
+ bi:'<path d="M4 24h40"/><path d="M10 24l8-12M18 24l8-12M26 24l8-12M10 24l8 12M18 24l8 12M26 24l8 12"/>',
+ multi:'<path d="M4 16h40M4 32h40"/><path d="M10 16l6-9M20 16l6-9M30 16l6-9M10 16l6 9M20 16l6 9M30 16l6 9M10 32l6-9M20 32l6-9M30 32l6-9M10 32l6 9M20 32l6 9M30 32l6 9"/>'};
+function archFact(k){
+  const a=ARCH[k];if(!a)return '';const t=ARCH_TYPES[a[0]];
+  return `<div class="fact arch"><b>Vezelarchitectuur</b><div class="archrow"><svg viewBox="0 0 48 48" aria-hidden="true">${ARCH_ICON[a[0]]}</svg><div><strong>${t.l}</strong><p>${esc(t.x)}${a[1]?' '+esc(a[1]):''}</p></div></div></div>`;
+}
 function openSheet(name){
   const k=key(name),d=k&&DETAILS[k],rows=rolesOf(k,name);
   const col={ag:'var(--coral)',sy:'var(--steel)',st:'var(--olive)'};
   const title=k||base(name);
-  let body='';
-  if(d){
-    body+=`<div class="md-top">${d.image?`<div class="md-img"><img src="${esc(d.image)}" alt="${esc(k)}" loading="lazy" onerror="this.parentNode.remove()"><p class="cr">Afbeelding: ${esc(d.imageCredit||"Gray's Anatomy (publiek domein)")}</p></div>`:''}${locator(k)}</div>
-    <div class="facts">
-     ${d.bundles?`<div class="fact"><b>Bundels</b><div class="bund">${d.bundles.map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>`:''}
-     <div class="fact o"><b>Oorsprong (origo)</b><p>${esc(d.origin)}</p></div>
-     <div class="fact i"><b>Aanhechting (insertie)</b><p>${esc(d.insertion)}</p></div>
-     <div class="fact f"><b>Functie</b><p>${esc(d.function)}</p></div>
-     ${d.direction?`<div class="fact d"><b>Vezelverloop</b><p>${esc(d.direction)}</p></div>`:''}
-    </div>`;
-  }else body+=`<p class="foot">Voor deze spier(groep) staan nog geen oorsprong, aanhechting en functie in de dataset.</p>`;
-  body+=`<p class="sub">Rol in ${rows.length} beweging${rows.length===1?'':'en'}</p>${rows.length?`<div>${rows.map(r=>`<button class="jump" data-jm="${r.id}"><span>${r.j} · ${r.m}${r.via?` <small style="color:var(--muted)">(als deel van ${esc(r.via)})</small>`:''}</span><em style="color:${col[r.r]}">${ROLE[r.r]} →</em></button>`).join('')}</div>`:'<p class="foot">Komt (nog) niet voor in de bewegingskaarten.</p>'}`;
-  $('sheetRoot').innerHTML=`<div class="sheet-bg" data-close></div><div class="sheet wide" role="dialog" aria-label="${esc(title)}"><button class="close" aria-label="Sluiten">×</button><h3>${esc(title)}</h3>${name!==title?`<p class="foot" style="margin:0">${esc(name)}</p>`:''}${body}</div>`;
+  const exs=k?exercisesFor(k):[];
+  const exList=exs.length?`<p class="sub">${client?'Zo train je deze spier':'Hoofdspier in oefeningen'}</p><div>${exs.map(e=>`<button class="jump" data-ex="${EX.indexOf(e)}"><span>${e.n}</span><em style="color:var(--coral)">Oefening →</em></button>`).join('')}</div>`:'';
+  let body='',head='';
+  if(client&&d){
+    const c=CLIENT[k]||[title,d.function];
+    head=`<h3>${esc(c[0])}</h3><p class="foot" style="margin:0">${esc(k)}</p>`;
+    body=`<div class="md-top client">${d.image?`<div class="md-img"><img src="${esc(d.image)}" alt="${esc(c[0])}" loading="lazy" onerror="this.parentNode.remove()"></div>`:''}${locator(k)}</div>
+     <div class="cue big" style="margin-top:14px"><b>Wat doet deze spier?</b>${esc(c[1])}</div>${exList}`;
+  }else{
+    head=`<h3>${esc(title)}</h3>${name!==title?`<p class="foot" style="margin:0">${esc(name)}</p>`:''}`;
+    if(d){
+      body+=`<div class="md-top">${d.image?`<div class="md-img"><img src="${esc(d.image)}" alt="${esc(k)}" loading="lazy" onerror="this.parentNode.remove()"><p class="cr">Afbeelding: ${esc(d.imageCredit||"Gray's Anatomy (publiek domein)")}</p></div>`:''}${locator(k)}</div>
+      <div class="facts">
+       ${d.bundles?`<div class="fact"><b>Bundels</b><div class="bund">${d.bundles.map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>`:''}
+       <div class="fact o"><b>Oorsprong (origo)</b><p>${esc(d.origin)}</p></div>
+       <div class="fact i"><b>Aanhechting (insertie)</b><p>${esc(d.insertion)}</p></div>
+       <div class="fact f"><b>Functie</b><p>${esc(d.function)}</p></div>
+       ${d.direction?`<div class="fact d"><b>Vezelverloop</b><p>${esc(d.direction)}</p></div>`:''}
+       ${archFact(k)}
+      </div>`;
+    }else body+=`<p class="foot">Voor deze spier(groep) staan nog geen oorsprong, aanhechting en functie in de dataset.</p>`;
+    body+=`<p class="sub">Rol in ${rows.length} beweging${rows.length===1?'':'en'}</p>${rows.length?`<div>${rows.map(r=>`<button class="jump" data-jm="${r.id}"><span>${r.j} · ${r.m}${r.via?` <small style="color:var(--muted)">(als deel van ${esc(r.via)})</small>`:''}</span><em style="color:${col[r.r]}">${ROLE[r.r]} →</em></button>`).join('')}</div>`:'<p class="foot">Komt (nog) niet voor in de bewegingskaarten.</p>'}${exList}`;
+  }
+  $('sheetRoot').innerHTML=`<div class="sheet-bg" data-close></div><div class="sheet wide" role="dialog" aria-label="${esc(title)}"><button class="close" aria-label="Sluiten">×</button>${head}${body}</div>`;
   document.querySelector('.sheet-bg').onclick=closeSheet;
 }
 function closeSheet(){$('sheetRoot').innerHTML='';}
@@ -475,7 +536,7 @@ const CATS=Object.keys(GROUPS);
 let ci=0,gi=0;
 const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
 function thumb(k){const d=DETAILS[k];return d&&d.image?`<img class="th" src="${esc(d.image)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=th></span>'">`:'<span class="th"></span>';}
-function row(k,sub){return `<button class="mrow" data-m="${esc(k)}">${thumb(k)}<span class="tx"><b>${esc(k)}</b><small>${sub}</small></span><span class="ar">›</span></button>`;}
+function row(k,sub){const c=client&&CLIENT[k];return `<button class="mrow" data-m="${esc(k)}">${thumb(k)}<span class="tx"><b>${esc(c?c[0]:k)}</b><small>${c?esc(k):sub}</small></span><span class="ar">›</span></button>`;}
 function renderS(){
   const q=$('q').value.trim();
   $('qx').hidden=!q;$('browse').hidden=!!q;
@@ -484,7 +545,8 @@ function renderS(){
     const hit=[];
     for(const [k,d] of Object.entries(DETAILS)){
       let score=-1,sub='';
-      if(norm(k).includes(nq)){score=0;sub=esc(d.function);}
+      if(norm(k).includes(nq)||(CLIENT[k]&&norm(CLIENT[k][0]).includes(nq))){score=0;sub=esc(CLIENT[k]&&norm(CLIENT[k][0]).includes(nq)?CLIENT[k][0]:d.function);}
+      else if(ARCH[k]&&norm(ARCH_TYPES[ARCH[k][0]].l).includes(nq)){score=1;sub='Vezelarchitectuur: '+esc(ARCH_TYPES[ARCH[k][0]].l);}
       else if((d.bundles||[]).some(x=>norm(x).includes(nq))){score=1;sub='Bundel: '+esc(d.bundles.find(x=>norm(x).includes(nq)));}
       else for(const [f,l] of F){const v=d[f]||'';const i=norm(v).indexOf(nq);if(i>=0){score=2;sub=`${l}: ${esc(v.slice(0,i))}<mark>${esc(v.slice(i,i+q.length))}</mark>${esc(v.slice(i+q.length))}`;break;}}
       if(score<0){const c=CATS.find(c=>GROUPS[c].some(g=>g.muscles.includes(k)));if(c&&norm(c).includes(nq)){score=3;sub='Spiergroep: '+esc(c);}}
@@ -518,6 +580,66 @@ function renderT(){
   </article>`).join('');
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();});
+
+/* ---------- Oefeningen ---------- */
+// acts: [bewegings-id, 'c' = concentrisch / 'i' = isometrisch, toelichting]; sim = index in de insufficiëntie-simulator
+const EX=[
+{id:'squat',cat:'Onderlichaam',n:'Back squat',d:'Opwaartse fase vanuit een diepe hurkzit, stang op de bovenrug.',acts:[['h-ext','c'],['k-ext','c'],['a-pf','c','licht, bij het uitduwen'],['t-ext','i','romp rechtop houden'],['h-abd','i','knieën in lijn met de tenen']],ins:'De rectus femoris en de hamstrings veranderen weinig van lengte: ze verkorten aan de ene kant en verlengen aan de andere (paradox van Lombard). Het meeste werk komt van de mono-articulaire gluteus maximus en vasti.',cue:'Druk de vloer weg en kom met borst en heupen tegelijk omhoog.'},
+{id:'rdl',cat:'Onderlichaam',n:'Roemeense deadlift',d:'Heupscharnier met licht gebogen, vaste knieën.',acts:[['h-ext','c','knie licht gebogen en vast'],['t-ext','i','rug neutraal houden'],['g-retr','i','schouderbladen naar achteren']],ins:'Met de knie bijna gestrekt staan de hamstrings aan beide uiteinden op lengte. In de onderste stand zitten ze dicht bij passieve insufficiëntie: de rek van de hamstrings bepaalt hoe diep je komt, niet de rug.',sim:1,cue:'Duw je heupen naar achteren alsof je met je billen een deur dichtduwt. Houd je rug recht.'},
+{id:'dl',cat:'Onderlichaam',n:'Deadlift',d:'Conventioneel, van de vloer tot rechtop staan.',acts:[['h-ext','c'],['k-ext','c'],['t-ext','i','rug neutraal houden'],['s-retro','i','stang tegen het lichaam houden'],['g-retr','i']],ins:'Bij de lockout komt de heupextensie vooral van de gluteus maximus; de hamstrings staan dan op middenlengte. De latissimus dorsi houdt de stang isometrisch tegen het lichaam.',cue:'Stang dicht bij je benen, duw de vloer weg en sta rechtop door je billen aan te spannen.'},
+{id:'thrust',cat:'Onderlichaam',n:'Hip thrust',d:'Bovenrug op een bank, knieën 90° gebogen, heupen omhoog.',acts:[['h-ext','c'],['t-flex','i','ribben omlaag, geen holle rug']],low:['Hamstrings'],ins:'Met de knie 90° gebogen zijn de hamstrings aan de kniezijde verkort en leveren ze weinig kracht. De gluteus maximus doet de heupextensie grotendeels alleen. Daarom isoleert de hip thrust de bil beter dan de deadlift.',sim:1,cue:'Kin naar je borst, ribben omlaag en knijp bovenaan je billen samen.'},
+{id:'lunge',cat:'Onderlichaam',n:'Walking lunge',d:'Uitvalspas voorwaarts, afzetten via het voorste been.',acts:[['h-ext','c'],['k-ext','c'],['a-pf','c'],['h-abd','i','bekken recht op één been']],ins:'Het voorste been levert het werk. Omdat je steeds op één been staat, stabiliseert de gluteus medius het bekken in het frontale vlak. Zakt de knie naar binnen, dan schiet hij tekort.',cue:'Maak een grote stap, laat je achterste knie recht naar de vloer zakken en duw je weg via je voorste hiel.'},
+{id:'curl-l',cat:'Onderlichaam',n:'Liggende leg curl',d:'Buiklig, hielen naar de billen.',acts:[['k-flex','c']],ins:'In buiklig staat de heup gestrekt: de hamstrings zijn aan de heupzijde al verkort en worden in de eindstand actief insufficiënt. Zittend (heup gebogen) werken ze op grotere lengte en zijn ze sterker.',sim:1,cue:'Breng je hielen rustig naar je billen en laat gecontroleerd zakken.'},
+{id:'legext',cat:'Onderlichaam',n:'Leg extension',d:'Zittend, knieën strekken tegen weerstand.',acts:[['k-ext','c']],ins:'Zittend staat de heup gebogen, dus de rectus femoris is aan de heupzijde verkort en raakt in de eindstand actief insufficiënt. De vasti doen hier het meeste werk.',sim:2,cue:'Strek je knieën volledig en houd bovenin even vast.'},
+{id:'calf-s',cat:'Onderlichaam',n:'Staande kuitheffing',d:'Op de voorvoet, knieën gestrekt.',acts:[['a-pf','c'],['k-ext','i','knie gestrekt houden']],ins:'Met gestrekte knie staat de gastrocnemius op voorrek en levert hij de meeste kracht.',sim:0,cue:'Kom zo hoog mogelijk op je tenen en zak langzaam onder het platform.'},
+{id:'calf-z',cat:'Onderlichaam',n:'Zittende kuitheffing',d:'Zittend, knieën 90° gebogen, gewicht op de knieën.',acts:[['a-pf','c','vooral M. Soleus']],ins:'Met gebogen knie is de gastrocnemius actief insufficiënt. De soleus kruist de knie niet en neemt de plantairflexie over.',sim:0,cue:'Kom zo hoog mogelijk op je tenen en zak langzaam terug.'},
+{id:'bench',cat:'Bovenlichaam',n:'Bench press',d:'Liggend drukken met een stang.',acts:[['s-hadd','c'],['e-ext','c'],['g-retr','i','schouderbladen naar achteren en omlaag']],ins:'Met teruggetrokken schouderbladen werkt de borst vanuit een stabiele basis. Het schouderblad beweegt niet mee, anders dan bij de push-up.',cue:'Schouderbladen in je achterzak, stang naar je onderste borst en druk omhoog.'},
+{id:'push',cat:'Bovenlichaam',n:'Push-up',d:'Opdrukken vanaf de vloer.',acts:[['s-hadd','c'],['e-ext','c'],['g-prot','c','bovenin uitduwen'],['t-flex','i','romp als een plank']],ins:'Het schouderblad kan vrij bewegen: de serratus anterior werkt mee. Een push-up plus (bovenin extra uitduwen) traint hem gericht.',cue:'Lichaam in één rechte lijn, handen onder je schouders, duw de vloer weg.'},
+{id:'ohp',cat:'Bovenlichaam',n:'Overhead press',d:'Staand drukken van schouder naar boven het hoofd.',acts:[['s-ante','c'],['e-ext','c'],['g-urot','c','schouderblad draait mee'],['t-ext','i']],ins:'Boven 90° moet het schouderblad meedraaien (scapulohumeraal ritme). Trapezius en serratus anterior zijn net zo belangrijk als de deltoideus.',cue:'Billen en buik aanspannen, druk de stang recht boven je hoofd.'},
+{id:'pullup',cat:'Bovenlichaam',n:'Pull-up (brede greep)',d:'Optrekken met pronatiegreep.',acts:[['s-add','c'],['e-flex','c'],['g-drot','c'],['g-depr','c']],ins:'Met een brede pronatiegreep is het vooral adductie in het frontale vlak. Een chin-up (supinatiegreep) is meer retroflexie en vraagt meer van de biceps.',cue:'Trek je ellebogen naar je zij en je borst naar de stang.'},
+{id:'row',cat:'Bovenlichaam',n:'Bent-over row',d:'Voorovergebogen roeien met een stang.',acts:[['s-retro','c'],['e-flex','c'],['g-retr','c'],['t-ext','i','rug neutraal houden'],['h-ext','i','heupen gebogen vasthouden']],ins:'De rugstrekkers en hamstrings houden de voorovergebogen positie isometrisch vast. Een vermoeide onderrug is vaak de beperkende factor, niet de bovenrug.',cue:'Rug recht, trek de stang naar je navel en knijp je schouderbladen samen.'},
+{id:'latraise',cat:'Bovenlichaam',n:'Lateral raise',d:'Zijwaarts heffen met dumbbells.',acts:[['s-abd','c'],['g-urot','c','boven 90°']],ins:'De supraspinatus start de abductie, de multipennate pars acromialis van de deltoideus levert de kracht. Boven 90° neemt het schouderblad een deel over.',cue:'Til je armen zijwaarts op tot schouderhoogte, ellebogen licht gebogen.'},
+{id:'facepull',cat:'Bovenlichaam',n:'Face pull',d:'Touw aan de kabel naar het gezicht trekken.',acts:[['s-exo','c'],['s-habd','c'],['g-retr','c']],ins:'Combineert exorotatie, horizontale abductie en retractie: precies de spieren die bij veel drukoefeningen achterblijven.',cue:'Trek het touw naar je gezicht en draai je handen naar buiten.'},
+{id:'curl',cat:'Bovenlichaam',n:'Biceps curl',d:'Staand, dumbbells met de arm langs het lichaam.',acts:[['e-flex','c'],['e-sup','c','handpalm naar boven draaien']],ins:'Met de arm langs het lichaam staat het caput longum op middenlengte. Bij een incline curl (arm achter het lichaam) werkt hij op grotere lengte; bij een preacher curl verkort.',sim:3,cue:'Ellebogen vast tegen je zij, draai je handpalm bovenin naar je toe.'},
+{id:'ohte',cat:'Bovenlichaam',n:'Overhead triceps extension',d:'Gewicht achter het hoofd, ellebogen strekken.',acts:[['e-ext','c'],['s-ante','i','arm boven het hoofd houden']],ins:'Met de arm boven het hoofd staat het caput longum van de triceps op rek. Daarmee train je juist die kop op lengte.',sim:4,cue:'Ellebogen naar het plafond, laat het gewicht achter je hoofd zakken en strek je armen.'},
+{id:'plank',cat:'Romp',n:'Plank',d:'Steunen op onderarmen en tenen.',acts:[['t-flex','i','onderrug niet laten doorzakken'],['g-prot','i']],ins:'Anti-extensie: de buikspieren voorkomen dat de onderrug doorzakt. De transversus abdominis bouwt intra-abdominale druk op.',cue:'Ellebogen onder je schouders, billen aanspannen en je navel naar je ruggengraat.'},
+{id:'sideplank',cat:'Romp',n:'Zijwaartse plank',d:'Steunen op één onderarm, lichaam zijwaarts.',acts:[['t-lat','i'],['h-abd','i','onderste been']],ins:'Traint de quadratus lumborum en de schuine buikspieren in het frontale vlak, samen met de gluteus medius van het onderste been.',cue:'Lichaam in één lijn, duw je heup omhoog naar het plafond.'},
+{id:'pallof',cat:'Romp',n:'Pallof press',d:'Zijwaarts naast een kabel, handen recht vooruit drukken.',acts:[['t-rot','i','romp niet laten meedraaien']],ins:'Anti-rotatie: de schuine buikspieren houden de romp stil terwijl de kabel hem probeert te draaien.',cue:'Druk je handen recht naar voren en laat je romp niet meedraaien.'},
+{id:'backext',cat:'Romp',n:'Back extension',d:'Rugstrekken op een rugbank.',acts:[['t-ext','c'],['h-ext','c']],ins:'Met een ronde rug die uitrolt werken vooral de rugstrekkers; met een neutrale rug en scharnier in de heup vooral bil en hamstrings.',cue:'Zak gecontroleerd en kom omhoog tot je lichaam in één lijn is, niet verder.'}
+];
+const EXCATS=[...new Set(EX.map(e=>e.cat))];
+let ei=0;
+function exMuscles(e){
+  const out=new Map(),rank={hoofd:0,steun:1,stab:2};
+  const add=(n,s,r)=>{const k=key(n)||base(n);if(r==='hoofd'&&(e.low||[]).includes(k))r='steun';const c=out.get(k);if(!c||rank[r]<rank[c.r])out.set(k,{k,n,s,r,ok:!!key(n)});};
+  for(const [id,t] of e.acts){const m=findMove(id);if(!m)continue;
+    if(t==='c'){m.ag.forEach(([n,s])=>add(n,s,'hoofd'));m.sy.forEach(([n,s])=>add(n,s,'steun'));m.st.forEach(([n,s])=>add(n,s,'stab'));}
+    else{m.ag.forEach(([n,s])=>add(n,s,'stab'));m.st.forEach(([n,s])=>add(n,s,'stab'));}}
+  return [...out.values()];
+}
+function moveLabel(id){for(const j of J)for(const p of j.planes)for(const m of p.moves)if(m.id===id)return [j.short,m.t];return ['',''];}
+function exChips(list,cls,title){
+  if(!list.length)return '';
+  return `<div class="role ${cls}"><p>${title}</p><div class="chips">${list.map(x=>`<button class="chip" data-m="${esc(x.ok?x.k:x.n)}">${client?'':`<span class="sp">${x.s}</span>`}<span class="n">${esc(client&&x.ok&&CLIENT[x.k]?CLIENT[x.k][0]:(x.ok?x.k:x.n))}</span></button>`).join('')}</div></div>`;
+}
+function renderO(){
+  const e=EX[ei];
+  $('excats').innerHTML=EXCATS.map(c=>`<div><p class="lbl">${c}</p><div class="exgrid">${EX.map((x,i)=>x.cat!==c?'':`<button class="ex" aria-pressed="${i===ei}" data-e="${i}">${x.n}</button>`).join('')}</div></div>`).join('');
+  const ms=exMuscles(e),by=r=>ms.filter(x=>x.r===r);
+  const acts=e.acts.map(([id,t,note])=>{const [j,m]=moveLabel(id);return `<button class="jump" data-jm="${id}"><span><b>${j}</b> · ${m}${note?` <small style="color:var(--muted)">(${esc(note)})</small>`:''}</span><em class="${t==='c'?'tc':'ti'}">${t==='c'?'Concentrisch':'Isometrisch'} →</em></button>`}).join('');
+  $('exdetail').innerHTML=`<article class="card" id="exc">
+   <div><h3>${e.n}</h3><p class="def">${e.d}</p></div>
+   ${client?`<div class="cue big"><b>Zo doe je het</b>${esc(e.cue)}</div>`:`<div><p class="lbl" style="margin-bottom:2px">Gewrichtsacties (opwaartse fase)</p>${acts}</div>`}
+   ${exChips(by('hoofd'),'r-ag',client?'Dit train je vooral':'Hoofdspieren (concentrisch)')}
+   ${exChips(by('steun'),'r-sy',client?'Dit werkt mee':'Ondersteunend (synergisten)')}
+   ${client?'':exChips(by('stab'),'r-st','Stabiliserend (isometrisch)')}
+   ${client?'':`<div class="why"><b class="whyl">Kinesiologisch inzicht</b>${esc(e.ins)}</div><div class="cue"><b>Coachingcue</b>${esc(e.cue)}</div>`}
+   ${!client&&e.sim!==undefined?`<button class="anta-link" data-sim="${e.sim}">Bekijk ${S[e.sim].k.toLowerCase()} in de insufficiëntie-simulator →</button>`:''}
+  </article>`;
+}
+function exercisesFor(k){
+  return EX.filter(e=>exMuscles(e).some(x=>x.r==='hoofd'&&x.ok&&(x.k===k||FAMILY[k]===x.k)));
+}
 
 /* ---------- Insufficiëntie ---------- */
 const S=[
@@ -576,15 +698,19 @@ function renderI(){
    <div class="ex"><b>In de praktijk</b>${r.e}</div>
    <div class="curve">${curve(r.l)}</div>`;
 }
-const VIEWS=['view-g','view-s','view-t','view-i'];
+const VIEWS=['view-g','view-s','view-o','view-t','view-i'];
 function switchTab(i){
   VIEWS.forEach((v,x)=>$(v).hidden=x!==i);
   document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',+t.dataset.tab===i));
   window.scrollTo(0,0);
   try{localStorage.setItem('rb-tab',i)}catch(e){}
 }
-renderG();renderS();renderT();renderI();
-try{const s=+localStorage.getItem('rb-tab');if(s>0&&s<4)switchTab(s)}catch(e){}
+let client=false;
+function setClient(v){client=v;document.documentElement.toggleAttribute('data-client',v);$('cmode').setAttribute('aria-pressed',v);try{localStorage.setItem('rb-client',v?'1':'')}catch(e){}renderG();renderS();renderO();closeSheet();}
+try{client=localStorage.getItem('rb-client')==='1'}catch(e){}
+document.documentElement.toggleAttribute('data-client',client);$('cmode').setAttribute('aria-pressed',client);
+renderG();renderS();renderO();renderT();renderI();
+try{const s=+localStorage.getItem('rb-tab');if(s>0&&s<5)switchTab(s)}catch(e){}
 </script>
 
 <script>
