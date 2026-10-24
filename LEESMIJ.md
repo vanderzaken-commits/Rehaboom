@@ -22,11 +22,12 @@ Dit is een PWA: een web-app die je als app op je telefoon installeert. Na de eer
 
 ## 3. Updates
 
-Pas `index.html` aan en zet de nieuwe versie online. Verhoog dan ook het versienummer in `sw.js` (`rehaboom-v2-1` → `rehaboom-v2-2`), zodat telefoons de nieuwe versie ophalen. Sluit en open de app één keer om de update te zien.
+Pas `index.html` aan en zet de nieuwe versie online. Verhoog dan ook het versienummer in `sw.js` (`rehaboom-v2-2` → `rehaboom-v2-3`), zodat telefoons de nieuwe versie ophalen. Sluit en open de app één keer om de update te zien.
 
 ## Bestanden
 
-- `index.html` — de volledige app
+- `index.html` — de app (schermen en logica)
+- `data.js` — spierdata (90 spieren) en de 9 tests
 - `manifest.webmanifest` — naam, kleuren en iconen voor installatie
 - `sw.js` — offline ondersteuning
 - `icons/` — app-iconen

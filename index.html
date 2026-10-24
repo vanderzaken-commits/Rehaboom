@@ -37,8 +37,9 @@ header .wrap{padding-block:18px 0;display:flex;flex-direction:column;gap:14px}
 .brand h1{font-family:var(--f-display);font-weight:700;font-size:34px;letter-spacing:.04em;margin:0;line-height:1}
 .brand span{font-size:12px;color:var(--head-muted);letter-spacing:.03em}
 .ver{font-family:var(--f-mono);font-size:11px;border:1px solid var(--head-muted);color:var(--head-muted);padding:1px 7px;border-radius:4px}
-.tabs{display:flex;gap:4px;position:sticky;top:env(safe-area-inset-top,0px)}
-.tab{flex:1;min-height:44px;background:transparent;border:0;border-bottom:3px solid transparent;color:var(--head-muted);font-family:var(--f-display);font-weight:600;font-size:18px;letter-spacing:.03em;cursor:pointer}
+.tabs{display:flex;gap:2px;position:sticky;top:env(safe-area-inset-top,0px);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1 0 auto;white-space:nowrap;min-height:44px;padding:0 7px;background:transparent;border:0;border-bottom:3px solid transparent;color:var(--head-muted);font-family:var(--f-display);font-weight:600;font-size:16px;letter-spacing:.03em;cursor:pointer}
 .tab[aria-selected="true"]{color:var(--head-fg);border-bottom-color:var(--coral)}
 main .wrap{padding-block:20px 40px;display:flex;flex-direction:column;gap:22px}
 .lbl{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
@@ -109,8 +110,58 @@ details ul{margin:10px 0 0;padding-left:18px;font-size:13px;display:flex;flex-di
 .sheet li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:8px;font-size:13.5px}
 .sheet li em{font-style:normal;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 .close{float:right;min-height:40px;min-width:40px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:20px;cursor:pointer;font-size:16px}
+.sheet.wide{max-height:88vh}
+.sheet .jump{width:100%;display:flex;justify-content:space-between;gap:10px;align-items:center;background:none;border:0;border-bottom:1px solid var(--line);padding:6px 0 8px;min-height:40px;color:var(--ink);font:400 13.5px var(--f-body);text-align:left;cursor:pointer}
+.sheet .jump em{font-style:normal;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+/* spieren */
+.search{position:relative}
+.search input{width:100%;min-height:46px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:23px;padding:0 44px 0 16px;font:400 15px var(--f-body)}
+.search input:focus{outline:2px solid var(--steel);outline-offset:1px}
+.search button{position:absolute;right:4px;top:3px;min-width:40px;min-height:40px;border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer}
+.cats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.cat{min-height:52px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 8px;color:var(--ink);cursor:pointer;text-align:left;display:flex;flex-direction:column;justify-content:center}
+.cat b{font-family:var(--f-display);font-weight:600;font-size:17px;line-height:1.05}
+.cat small{font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+.cat[aria-pressed="true"]{background:var(--sel);border-color:var(--sel);color:var(--sel-fg)}
+.cat[aria-pressed="true"] small{color:inherit;opacity:.7}
+.mlist{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.mrow{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 12px;background:none;border:0;border-bottom:1px solid var(--line);color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+.mrow:last-child{border-bottom:0}
+.mrow .th{width:40px;height:40px;border-radius:8px;flex:none;background:var(--bg);border:1px solid var(--line);object-fit:cover}
+.mrow .tx{flex:1;min-width:0}
+.mrow b{display:block;font-weight:600;font-size:14.5px}
+.mrow small{display:block;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mrow small mark{background:var(--coral-bg);color:var(--coral);border-radius:2px}
+.mrow .ar{color:var(--muted);flex:none}
+.hits{font-size:12.5px;color:var(--muted);margin:0 0 8px}
+/* spierdetail */
+.md-top{display:flex;gap:12px;align-items:flex-start;margin-top:10px}
+.md-img{flex:1;min-width:0}
+.md-img img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;background:#F4F5EF;border:1px solid var(--line);display:block}
+.md-img .cr{font-size:10px;color:var(--muted);margin-top:4px}
+.locator{flex:none;width:76px;text-align:center}
+.locator svg{width:76px;height:auto;display:block}
+.locator small{font-size:10px;color:var(--muted);line-height:1.2;display:block;margin-top:2px}
+.facts{display:grid;gap:10px;margin-top:14px}
+.fact b{display:block;font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
+.fact p{margin:0;font-size:14px}
+.fact.o b{color:var(--coral)} .fact.i b{color:var(--steel)} .fact.f b{color:var(--olive)} .fact.d b{color:var(--muted)}
+.bund{display:flex;flex-wrap:wrap;gap:6px}
+.bund span{font-size:12px;border:1px solid var(--line);border-radius:12px;padding:3px 9px;background:var(--bg)}
+.sub{font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:16px 0 0}
+/* testen */
+.tcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.tcard h3{font-family:var(--f-display);font-weight:600;font-size:22px;margin:0;line-height:1.1}
+.tcard .ev{font-size:13.5px;color:var(--muted);margin:4px 0 0}
+.tcard ol{margin:0;padding-left:20px;font-size:14px;display:flex;flex-direction:column;gap:4px}
+.res{border-radius:10px;padding:10px 12px;font-size:13.5px}
+.res b{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
+.res.pos{background:var(--coral-bg)} .res.pos b{color:var(--coral)}
+.res.neg{background:var(--steel-bg)} .res.neg b{color:var(--steel)}
+.why{font-size:13.5px;border-left:3px solid var(--line);padding-left:10px}
+.ext{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border:1px solid var(--steel);border-radius:8px;color:var(--steel);text-decoration:none;font:500 13px var(--f-body)}
 button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
-@media (max-width:420px){.joints{grid-template-columns:repeat(2,minmax(0,1fr))}.ctrl{grid-template-columns:1fr}}
+@media (max-width:420px){.joints{grid-template-columns:repeat(2,minmax(0,1fr))}.ctrl{grid-template-columns:1fr}.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -118,10 +169,12 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <header>
   <div class="wrap">
-    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2</span><span>Anatomisch &amp; kinesiologisch naslagwerk</span></div>
+    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.1</span><span>Anatomisch &amp; kinesiologisch naslagwerk</span></div>
     <div class="tabs" role="tablist">
-      <button class="tab" role="tab" id="tab-g" aria-selected="true">Op gewricht</button>
-      <button class="tab" role="tab" id="tab-i" aria-selected="false">Insufficiëntie</button>
+      <button class="tab" role="tab" data-tab="0" aria-selected="true">Gewricht</button>
+      <button class="tab" role="tab" data-tab="1" aria-selected="false">Spieren</button>
+      <button class="tab" role="tab" data-tab="2" aria-selected="false">Testen</button>
+      <button class="tab" role="tab" data-tab="3" aria-selected="false">Insufficiëntie</button>
     </div>
   </div>
 </header>
@@ -139,11 +192,13 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
         <i><b style="font-family:var(--f-mono);font-weight:500">M · B · P</b> = mono-, bi-, poly-articulair</i>
       </div>
       <div class="cards" id="cards"></div>
-      <p class="foot" style="margin-top:12px">Tik op een spier om te zien in welke bewegingen hij nog meer een rol speelt.</p>
+      <p class="foot" style="margin-top:12px">Tik op een spier voor oorsprong, aanhechting, functie en alle bewegingen waarin hij een rol speelt.</p>
     </section>
     <details>
       <summary>Wat is er veranderd in v2</summary>
       <ul>
+        <li>v2.1: tab "Spieren" terug: 8 spiergroepen, zoeken op naam, oorsprong, aanhechting en functie, met afbeelding en lichaamslocatie.</li>
+        <li>v2.1: tab "Testen" terug: 9 orthopedische tests met Physiotutors-links.</li>
         <li>Nieuw: antagonisten per beweging, met een knop naar de tegenbeweging.</li>
         <li>Nieuw: stabilisatoren (fixatoren) als aparte rol.</li>
         <li>Nieuw: M/B/P-badge op elke spier en een spieroverzicht over alle gewrichten.</li>
@@ -158,6 +213,25 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
     <p class="foot">Prototype. Laat de inhoud door een fysiotherapeut reviewen voor klinisch gebruik.</p>
   </div>
 
+  <div class="wrap" id="view-s" hidden>
+    <section>
+      <div class="search"><input id="q" type="search" placeholder="Zoek op spier, aanhechting, functie…" aria-label="Zoek spieren" autocomplete="off" enterkeyhint="search"><button id="qx" aria-label="Wissen" hidden>×</button></div>
+    </section>
+    <section id="browse">
+      <p class="lbl">Spiergroep</p>
+      <div class="cats" id="cats"></div>
+      <div id="subs" style="margin-top:12px"></div>
+    </section>
+    <section id="mres"></section>
+    <p class="foot">Afbeeldingen: Gray's Anatomy (publiek domein) en Anatomography (CC BY-SA 2.1 Japan), via Wikimedia Commons.</p>
+  </div>
+
+  <div class="wrap" id="view-t" hidden>
+    <section><p class="lbl">Gewricht</p><div class="seg" id="tj"></div></section>
+    <section class="cards" id="tests"></section>
+    <p class="foot">Screeningstests, geen diagnose. Een positieve test is een reden om door te verwijzen of verder te onderzoeken.</p>
+  </div>
+
   <div class="wrap" id="view-i" hidden>
     <section>
       <p class="lbl">Twee-gewrichtsspier</p>
@@ -170,6 +244,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <div id="sheetRoot"></div>
 
+<script src="data.js?v=21"></script>
 <script>
 const M='M',B='B',P='P';
 const J=[
@@ -239,7 +314,7 @@ function compass(k){
   return `<svg viewBox="0 0 46 44" aria-hidden="true"><circle cx="23" cy="22" r="3.5" fill="var(--ink)"/>${ax.map(a=>`<line x1="${a[1]}" y1="${a[2]}" x2="${a[3]}" y2="${a[4]}" stroke="${a[0]===k?'var(--coral)':'var(--line)'}" stroke-width="${a[0]===k?3:1.5}" stroke-linecap="round"/>`).join('')}</svg>`;
 }
 function chips(list,cls,title){
-  return `<div class="role ${cls}"><p>${title}</p>${list.length?`<div class="chips">${list.map(([n,s])=>`<button class="chip" data-m="${esc(base(n))}"><span class="sp">${s}</span><span class="n">${esc(n)}</span></button>`).join('')}</div>`:'<span class="none">Geen relevante spieren</span>'}</div>`;
+  return `<div class="role ${cls}"><p>${title}</p>${list.length?`<div class="chips">${list.map(([n,s])=>`<button class="chip" data-m="${esc(n)}"><span class="sp">${s}</span><span class="n">${esc(n)}</span></button>`).join('')}</div>`:'<span class="none">Geen relevante spieren</span>'}</div>`;
 }
 function findMove(id){for(const j of J)for(const p of j.planes)for(const m of p.moves)if(m.id===id)return m}
 function renderG(){
@@ -262,21 +337,129 @@ document.addEventListener('click',e=>{
   else if(t.dataset.p!==undefined){pi=+t.dataset.p;renderG();}
   else if(t.dataset.go){const c=$('c-'+t.dataset.go);if(c){c.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});c.classList.add('flash');setTimeout(()=>c.classList.remove('flash'),1400);}}
   else if(t.dataset.m){openSheet(t.dataset.m);}
+  else if(t.dataset.jm){goMove(t.dataset.jm);}
+  else if(t.dataset.tab!==undefined){switchTab(+t.dataset.tab);}
+  else if(t.dataset.c!==undefined){ci=+t.dataset.c;gi=0;renderS();}
+  else if(t.dataset.g!==undefined){gi=+t.dataset.g;renderS();}
+  else if(t.dataset.tj!==undefined){tj=+t.dataset.tj;renderT();}
   else if(t.dataset.s!==undefined){si=+t.dataset.s;a=0;b=0;renderI();}
   else if(t.dataset.a!==undefined){a=+t.dataset.a;renderI();}
   else if(t.dataset.b!==undefined){b=+t.dataset.b;renderI();}
   else if(t.classList.contains('close')){closeSheet();}
 });
-function openSheet(name){
+
+/* ---------- Spierdetails (gekoppeld aan data.js) ---------- */
+// Namen uit de bewegingskaarten → sleutel in DETAILS
+const ALIAS={'M. Iliacus':'M. Iliopsoas','M. Extensor Carpi Radialis Brevis':'M. Extensor Carpi Radialis Longus / Brevis',
+ 'M. Flexor Digitorum Superficialis':'M. Flexor Digitorum Superficialis / Profundus','M. Flexor Digitorum Profundus':'M. Flexor Digitorum Superficialis / Profundus',
+ 'Diepe exorotatoren':'Diepe pelvitrochantaire spieren'};
+// Spieren die in de bewegingskaarten als groep staan
+const FAMILY={'M. Semitendinosus':'Hamstrings','M. Semimembranosus':'Hamstrings','M. Biceps Femoris':'Hamstrings',
+ 'M. Gastrocnemius':'M. Triceps Surae','M. Soleus':'M. Triceps Surae','M. Psoas Major':'M. Iliopsoas'};
+function key(n){
+  if(DETAILS[n])return n;
+  const b=base(n);
+  if(ALIAS[n])return ALIAS[n]; if(ALIAS[b])return ALIAS[b];
+  if(DETAILS[b])return b;
+  if(/^Hamstrings/.test(n))return 'Hamstrings';
+  return null;
+}
+function locator(k){
+  const r=REGIONS[MUSCLE_REGION[k]];if(!r)return '';
+  const f='var(--line)',s='var(--muted)';
+  const still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  return `<div class="locator"><svg viewBox="0 0 200 460" role="img" aria-label="Locatie: ${esc(r.label)}">
+   <circle cx="100" cy="28" r="16" fill="${f}" stroke="${s}" stroke-width="1"/><rect x="92" y="42" width="16" height="14" rx="4" fill="${f}"/>
+   <polygon points="60,58 140,58 122,180 130,215 70,215 78,180" fill="${f}"/>
+   <path d="M60,62 L35,150 L28,225M140,62 L165,150 L172,225" fill="none" stroke="${f}" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="M88,215 L83,330 L80,425M112,215 L117,330 L120,425" fill="none" stroke="${f}" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+   <ellipse cx="79" cy="438" rx="12" ry="7" fill="${f}"/><ellipse cx="121" cy="438" rx="12" ry="7" fill="${f}"/>
+   <circle cx="${r.cx}" cy="${r.cy}" r="11" fill="var(--coral)" opacity=".9"/>
+   ${still?'':`<circle cx="${r.cx}" cy="${r.cy}" r="11" fill="none" stroke="var(--coral)" stroke-width="3"><animate attributeName="r" values="11;20;11" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0;.8" dur="2s" repeatCount="indefinite"/></circle>`}
+  </svg><small>${esc(r.label)}</small></div>`;
+}
+function rolesOf(k,name){
   const rows=[];
-  for(const j of J)for(const p of j.planes)for(const m of p.moves){
-    for(const r of ['ag','sy','st'])for(const [n] of m[r])if(base(n)===name)rows.push({j:j.short,m:m.t,r});
+  for(const j of J)for(const p of j.planes)for(const m of p.moves)for(const r of ['ag','sy','st'])for(const [n] of m[r]){
+    const kn=key(n);
+    if(k?(kn===k||(FAMILY[k]&&kn===FAMILY[k])):base(n)===base(name))rows.push({j:j.short,m:m.t,id:m.id,r,via:k&&kn!==k?FAMILY[k]:null});
   }
+  return rows;
+}
+function openSheet(name){
+  const k=key(name),d=k&&DETAILS[k],rows=rolesOf(k,name);
   const col={ag:'var(--coral)',sy:'var(--steel)',st:'var(--olive)'};
-  $('sheetRoot').innerHTML=`<div class="sheet-bg" data-close></div><div class="sheet" role="dialog" aria-label="${esc(name)}"><button class="close" aria-label="Sluiten">×</button><h3>${esc(name)}</h3><p class="foot">Rol in ${rows.length} beweging${rows.length===1?'':'en'}</p><ul>${rows.map(r=>`<li><span>${r.j} · ${r.m}</span><em style="color:${col[r.r]}">${ROLE[r.r]}</em></li>`).join('')}</ul></div>`;
+  const title=k||base(name);
+  let body='';
+  if(d){
+    body+=`<div class="md-top">${d.image?`<div class="md-img"><img src="${esc(d.image)}" alt="${esc(k)}" loading="lazy" onerror="this.parentNode.remove()"><p class="cr">Afbeelding: ${esc(d.imageCredit||"Gray's Anatomy (publiek domein)")}</p></div>`:''}${locator(k)}</div>
+    <div class="facts">
+     ${d.bundles?`<div class="fact"><b>Bundels</b><div class="bund">${d.bundles.map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>`:''}
+     <div class="fact o"><b>Oorsprong (origo)</b><p>${esc(d.origin)}</p></div>
+     <div class="fact i"><b>Aanhechting (insertie)</b><p>${esc(d.insertion)}</p></div>
+     <div class="fact f"><b>Functie</b><p>${esc(d.function)}</p></div>
+     ${d.direction?`<div class="fact d"><b>Vezelverloop</b><p>${esc(d.direction)}</p></div>`:''}
+    </div>`;
+  }else body+=`<p class="foot">Voor deze spier(groep) staan nog geen oorsprong, aanhechting en functie in de dataset.</p>`;
+  body+=`<p class="sub">Rol in ${rows.length} beweging${rows.length===1?'':'en'}</p>${rows.length?`<div>${rows.map(r=>`<button class="jump" data-jm="${r.id}"><span>${r.j} · ${r.m}${r.via?` <small style="color:var(--muted)">(als deel van ${esc(r.via)})</small>`:''}</span><em style="color:${col[r.r]}">${ROLE[r.r]} →</em></button>`).join('')}</div>`:'<p class="foot">Komt (nog) niet voor in de bewegingskaarten.</p>'}`;
+  $('sheetRoot').innerHTML=`<div class="sheet-bg" data-close></div><div class="sheet wide" role="dialog" aria-label="${esc(title)}"><button class="close" aria-label="Sluiten">×</button><h3>${esc(title)}</h3>${name!==title?`<p class="foot" style="margin:0">${esc(name)}</p>`:''}${body}</div>`;
   document.querySelector('.sheet-bg').onclick=closeSheet;
 }
 function closeSheet(){$('sheetRoot').innerHTML='';}
+function goMove(id){
+  closeSheet();
+  J.forEach((j,x)=>j.planes.forEach((p,y)=>p.moves.forEach(m=>{if(m.id===id){ji=x;pi=y;}})));
+  switchTab(0);renderG();
+  const c=$('c-'+id);if(c){c.scrollIntoView({behavior:'auto',block:'center'});c.classList.add('flash');setTimeout(()=>c.classList.remove('flash'),1400);}
+}
+
+/* ---------- Op spier ---------- */
+const CATS=Object.keys(GROUPS);
+let ci=0,gi=0;
+const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+function thumb(k){const d=DETAILS[k];return d&&d.image?`<img class="th" src="${esc(d.image)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=th></span>'">`:'<span class="th"></span>';}
+function row(k,sub){return `<button class="mrow" data-m="${esc(k)}">${thumb(k)}<span class="tx"><b>${esc(k)}</b><small>${sub}</small></span><span class="ar">›</span></button>`;}
+function renderS(){
+  const q=$('q').value.trim();
+  $('qx').hidden=!q;$('browse').hidden=!!q;
+  if(q){
+    const nq=norm(q),F=[['origin','Oorsprong'],['insertion','Aanhechting'],['function','Functie'],['direction','Vezelverloop']];
+    const hit=[];
+    for(const [k,d] of Object.entries(DETAILS)){
+      let score=-1,sub='';
+      if(norm(k).includes(nq)){score=0;sub=esc(d.function);}
+      else if((d.bundles||[]).some(x=>norm(x).includes(nq))){score=1;sub='Bundel: '+esc(d.bundles.find(x=>norm(x).includes(nq)));}
+      else for(const [f,l] of F){const v=d[f]||'';const i=norm(v).indexOf(nq);if(i>=0){score=2;sub=`${l}: ${esc(v.slice(0,i))}<mark>${esc(v.slice(i,i+q.length))}</mark>${esc(v.slice(i+q.length))}`;break;}}
+      if(score<0){const c=CATS.find(c=>GROUPS[c].some(g=>g.muscles.includes(k)));if(c&&norm(c).includes(nq)){score=3;sub='Spiergroep: '+esc(c);}}
+      if(score>=0)hit.push([score,k,sub]);
+    }
+    hit.sort((x,y)=>x[0]-y[0]||x[1].localeCompare(y[1]));
+    $('mres').innerHTML=`<p class="hits">${hit.length} spier${hit.length===1?'':'en'} gevonden</p>${hit.length?`<div class="mlist">${hit.map(h=>row(h[1],h[2])).join('')}</div>`:''}`;
+    return;
+  }
+  $('cats').innerHTML=CATS.map((c,i)=>`<button class="cat" aria-pressed="${i===ci}" data-c="${i}"><b>${c}</b><small>${GROUPS[c].reduce((n,g)=>n+g.muscles.length,0)} spieren</small></button>`).join('');
+  const gs=GROUPS[CATS[ci]];
+  $('subs').innerHTML=gs.length>1?`<div class="seg">${gs.map((g,i)=>`<button aria-pressed="${i===gi}" data-g="${i}">${g.label}</button>`).join('')}</div>`:'';
+  const g=gs[Math.min(gi,gs.length-1)];
+  $('mres').innerHTML=`<p class="lbl">${CATS[ci]}${g.label?' · '+g.label:''}</p><div class="mlist">${g.muscles.map(k=>row(k,esc(DETAILS[k]?DETAILS[k].function:''))).join('')}</div>`;
+}
+$('q').addEventListener('input',renderS);
+$('qx').onclick=()=>{$('q').value='';renderS();$('q').focus();};
+
+/* ---------- Testen ---------- */
+const TJ=Object.keys(TESTS);let tj=0;
+function renderT(){
+  $('tj').innerHTML=TJ.map((k,i)=>`<button aria-pressed="${i===tj}" data-tj="${i}">${k}</button>`).join('');
+  $('tests').innerHTML=TESTS[TJ[tj]].map(t=>`<article class="tcard">
+   <div><h3>${esc(t.naam)}</h3><p class="ev"><b style="color:var(--ink)">Beoordeelt:</b> ${esc(t.beoordeelt)}</p></div>
+   <div class="why">${esc(t.waarom)}</div>
+   <div><p class="lbl">Uitvoering</p><ol>${t.uitvoering.map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div>
+   <div class="res pos"><b>Positief</b>${esc(t.positief)}</div>
+   <div class="res neg"><b>Negatief</b>${esc(t.negatief)}</div>
+   ${t.gekoppeldeSpieren&&t.gekoppeldeSpieren.length?`<div class="role r-sy"><p>Gekoppelde spieren</p><div class="chips">${t.gekoppeldeSpieren.map(n=>`<button class="chip" data-m="${esc(n)}" style="padding-left:10px"><span class="n">${esc(n)}</span></button>`).join('')}</div></div>`:''}
+   ${t.bronLink?`<a class="ext" href="${esc(t.bronLink)}" target="_blank" rel="noopener noreferrer">Uitleg &amp; video op Physiotutors ↗</a>`:''}
+  </article>`).join('');
+}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();});
 
 /* ---------- Insufficiëntie ---------- */
@@ -336,10 +519,15 @@ function renderI(){
    <div class="ex"><b>In de praktijk</b>${r.e}</div>
    <div class="curve">${curve(r.l)}</div>`;
 }
-$('tab-g').onclick=()=>switchTab(0);$('tab-i').onclick=()=>switchTab(1);
-function switchTab(i){$('view-g').hidden=i!==0;$('view-i').hidden=i!==1;$('tab-g').setAttribute('aria-selected',i===0);$('tab-i').setAttribute('aria-selected',i===1);try{localStorage.setItem('rb-tab',i)}catch(e){}}
-renderG();renderI();
-try{if(localStorage.getItem('rb-tab')==='1')switchTab(1)}catch(e){}
+const VIEWS=['view-g','view-s','view-t','view-i'];
+function switchTab(i){
+  VIEWS.forEach((v,x)=>$(v).hidden=x!==i);
+  document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',+t.dataset.tab===i));
+  window.scrollTo(0,0);
+  try{localStorage.setItem('rb-tab',i)}catch(e){}
+}
+renderG();renderS();renderT();renderI();
+try{const s=+localStorage.getItem('rb-tab');if(s>0&&s<4)switchTab(s)}catch(e){}
 </script>
 
 <script>
