@@ -52,9 +52,11 @@ main .wrap{padding-block:20px 40px;display:flex;flex-direction:column;gap:22px}
 .seg{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
 .seg button{white-space:nowrap;min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 13.5px var(--f-body);cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--steel);border-color:var(--steel);color:var(--surface)}
-.axis{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:13px;color:var(--muted)}
+.axis{display:flex;align-items:flex-start;gap:14px;margin-top:12px;font-size:13px;color:var(--muted)}
 .axis strong{color:var(--ink);font-weight:600}
-.axis svg{width:30px;height:36px;flex:none}
+.axis svg.mq{width:112px;height:auto;flex:none;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.axis strong{font-size:15px}
+.pvl{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
 .pnote{font-size:12.5px;color:var(--muted);margin-top:6px}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);align-items:center}
 .legend i{font-style:normal;display:inline-flex;align-items:center;gap:5px}
@@ -169,7 +171,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <header>
   <div class="wrap">
-    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.1</span><span>Anatomisch &amp; kinesiologisch naslagwerk</span></div>
+    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.2</span><span>Anatomisch &amp; kinesiologisch naslagwerk</span></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="0" aria-selected="true">Gewricht</button>
       <button class="tab" role="tab" data-tab="1" aria-selected="false">Spieren</button>
@@ -181,7 +183,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <main>
   <div class="wrap" id="view-g">
-    <section><p class="lbl">Gewricht</p><div class="joints" id="joints"></div></section>
+    <section><p class="lbl">Regio</p><div class="seg" id="regs"></div><div class="joints" id="joints" style="margin-top:10px"></div></section>
     <section><p class="lbl">Anatomisch vlak</p><div class="seg" id="planes"></div><div id="axis"></div></section>
     <section>
       <div class="legend" style="margin-bottom:12px">
@@ -189,7 +191,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
         <i><span class="dot" style="background:var(--steel)"></span>Synergist</i>
         <i><span class="dot" style="background:var(--olive)"></span>Stabilisator</i>
         <i><span class="dot" style="background:var(--plum)"></span>Antagonist</i>
-        <i><b style="font-family:var(--f-mono);font-weight:500">M · B · P</b> = mono-, bi-, poly-articulair</i>
+        <i><b style="font-family:var(--f-mono);font-weight:500;white-space:nowrap">M · B · P</b> = mono-, bi-, poly-articulair (aantal gekruiste gewrichten)</i>
       </div>
       <div class="cards" id="cards"></div>
       <p class="foot" style="margin-top:12px">Tik op een spier voor oorsprong, aanhechting, functie en alle bewegingen waarin hij een rol speelt.</p>
@@ -197,6 +199,11 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
     <details>
       <summary>Wat is er veranderd in v2</summary>
       <ul>
+        <li>v2.2: nek, schoudergordel en romp &amp; wervelkolom toegevoegd; alle 91 spieren hebben nu een rol in een beweging.</li>
+        <li>v2.2: regio-tegels (bovenste extremiteit, romp &amp; nek, onderste extremiteit) en een mannequin per vlak en as.</li>
+        <li>v2.2: voet volgens de Nederlandse conventie: supinatie/pronatie = kanteling, inversie/eversie = combinatiebeweging.</li>
+        <li>v2.2: M/B/P geteld per gekruist gewricht: M. Soleus = B (boven- en onderste spronggewricht), M. Gastrocnemius = P.</li>
+        <li>v2.2: spierkaart voor M. Peroneus Tertius.</li>
         <li>v2.1: tab "Spieren" terug: 8 spiergroepen, zoeken op naam, oorsprong, aanhechting en functie, met afbeelding en lichaamslocatie.</li>
         <li>v2.1: tab "Testen" terug: 9 orthopedische tests met Physiotutors-links.</li>
         <li>Nieuw: antagonisten per beweging, met een knop naar de tegenbeweging.</li>
@@ -244,11 +251,21 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <div id="sheetRoot"></div>
 
-<script src="data.js?v=21"></script>
+<script src="data.js?v=22"></script>
 <script>
 const M='M',B='B',P='P';
 const J=[
-{id:'sh',short:'Schouder',name:'Art. Humeri',planes:[
+{id:'sg',reg:'bo',short:'Schoudergordel',name:'Scapula & clavicula (AC/SC)',pt:[100,64],planes:[
+ {plane:'Verticale glijbeweging',axis:'T',note:'Het schouderblad glijdt over de thorax; er is geen vaste rotatie-as.',moves:[
+  {id:'g-elev',t:'Elevatie',d:'De schouder optrekken (schouderblad omhoog).',ag:[['M. Trapezius (pars descendens)',P],['M. Levator Scapulae',P]],sy:[['Mm. Rhomboidei',M]],st:[],an:'g-depr'},
+  {id:'g-depr',t:'Depressie',d:'De schouder laten zakken (schouderblad omlaag).',ag:[['M. Trapezius (pars ascendens)',P],['M. Pectoralis Minor',M]],sy:[['M. Latissimus Dorsi (via de humerus)',P],['M. Serratus Anterior (onderste vezels)',P]],st:[],an:'g-elev'}]},
+ {plane:'Frontaal vlak',axis:'S',note:'Rotatie van het schouderblad, nodig bij armheffen boven 90°.',moves:[
+  {id:'g-urot',t:'Opwaartse rotatie',d:'De onderpunt van het schouderblad naar lateraal-boven draaien (kom kijkt omhoog).',ag:[['M. Trapezius (pars descendens & ascendens)',P],['M. Serratus Anterior (onderste vezels)',P]],sy:[],st:[],an:'g-drot'},
+  {id:'g-drot',t:'Neerwaartse rotatie',d:'De onderpunt van het schouderblad naar mediaal-onder draaien.',ag:[['Mm. Rhomboidei',M],['M. Levator Scapulae',P],['M. Pectoralis Minor',M]],sy:[['M. Latissimus Dorsi',P]],st:[],an:'g-urot'}]},
+ {plane:'Transversaal vlak',axis:'L',moves:[
+  {id:'g-prot',t:'Protractie',d:'Het schouderblad naar voren rond de thorax schuiven (duwen, boksen).',ag:[['M. Serratus Anterior',P],['M. Pectoralis Minor',M]],sy:[['M. Pectoralis Major',M]],st:[],an:'g-retr'},
+  {id:'g-retr',t:'Retractie',d:'De schouderbladen naar elkaar toe knijpen.',ag:[['M. Trapezius (pars transversa)',P],['Mm. Rhomboidei',M]],sy:[['M. Latissimus Dorsi',P]],st:[],an:'g-prot'}]}]},
+{id:'sh',reg:'bo',short:'Schouder',name:'Art. Humeri',pt:[64,66],planes:[
  {plane:'Sagittaal vlak',axis:'F',moves:[
   {id:'s-ante',t:'Anteflexie (Flexie)',d:'Het naar voren heffen van de arm.',ag:[['M. Deltoideus (pars clavicularis)',M],['M. Pectoralis Major (pars clavicularis)',M]],sy:[['M. Coracobrachialis',M],['M. Biceps Brachii (caput longum)',B]],st:[['Rotator cuff (centreert de humeruskop)',M],['M. Serratus Anterior (opwaartse rotatie scapula)',P]],an:'s-retro'},
   {id:'s-retro',t:'Retroflexie (Extensie)',d:'Het naar achteren bewegen van de arm.',ag:[['M. Latissimus Dorsi',P],['M. Deltoideus (pars spinalis)',M],['M. Teres Major',M]],sy:[['M. Triceps Brachii (caput longum)',B],['M. Pectoralis Major (pars sternocostalis, vanuit anteflexie)',M]],st:[['Mm. Rhomboidei (fixeren scapula)',M],['M. Trapezius (pars transversa)',P]],an:'s-ante'}]},
@@ -260,21 +277,21 @@ const J=[
   {id:'s-exo',t:'Exorotatie',d:'Het naar buiten draaien van de bovenarm om de lengteas.',ag:[['M. Infraspinatus',M],['M. Teres Minor',M]],sy:[['M. Deltoideus (pars spinalis)',M]],st:[],an:'s-endo'},
   {id:'s-habd',t:'Horizontale abductie',d:'De arm in 90° anteflexie horizontaal naar achteren bewegen.',ag:[['M. Deltoideus (pars spinalis)',M]],sy:[['M. Infraspinatus',M],['M. Teres Minor',M]],st:[['M. Trapezius (pars transversa)',P],['Mm. Rhomboidei (retractie scapula)',M]],an:'s-hadd'},
   {id:'s-hadd',t:'Horizontale adductie',d:'De arm in 90° anteflexie horizontaal naar voren en binnen bewegen.',ag:[['M. Pectoralis Major',M],['M. Deltoideus (pars clavicularis)',M]],sy:[['M. Coracobrachialis',M],['M. Biceps Brachii (caput breve)',B]],st:[['M. Serratus Anterior (protractie scapula)',P]],an:'s-habd'}]}]},
-{id:'el',short:'Ellenboog',name:'Art. Cubiti & Radioulnaris',planes:[
+{id:'el',reg:'bo',pt:[36,148],short:'Ellenboog',name:'Art. Cubiti & Radioulnaris',planes:[
  {plane:'Sagittaal vlak',axis:'F',moves:[
   {id:'e-flex',t:'Flexie',d:'Het buigen van de ellenboog.',ag:[['M. Biceps Brachii',B],['M. Brachialis',M],['M. Brachioradialis',M]],sy:[['M. Pronator Teres',B]],st:[],an:'e-ext'},
   {id:'e-ext',t:'Extensie',d:'Het strekken van de ellenboog.',ag:[['M. Triceps Brachii (caput laterale & mediale)',M],['M. Triceps Brachii (caput longum)',B]],sy:[['M. Anconeus',M]],st:[],an:'e-flex'}]},
  {plane:'Transversaal vlak (functioneel)',axis:'L',note:'Rotatie om de lengteas van de onderarm.',moves:[
   {id:'e-sup',t:'Supinatie',d:'De onderarm naar buiten draaien (palm omhoog, soepkom vasthouden).',ag:[['M. Supinator',M],['M. Biceps Brachii (vooral bij gebogen ellenboog)',B]],sy:[['M. Brachioradialis (vanuit pronatie)',M]],st:[],an:'e-pro'},
   {id:'e-pro',t:'Pronatie',d:'De onderarm naar binnen draaien (palm omlaag, brood snijden).',ag:[['M. Pronator Teres',B],['M. Pronator Quadratus',M]],sy:[['M. Brachioradialis (vanuit supinatie)',M]],st:[],an:'e-sup'}]}]},
-{id:'wr',short:'Pols',name:'Art. Radiocarpalis',planes:[
+{id:'wr',reg:'bo',pt:[28,222],short:'Pols',name:'Art. Radiocarpalis',planes:[
  {plane:'Sagittaal vlak',axis:'F',moves:[
   {id:'w-pf',t:'Palmairflexie',d:'Het buigen van de hand naar de handpalmzijde.',ag:[['M. Flexor Carpi Radialis',B],['M. Flexor Carpi Ulnaris',B]],sy:[['M. Flexor Digitorum Superficialis',P],['M. Flexor Digitorum Profundus',P],['M. Palmaris Longus',B]],st:[],an:'w-df'},
   {id:'w-df',t:'Dorsaalflexie (Extensie)',d:'Het heffen van de handrug richting de onderarm.',ag:[['M. Extensor Carpi Radialis Longus',B],['M. Extensor Carpi Radialis Brevis',B],['M. Extensor Carpi Ulnaris',B]],sy:[['M. Extensor Digitorum',P]],st:[],an:'w-pf'}]},
  {plane:'Frontaal vlak',axis:'S',moves:[
   {id:'w-rd',t:'Radiaaldeviatie (Abductie)',d:'De hand zijwaarts bewegen richting de duimzijde.',ag:[['M. Flexor Carpi Radialis',B],['M. Extensor Carpi Radialis Longus',B]],sy:[['M. Abductor Pollicis Longus',P],['M. Extensor Pollicis Longus',P]],st:[],an:'w-ud'},
   {id:'w-ud',t:'Ulnairdeviatie (Adductie)',d:'De hand zijwaarts bewegen richting de pinkzijde.',ag:[['M. Flexor Carpi Ulnaris',B],['M. Extensor Carpi Ulnaris',B]],sy:[],st:[],an:'w-rd'}]}]},
-{id:'hp',short:'Heup',name:'Art. Coxae',planes:[
+{id:'hp',reg:'ol',pt:[86,214],short:'Heup',name:'Art. Coxae',planes:[
  {plane:'Sagittaal vlak',axis:'F',moves:[
   {id:'h-flex',t:'Flexie (Anteflexie)',d:'Het naar voren heffen van het bovenbeen.',ag:[['M. Iliacus',M],['M. Psoas Major',P],['M. Rectus Femoris',B]],sy:[['M. Tensor Fasciae Latae',B],['M. Sartorius',B],['M. Pectineus',M]],st:[['Buikwand (voorkomt bekkenanteversie)',P]],an:'h-ext'},
   {id:'h-ext',t:'Extensie (Retroflexie)',d:'Het naar achteren bewegen van het bovenbeen.',ag:[['M. Gluteus Maximus',M],['Hamstrings (BF caput longum, ST, SM)',B]],sy:[['M. Adductor Magnus (dorsale deel)',M]],st:[['M. Erector Spinae (stabiliseert bekken en romp)',P]],an:'h-flex'}]},
@@ -282,58 +299,98 @@ const J=[
   {id:'h-abd',t:'Abductie',d:'Het been zijwaarts van de middellijn af bewegen.',ag:[['M. Gluteus Medius',M],['M. Gluteus Minimus',M]],sy:[['M. Tensor Fasciae Latae',B],['M. Piriformis',M]],st:[],an:'h-add'},
   {id:'h-add',t:'Adductie',d:'Het been zijwaarts naar de middellijn toe bewegen.',ag:[['M. Adductor Magnus',M],['M. Adductor Longus',M],['M. Adductor Brevis',M]],sy:[['M. Gracilis',B],['M. Pectineus',M]],st:[],an:'h-abd'}]},
  {plane:'Transversaal vlak',axis:'L',moves:[
-  {id:'h-endo',t:'Endorotatie',d:'Het bovenbeen om de lengteas naar binnen draaien.',ag:[['M. Gluteus Minimus (anterieure vezels)',M],['M. Tensor Fasciae Latae',B]],sy:[['M. Gluteus Medius (anterieure vezels)',M]],st:[],an:'h-exo'},
+  {id:'h-endo',t:'Endorotatie',d:'Het bovenbeen om de lengteas naar binnen draaien.',ag:[['M. Gluteus Minimus (anterieure vezels)',M],['M. Tensor Fasciae Latae',B]],sy:[['M. Gluteus Medius (anterieure vezels)',M],['Adductoren (vanuit neutrale stand)',M]],st:[],an:'h-exo'},
   {id:'h-exo',t:'Exorotatie',d:'Het bovenbeen om de lengteas naar buiten draaien.',ag:[['M. Gluteus Maximus',M],['Diepe exorotatoren (piriformis, obturatorii, gemelli)',M]],sy:[['M. Quadratus Femoris',M],['M. Sartorius',B]],st:[],an:'h-endo'}]}]},
-{id:'kn',short:'Knie',name:'Art. Genus',planes:[
+{id:'kn',reg:'ol',pt:[83,330],short:'Knie',name:'Art. Genus',planes:[
  {plane:'Sagittaal vlak',axis:'F',moves:[
   {id:'k-flex',t:'Flexie',d:'Het buigen van de knie.',ag:[['Hamstrings (BF caput longum, ST, SM)',B],['M. Biceps Femoris (caput breve)',M]],sy:[['M. Gastrocnemius',P],['M. Popliteus',M],['M. Sartorius',B],['M. Gracilis',B]],st:[],an:'k-ext'},
   {id:'k-ext',t:'Extensie',d:'Het strekken van de knie.',ag:[['M. Vastus Lateralis / Medialis / Intermedius',M],['M. Rectus Femoris',B]],sy:[['M. Tensor Fasciae Latae (via tractus iliotibialis)',B]],st:[],an:'k-flex'}]},
  {plane:'Transversaal vlak',axis:'L',note:'Alleen mogelijk bij gebogen knie.',moves:[
   {id:'k-endo',t:'Endorotatie onderbeen',d:'Het onderbeen ten opzichte van het bovenbeen naar binnen draaien.',ag:[['M. Semitendinosus',B],['M. Semimembranosus',B],['M. Popliteus',M]],sy:[['M. Gracilis',B],['M. Sartorius',B]],st:[],an:'k-exo'},
   {id:'k-exo',t:'Exorotatie onderbeen',d:'Het onderbeen ten opzichte van het bovenbeen naar buiten draaien.',ag:[['M. Biceps Femoris (caput longum)',B],['M. Biceps Femoris (caput breve)',M]],sy:[],st:[],an:'k-endo'}]}]},
-{id:'an',short:'Enkel & voet',name:'Art. Talocruralis & Subtalaris',planes:[
- {plane:'Sagittaal vlak',axis:'F',note:'Bovenste spronggewricht.',moves:[
-  {id:'a-pf',t:'Plantairflexie',d:'De voet neerwaarts bewegen (gasgeven, op de tenen staan).',ag:[['M. Gastrocnemius',P],['M. Soleus',P]],sy:[['M. Tibialis Posterior',P],['M. Peroneus Longus / Brevis',P],['M. Flexor Hallucis Longus',P],['M. Flexor Digitorum Longus',P]],st:[],an:'a-df'},
+{id:'an',reg:'ol',short:'Enkel & voet',name:'Art. Talocruralis & Subtalaris',pt:[80,428],planes:[
+ {plane:'Sagittaal vlak',axis:'F',note:'Bovenste spronggewricht (art. talocruralis).',moves:[
+  {id:'a-pf',t:'Plantairflexie',d:'De voet neerwaarts bewegen (gasgeven, op de tenen staan).',ag:[['M. Gastrocnemius',P],['M. Soleus',B]],sy:[['M. Tibialis Posterior',P],['M. Peroneus Longus / Brevis',P],['M. Flexor Hallucis Longus',P],['M. Flexor Digitorum Longus',P]],st:[],an:'a-df'},
   {id:'a-df',t:'Dorsaalflexie',d:'De voetrug omhoog trekken richting het onderbeen.',ag:[['M. Tibialis Anterior',P]],sy:[['M. Extensor Digitorum Longus',P],['M. Extensor Hallucis Longus',P],['M. Peroneus Tertius',P]],st:[],an:'a-pf'}]},
- {plane:'Frontaal vlak',axis:'S',note:'Onderste spronggewricht.',moves:[
-  {id:'a-inv',t:'Inversie',d:'De voet kantelen zodat de binnenrand omhoog komt.',ag:[['M. Tibialis Posterior',P],['M. Tibialis Anterior',P]],sy:[['M. Flexor Hallucis Longus',P],['M. Flexor Digitorum Longus',P]],st:[],an:'a-ev'},
-  {id:'a-ev',t:'Eversie',d:'De voet kantelen zodat de buitenrand omhoog komt.',ag:[['M. Peroneus Longus',P],['M. Peroneus Brevis',P]],sy:[['M. Extensor Digitorum Longus',P],['M. Peroneus Tertius',P]],st:[],an:'a-inv'}]},
- {plane:'Oblique as (3D, onbelast)',axis:'O',note:'Gecombineerde beweging van de onbelaste voet.',moves:[
-  {id:'a-sup',t:'Supinatie',d:'Plantairflexie + inversie + adductie.',ag:[['M. Tibialis Posterior',P],['M. Triceps Surae (gastrocnemius & soleus)',P]],sy:[['M. Flexor Digitorum Longus',P],['M. Tibialis Anterior',P]],st:[],an:'a-pro'},
-  {id:'a-pro',t:'Pronatie',d:'Dorsaalflexie + eversie + abductie.',ag:[['M. Peroneus Longus',P],['M. Peroneus Brevis',P]],sy:[['M. Extensor Digitorum Longus',P],['M. Peroneus Tertius',P]],st:[],an:'a-sup'}]}]}
+ {plane:'Frontaal vlak',axis:'S',note:'Kanteling van de voet, vooral in het onderste spronggewricht.',moves:[
+  {id:'a-sup',t:'Supinatie',d:'De voet kantelen zodat de binnenrand omhoog komt (voetzool naar binnen).',ag:[['M. Tibialis Posterior',P],['M. Tibialis Anterior',P]],sy:[['M. Flexor Hallucis Longus',P],['M. Flexor Digitorum Longus',P],['M. Triceps Surae (gastrocnemius & soleus)',P]],st:[],an:'a-pro'},
+  {id:'a-pro',t:'Pronatie',d:'De voet kantelen zodat de buitenrand omhoog komt (voetzool naar buiten).',ag:[['M. Peroneus Longus',P],['M. Peroneus Brevis',P]],sy:[['M. Extensor Digitorum Longus',P],['M. Peroneus Tertius',P]],st:[],an:'a-sup'}]},
+ {plane:'Schuine as (3D, onbelast)',axis:'O',note:'Combinatiebeweging rond de schuine as van het onderste spronggewricht.',moves:[
+  {id:'a-inv',t:'Inversie',d:'Supinatie + adductie + plantairflexie.',ag:[['M. Tibialis Posterior',P],['M. Triceps Surae (gastrocnemius & soleus)',P]],sy:[['M. Flexor Digitorum Longus',P],['M. Flexor Hallucis Longus',P],['M. Tibialis Anterior',P]],st:[],an:'a-ev'},
+  {id:'a-ev',t:'Eversie',d:'Pronatie + abductie + dorsaalflexie.',ag:[['M. Peroneus Longus',P],['M. Peroneus Brevis',P]],sy:[['M. Extensor Digitorum Longus',P],['M. Peroneus Tertius',P]],st:[],an:'a-inv'}]}]},
+{id:'nk',reg:'rp',short:'Nek',name:'Cervicale wervelkolom',pt:[100,44],planes:[
+ {plane:'Sagittaal vlak',axis:'F',moves:[
+  {id:'n-flex',t:'Flexie',d:'Het hoofd naar voren buigen (kin richting borst).',ag:[['M. Sternocleidomastoideus (bilateraal)',P],['Mm. Scaleni (anterior, bilateraal)',P]],sy:[['M. Longus Colli',P],['M. Longus Capitis',P]],st:[],an:'n-ext'},
+  {id:'n-ext',t:'Extensie',d:'Het hoofd naar achteren kantelen (omhoog kijken).',ag:[['M. Splenius Capitis / Cervicis (bilateraal)',P],['M. Semispinalis Capitis',P]],sy:[['M. Trapezius (pars descendens, bilateraal)',P],['M. Erector Spinae (cervicale delen)',P],['M. Levator Scapulae (bilateraal, bij vaste scapula)',P]],st:[],an:'n-flex'}]},
+ {plane:'Frontaal vlak',axis:'S',moves:[
+  {id:'n-lat',t:'Lateroflexie',d:'Het oor richting de schouder bewegen (zijwaarts kantelen).',ag:[['Mm. Scaleni (unilateraal)',P],['M. Sternocleidomastoideus (unilateraal)',P]],sy:[['M. Trapezius (pars descendens, unilateraal)',P],['M. Splenius Capitis (unilateraal)',P],['M. Levator Scapulae (unilateraal)',P]],st:[],ant:'Dezelfde spieren aan de andere zijde (lateroflexie naar de overkant).',anx:[['Mm. Scaleni (contralateraal)',P],['M. Sternocleidomastoideus (contralateraal)',P]]}]},
+ {plane:'Transversaal vlak',axis:'L',moves:[
+  {id:'n-rot',t:'Rotatie',d:'Het hoofd naar links of rechts draaien (nee schudden).',ag:[['M. Sternocleidomastoideus (draait naar de overstaande zijde)',P],['M. Splenius Capitis (draait naar dezelfde zijde)',P]],sy:[['M. Trapezius (pars descendens)',P],['Mm. Rotatores (breves, segmentaal)',M]],st:[],ant:'Dezelfde spieren aan de andere zijde (rotatie naar de overkant).',anx:[['M. Sternocleidomastoideus (andere zijde)',P],['M. Splenius Capitis (andere zijde)',P]]}]}]},
+{id:'tr',reg:'rp',short:'Romp & wervelkolom',name:'Columna vertebralis (Th–L) & buikwand',pt:[100,165],planes:[
+ {plane:'Sagittaal vlak',axis:'F',moves:[
+  {id:'t-flex',t:'Flexie',d:'De romp naar voren buigen (borstbeen richting bekken).',ag:[['M. Rectus Abdominis',P]],sy:[['M. Obliquus Externus Abdominis (bilateraal)',P],['M. Obliquus Internus Abdominis (bilateraal)',P]],st:[['M. Transversus Abdominis (intra-abdominale druk)',P]],an:'t-ext'},
+  {id:'t-ext',t:'Extensie',d:'De romp strekken en naar achteren buigen.',ag:[['M. Iliocostalis Lumborum',P],['M. Iliocostalis Thoracis',P],['M. Longissimus Thoracis',P],['M. Longissimus Lumborum',P],['M. Spinalis Thoracis',P]],sy:[['M. Multifidus',P],['M. Quadratus Lumborum (bilateraal)',P]],st:[['M. Transversus Abdominis (intra-abdominale druk)',P],['Mm. Rotatores Lumbales (segmentale stabilisatie)',M]],an:'t-flex'}]},
+ {plane:'Frontaal vlak',axis:'S',moves:[
+  {id:'t-lat',t:'Lateroflexie',d:'De romp zijwaarts kantelen.',ag:[['M. Quadratus Lumborum (unilateraal)',P],['M. Obliquus Externus Abdominis (zelfde zijde)',P],['M. Obliquus Internus Abdominis (zelfde zijde)',P]],sy:[['M. Erector Spinae (unilateraal)',P],['M. Rectus Abdominis (unilateraal)',P]],st:[],ant:'Dezelfde spieren aan de andere zijde (remmen de kanteling excentrisch af).',anx:[['M. Quadratus Lumborum (contralateraal)',P],['Mm. Obliqui (contralateraal)',P]]}]},
+ {plane:'Transversaal vlak',axis:'L',moves:[
+  {id:'t-rot',t:'Rotatie',d:'De romp om de lengteas draaien.',ag:[['M. Obliquus Externus Abdominis (overstaande zijde)',P],['M. Obliquus Internus Abdominis (zelfde zijde)',P]],sy:[['M. Multifidus (overstaande zijde)',P],['Mm. Rotatores Thoracales',M],['Mm. Intercostales',M]],st:[['M. Transversus Abdominis',P]],ant:'De schuine buikspieren in de omgekeerde combinatie (rotatie naar de overkant).',anx:[['M. Obliquus Externus Abdominis (zelfde zijde)',P],['M. Obliquus Internus Abdominis (overstaande zijde)',P]]}]}]}
 ];
-const AXIS={F:'Frontale as',S:'Sagittale as',L:'Longitudinale (verticale) as',O:'Schuine (oblique) as'};
+const AXIS={F:'Frontale as',S:'Sagittale as',L:'Longitudinale (verticale) as',O:'Schuine (oblique) as',T:'Geen vaste as (glijbeweging)'};
+const REG=[{id:'bo',label:'Arm & schouder'},{id:'rp',label:'Romp & nek'},{id:'ol',label:'Heup & been'}];
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const base=n=>n.split(' (')[0];
 const ROLE={ag:'Agonist',sy:'Synergist',st:'Stabilisator'};
-let ji=0,pi=0;
+let ji=J.findIndex(j=>j.id==='sh'),pi=0;
 const $=id=>document.getElementById(id);
 
-function compass(k){
-  const ax=[['F',4,22,42,22],['S',23,4,23,40],['L',10,36,36,8]];
-  return `<svg viewBox="0 0 46 44" aria-hidden="true"><circle cx="23" cy="22" r="3.5" fill="var(--ink)"/>${ax.map(a=>`<line x1="${a[1]}" y1="${a[2]}" x2="${a[3]}" y2="${a[4]}" stroke="${a[0]===k?'var(--coral)':'var(--line)'}" stroke-width="${a[0]===k?3:1.5}" stroke-linecap="round"/>`).join('')}</svg>`;
+function mannequin(j,pl){
+  const [x,y]=j.pt,D=[34,-24],f='var(--line)',k=pl.axis;
+  const P=pl.plane.startsWith('Sagittaal')?'s':pl.plane.startsWith('Frontaal')?'f':pl.plane.startsWith('Transversaal')?'t':pl.axis==='O'?'o':'v';
+  const pt=a=>a.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ');
+  let plane='';
+  if(P==='f')plane=`<rect x="${x-62}" y="${y-70}" width="124" height="140" rx="3"/>`;
+  if(P==='s'){const h=72;plane=`<polygon points="${pt([[x-D[0],y-h-D[1]],[x+D[0],y-h+D[1]],[x+D[0],y+h+D[1]],[x-D[0],y+h-D[1]]])}"/>`;}
+  if(P==='t'||P==='o'){const w=62;plane=`<polygon points="${pt([[x-w-D[0],y-D[1]],[x+w-D[0],y-D[1]],[x+w+D[0],y+D[1]],[x-w+D[0],y+D[1]]])}"${P==='o'?` transform="rotate(-22 ${x} ${y})"`:''}/>`;}
+  let ax='';
+  if(k==='F')ax=[[x-80,y],[x+80,y]];
+  if(k==='S')ax=[[x-D[0]*1.6,y-D[1]*1.6],[x+D[0]*1.6,y+D[1]*1.6]];
+  if(k==='L')ax=[[x,y-88],[x,y+88]];
+  if(k==='O')ax=[[x-46,y+30],[x+52,y-40]];
+  const tip=k==='S'?`<circle cx="${ax[1][0]}" cy="${ax[1][1]}" r="6" fill="var(--coral)"/>`:'';
+  const axis=ax?tip+`<line x1="${ax[0][0]}" y1="${ax[0][1]}" x2="${ax[1][0]}" y2="${ax[1][1]}" stroke="var(--coral)" stroke-width="5" stroke-linecap="round"/>`
+   :`<path d="M${x+40},${y-34} v68 M${x+32},${y-24} l8,-10 l8,10 M${x+32},${y+24} l8,10 l8,-10" fill="none" stroke="var(--coral)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const vy=Math.min(Math.max(y-120,-20),220);
+  return `<svg class="mq" viewBox="-34 ${vy} 268 250" role="img" aria-label="${esc(pl.plane)} met ${esc(AXIS[k])} door ${esc(j.short)}">
+   <g fill="${f}"><circle cx="100" cy="28" r="16"/><rect x="92" y="42" width="16" height="14" rx="4"/><polygon points="60,58 140,58 122,180 130,215 70,215 78,180"/><ellipse cx="79" cy="438" rx="12" ry="7"/><ellipse cx="121" cy="438" rx="12" ry="7"/></g>
+   <path d="M60,62 L35,150 L28,225M140,62 L165,150 L172,225" fill="none" stroke="${f}" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="M88,215 L83,330 L80,425M112,215 L117,330 L120,425" fill="none" stroke="${f}" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+   <g fill="var(--steel)" fill-opacity=".16" stroke="var(--steel)" stroke-width="1.5" stroke-dasharray="${P==='v'?'0':'5 4'}">${P==='v'?'':plane}</g>
+   ${axis}<circle cx="${x}" cy="${y}" r="7" fill="var(--ink)" stroke="var(--surface)" stroke-width="2.5"/>
+  </svg>`;
 }
 function chips(list,cls,title){
   return `<div class="role ${cls}"><p>${title}</p>${list.length?`<div class="chips">${list.map(([n,s])=>`<button class="chip" data-m="${esc(n)}"><span class="sp">${s}</span><span class="n">${esc(n)}</span></button>`).join('')}</div>`:'<span class="none">Geen relevante spieren</span>'}</div>`;
 }
 function findMove(id){for(const j of J)for(const p of j.planes)for(const m of p.moves)if(m.id===id)return m}
 function renderG(){
-  $('joints').innerHTML=J.map((j,i)=>`<button class="jt" aria-pressed="${i===ji}" data-j="${i}"><b>${j.short}</b><small>${j.name}</small></button>`).join('');
   const jt=J[ji],pl=jt.planes[pi];
+  $('regs').innerHTML=REG.map(r=>`<button aria-pressed="${r.id===jt.reg}" data-r="${r.id}">${r.label}</button>`).join('');
+  $('joints').innerHTML=J.map((j,i)=>j.reg!==jt.reg?'':`<button class="jt" aria-pressed="${i===ji}" data-j="${i}"><b>${j.short}</b><small>${j.name}</small></button>`).join('');
   $('planes').innerHTML=jt.planes.map((p,i)=>`<button aria-pressed="${i===pi}" data-p="${i}">${p.plane}</button>`).join('');
-  $('axis').innerHTML=`<div class="axis">${compass(pl.axis)}<span>Rotatie-as: <strong>${AXIS[pl.axis]}</strong></span></div>${pl.note?`<p class="pnote">${pl.note}</p>`:''}`;
-  $('cards').innerHTML=pl.moves.map(m=>{const o=findMove(m.an);return `<article class="card" id="c-${m.id}">
+  $('axis').innerHTML=`<div class="axis">${mannequin(jt,pl)}<div><p class="lbl" style="margin:0 0 2px">${pl.axis==='T'?'Beweging':'Rotatie-as'}</p><strong>${AXIS[pl.axis]}</strong><p class="pvl">${esc(pl.plane)} · ${esc(jt.short)}</p>${pl.note?`<p class="pnote">${pl.note}</p>`:''}</div></div>`;
+  $('cards').innerHTML=pl.moves.map(m=>{const o=m.an?findMove(m.an):null;return `<article class="card" id="c-${m.id}">
     <div><h3>${m.t}</h3><p class="def">${m.d}</p></div>
     ${chips(m.ag,'r-ag','Agonisten (primair)')}
     ${chips(m.sy,'r-sy','Synergisten (ondersteunend)')}
     ${m.st.length?chips(m.st,'r-st','Stabilisatoren (fixatoren)'):''}
-    ${chips(o.ag,'r-an','Antagonisten (remmen deze beweging af)')}
-    <button class="anta-link" data-go="${o.id}">Tegenbeweging: ${o.t} →</button>
+    ${chips(o?o.ag:m.anx,'r-an','Antagonisten (remmen deze beweging af)')}
+    ${o?`<button class="anta-link" data-go="${o.id}">Tegenbeweging: ${o.t} →</button>`:`<p class="pnote" style="margin:0">${m.ant}</p>`}
   </article>`}).join('');
 }
 document.addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;
   if(t.dataset.j!==undefined){ji=+t.dataset.j;pi=0;renderG();}
+  else if(t.dataset.r!==undefined){ji=J.findIndex(j=>j.reg===t.dataset.r);pi=0;renderG();}
   else if(t.dataset.p!==undefined){pi=+t.dataset.p;renderG();}
   else if(t.dataset.go){const c=$('c-'+t.dataset.go);if(c){c.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});c.classList.add('flash');setTimeout(()=>c.classList.remove('flash'),1400);}}
   else if(t.dataset.m){openSheet(t.dataset.m);}
