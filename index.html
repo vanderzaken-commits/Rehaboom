@@ -16,17 +16,17 @@
 :root{
   --bg:#ECEEE6;--surface:#FFFFFF;--ink:#14212B;--muted:#5B6560;--line:#D6DAD0;--head:#14212B;--head-fg:#F2F4EE;--head-muted:#9FB0B8;
   --coral:#B44A27;--coral-bg:#F6E2D9;--steel:#2A6782;--steel-bg:#DCEAF0;--olive:#5A6823;--olive-bg:#E7ECD3;--plum:#7A3E62;--plum-bg:#F0E1E9;
-  --sel:#14212B;--sel-fg:#FFFFFF;
+  --sel:#14212B;--sel-fg:#FFFFFF;--bm-body:#E3E6DC;--bm-edge:#B4BBAE;--bm-line:#C9CEC2;
   --f-display:'Barlow Condensed','Arial Narrow',sans-serif;--f-body:'Inter',system-ui,sans-serif;--f-mono:'IBM Plex Mono',ui-monospace,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0F181F;--surface:#17232C;--ink:#E7ECE4;--muted:#9AA6A0;--line:#2B3a44;--head:#0A1117;--head-fg:#F2F4EE;--head-muted:#8FA2AB;
   --coral:#EE8761;--coral-bg:#3B241B;--steel:#78B6D2;--steel-bg:#16303C;--olive:#B8C873;--olive-bg:#28301A;--plum:#DDA2C4;--plum-bg:#38222F;
-  --sel:#E7ECE4;--sel-fg:#0F181F;color-scheme:dark}}
+  --sel:#E7ECE4;--sel-fg:#0F181F;--bm-body:#22303A;--bm-edge:#3D4E59;--bm-line:#33434E;color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0F181F;--surface:#17232C;--ink:#E7ECE4;--muted:#9AA6A0;--line:#2B3a44;--head:#0A1117;--head-fg:#F2F4EE;--head-muted:#8FA2AB;
   --coral:#EE8761;--coral-bg:#3B241B;--steel:#78B6D2;--steel-bg:#16303C;--olive:#B8C873;--olive-bg:#28301A;--plum:#DDA2C4;--plum-bg:#38222F;
-  --sel:#E7ECE4;--sel-fg:#0F181F;color-scheme:dark}
+  --sel:#E7ECE4;--sel-fg:#0F181F;--bm-body:#22303A;--bm-edge:#3D4E59;--bm-line:#33434E;color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--head)}
@@ -141,9 +141,6 @@ details ul{margin:10px 0 0;padding-left:18px;font-size:13px;display:flex;flex-di
 .md-img{flex:1;min-width:0}
 .md-img img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;background:#F4F5EF;border:1px solid var(--line);display:block}
 .md-img .cr{font-size:10px;color:var(--muted);margin-top:4px}
-.locator{flex:none;width:76px;text-align:center}
-.locator svg{width:76px;height:auto;display:block}
-.locator small{font-size:10px;color:var(--muted);line-height:1.2;display:block;margin-top:2px}
 .facts{display:grid;gap:10px;margin-top:14px}
 .fact b{display:block;font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
 .fact p{margin:0;font-size:14px}
@@ -186,8 +183,42 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 :root[data-client] .chip{padding-left:12px;font-size:14px;min-height:40px}
 :root[data-client] .mrow b{font-size:16px}
 .md-top.client .md-img img{max-height:340px}
-.md-top.client .locator{width:96px}.md-top.client .locator svg{width:96px}
+
 @media (max-width:520px){.tagl{display:none}}
+/* lichaamskaart */
+.bm{display:block;width:100%;height:auto}
+.bm-b{fill:var(--bm-body);stroke:var(--bm-edge);stroke-width:1}
+.bm-o{fill:none;stroke:var(--bm-line);stroke-width:.7}
+.bm-m{stroke-width:.8;fill-opacity:.88}
+.bm-ag,.bm-on{fill:var(--coral);stroke:var(--coral)} .bm-sy{fill:var(--steel);stroke:var(--steel)} .bm-st{fill:var(--olive);stroke:var(--olive)}
+.bm-deep{fill-opacity:.42;stroke-dasharray:2.4 1.6;stroke-width:1}
+.bm-t{font:500 12px var(--f-body);fill:var(--muted);text-anchor:middle}
+.zoomable{cursor:zoom-in;-webkit-tap-highlight-color:transparent}
+.cardtop{display:flex;gap:12px;align-items:flex-start}
+.cardtop>div:first-child{flex:1;min-width:0}
+.cardmap{flex:none;width:112px;background:var(--bg);border-radius:10px;padding:4px 2px 0}
+.exmap{background:var(--bg);border-radius:12px;padding:10px 6px 4px;max-width:420px;width:100%;align-self:center}
+.bmleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--muted);justify-content:center;padding:6px 0 4px}
+.bmleg i{font-style:normal;display:inline-flex;align-items:center;gap:5px}
+.bmleg .sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+.bmleg .sw.dp{background:transparent;border:1.5px dashed var(--muted)}
+.md-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:start}
+.md-top.noimg{grid-template-columns:minmax(0,1fr)}
+.md-top.noimg .mdmap{max-width:300px;justify-self:center;width:100%}
+.mdmap{background:var(--bg);border-radius:10px;padding:6px 4px 2px}
+.md-img img{max-height:260px}
+.md-top.client .md-img img{max-height:300px}
+/* zoom */
+.zv{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column}
+.zv-bar{display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line);background:var(--surface)}
+.zv-bar b{flex:1;font-family:var(--f-display);font-size:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zv-bar button{min-width:44px;min-height:44px;border-radius:22px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:20px;cursor:pointer}
+.zv-body{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.zv-in{margin:0 auto;transition:width .2s}
+.zv-in img,.zv-in svg{width:100%;height:auto;display:block;background:#F4F5EF;border-radius:8px}
+.zv-in svg{background:transparent}
+.zv-cr{font-size:11px;color:var(--muted);text-align:center;margin-top:8px}
+@media (prefers-reduced-motion:reduce){.zv-in{transition:none}}
 @media (max-width:420px){.joints{grid-template-columns:repeat(2,minmax(0,1fr))}.ctrl{grid-template-columns:1fr}.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
@@ -196,7 +227,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <header>
   <div class="wrap">
-    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.3</span><span class="tagl">Anatomisch &amp; kinesiologisch naslagwerk</span><button class="cmode" id="cmode" aria-pressed="false">Cliëntweergave</button></div>
+    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.4</span><span class="tagl">Anatomisch &amp; kinesiologisch naslagwerk</span><button class="cmode" id="cmode" aria-pressed="false">Cliëntweergave</button></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="0" aria-selected="true">Gewricht</button>
       <button class="tab" role="tab" data-tab="1" aria-selected="false">Spieren</button>
@@ -217,6 +248,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
         <i><span class="dot" style="background:var(--steel)"></span>Synergist</i>
         <i><span class="dot" style="background:var(--olive)"></span>Stabilisator</i>
         <i><span class="dot" style="background:var(--plum)"></span>Antagonist</i>
+        <i><span class="dot" style="background:transparent;border:1.5px dashed var(--muted)"></span>Diep gelegen</i>
         <i><b style="font-family:var(--f-mono);font-weight:500;white-space:nowrap">M · B · P</b> = mono-, bi-, poly-articulair (aantal gekruiste gewrichten)</i>
       </div>
       <div class="cards" id="cards"></div>
@@ -225,6 +257,9 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
     <details>
       <summary>Wat is er veranderd in v2</summary>
       <ul>
+        <li>v2.4: eigen lichaamskaart (voor- en achterzijde) waarop elke spier wordt ingekleurd; diepe spieren gestippeld.</li>
+        <li>v2.4: lichaamskaart op elke bewegingskaart (agonist, synergist, stabilisator) en bij elke oefening.</li>
+        <li>v2.4: tik op een afbeelding of kaart om hem schermvullend te bekijken en in te zoomen.</li>
         <li>v2.3: tab "Oefeningen": 22 oefeningen met gewrichtsacties, hoofd-, ondersteunende en stabiliserende spieren, kinesiologisch inzicht en coachingcue.</li>
         <li>v2.3: vezelarchitectuur (parallel, spoelvormig, convergent, uni-, bi-, multipennaat) bij 44 spieren met een eenduidige indeling.</li>
         <li>v2.3: cliëntweergave met volksnamen en eenvoudige uitleg voor alle 91 spieren.</li>
@@ -286,7 +321,8 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <div id="sheetRoot"></div>
 
-<script src="data.js?v=23"></script>
+<script src="data.js?v=24"></script>
+<script src="bodymap.js?v=24"></script>
 <script>
 const M='M',B='B',P='P';
 const J=[
@@ -414,7 +450,7 @@ function renderG(){
   $('planes').innerHTML=jt.planes.map((p,i)=>`<button aria-pressed="${i===pi}" data-p="${i}">${p.plane}</button>`).join('');
   $('axis').innerHTML=`<div class="axis">${mannequin(jt,pl)}<div><p class="lbl" style="margin:0 0 2px">${pl.axis==='T'?'Beweging':'Rotatie-as'}</p><strong>${AXIS[pl.axis]}</strong><p class="pvl">${esc(pl.plane)} · ${esc(jt.short)}</p>${pl.note?`<p class="pnote">${pl.note}</p>`:''}</div></div>`;
   $('cards').innerHTML=pl.moves.map(m=>{const o=m.an?findMove(m.an):null;return `<article class="card" id="c-${m.id}">
-    <div><h3>${m.t}</h3><p class="def">${m.d}</p></div>
+    <div class="cardtop"><div><h3>${m.t}</h3><p class="def">${m.d}</p></div><div class="cardmap zoomable" role="button" tabindex="0" data-t="${esc(jt.short+' · '+m.t)}" aria-label="Lichaamskaart vergroten">${bodymap([...m.ag.map(([n])=>[n,'ag']),...m.sy.map(([n])=>[n,'sy']),...m.st.map(([n])=>[n,'st'])],{label:'Betrokken spieren bij '+m.t})}</div></div>
     ${chips(m.ag,'r-ag','Agonisten (primair)')}
     ${chips(m.sy,'r-sy','Synergisten (ondersteunend)')}
     ${m.st.length?chips(m.st,'r-st','Stabilisatoren (fixatoren)'):''}
@@ -460,20 +496,30 @@ function key(n){
   if(/^Hamstrings/.test(n))return 'Hamstrings';
   return null;
 }
-function locator(k){
-  const r=REGIONS[MUSCLE_REGION[k]];if(!r)return '';
-  const f='var(--line)',s='var(--muted)';
-  const still=matchMedia('(prefers-reduced-motion:reduce)').matches;
-  return `<div class="locator"><svg viewBox="0 0 200 460" role="img" aria-label="Locatie: ${esc(r.label)}">
-   <circle cx="100" cy="28" r="16" fill="${f}" stroke="${s}" stroke-width="1"/><rect x="92" y="42" width="16" height="14" rx="4" fill="${f}"/>
-   <polygon points="60,58 140,58 122,180 130,215 70,215 78,180" fill="${f}"/>
-   <path d="M60,62 L35,150 L28,225M140,62 L165,150 L172,225" fill="none" stroke="${f}" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
-   <path d="M88,215 L83,330 L80,425M112,215 L117,330 L120,425" fill="none" stroke="${f}" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
-   <ellipse cx="79" cy="438" rx="12" ry="7" fill="${f}"/><ellipse cx="121" cy="438" rx="12" ry="7" fill="${f}"/>
-   <circle cx="${r.cx}" cy="${r.cy}" r="11" fill="var(--coral)" opacity=".9"/>
-   ${still?'':`<circle cx="${r.cx}" cy="${r.cy}" r="11" fill="none" stroke="var(--coral)" stroke-width="3"><animate attributeName="r" values="11;20;11" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0;.8" dur="2s" repeatCount="indefinite"/></circle>`}
-  </svg><small>${esc(r.label)}</small></div>`;
+function bmLegend(roles){
+  const L={ag:['var(--coral)','Agonist'],sy:['var(--steel)','Synergist'],st:['var(--olive)','Stabilisator'],hoofd:['var(--coral)','Hoofdspier'],steun:['var(--steel)','Ondersteunend'],stab:['var(--olive)','Stabiliserend'],on:['var(--coral)','Deze spier']};
+  return `<div class="bmleg">${roles.map(r=>`<i><span class="sw" style="background:${L[r][0]}"></span>${L[r][1]}</i>`).join('')}<i><span class="sw dp"></span>Diep gelegen</i></div>`;
 }
+function openZoom(inner,title,credit){
+  let sc=1;
+  const root=document.createElement('div');root.className='zv';root.setAttribute('role','dialog');root.setAttribute('aria-label',title||'Vergroting');
+  root.innerHTML=`<div class="zv-bar"><b>${esc(title||'')}</b><button data-z="-" aria-label="Uitzoomen">−</button><button data-z="+" aria-label="Inzoomen">+</button><button data-z="x" aria-label="Sluiten">×</button></div><div class="zv-body"><div class="zv-in" style="width:100%;max-width:900px">${inner}</div>${credit?`<p class="zv-cr">${esc(credit)}</p>`:''}</div>`;
+  const zin=root.querySelector('.zv-in');
+  const set=v=>{sc=Math.min(4,Math.max(1,v));zin.style.width=(sc*100)+'%';zin.style.maxWidth=sc===1?'900px':'none';};
+  root.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.stopPropagation();
+    if(b.dataset.z==='+')set(sc+.75);else if(b.dataset.z==='-')set(sc-.75);else close();});
+  zin.addEventListener('dblclick',()=>set(sc>1?1:2.5));
+  const key=e=>{if(e.key==='Escape')close();};
+  function close(){root.remove();document.removeEventListener('keydown',key,true);}
+  document.addEventListener('keydown',key,true);
+  document.body.appendChild(root);
+}
+document.addEventListener('click',e=>{
+  const z=e.target.closest('.zoomable');if(!z)return;
+  if(z.tagName==='IMG')openZoom(`<img src="${esc(z.src)}" alt="${esc(z.alt)}">`,z.alt,z.dataset.cr);
+  else{const svg=z.querySelector('svg');if(svg)openZoom(svg.outerHTML,z.dataset.t||'Lichaamskaart',null);}
+});
+document.addEventListener('keydown',e=>{const z=e.target.closest&&e.target.closest('.zoomable');if(z&&(e.key==='Enter'||e.key===' ')){e.preventDefault();z.click();}});
 function rolesOf(k,name){
   const rows=[];
   for(const j of J)for(const p of j.planes)for(const m of p.moves)for(const r of ['ag','sy','st'])for(const [n] of m[r]){
@@ -489,6 +535,9 @@ const ARCH_ICON={
  uni:'<path d="M4 34h40"/><path d="M10 34l8-14M18 34l8-14M26 34l8-14M34 34l8-14"/>',
  bi:'<path d="M4 24h40"/><path d="M10 24l8-12M18 24l8-12M26 24l8-12M10 24l8 12M18 24l8 12M26 24l8 12"/>',
  multi:'<path d="M4 16h40M4 32h40"/><path d="M10 16l6-9M20 16l6-9M30 16l6-9M10 16l6 9M20 16l6 9M30 16l6 9M10 32l6-9M20 32l6-9M30 32l6-9M10 32l6 9M20 32l6 9M30 32l6 9"/>'};
+function sheetMap(k,t){
+  return `<div class="mdmap zoomable" role="button" tabindex="0" data-t="${esc(t)}" aria-label="Lichaamskaart vergroten">${bodymap([[k,'on']],{label:'Ligging van '+t})}${bmLegend(['on'])}</div>`;
+}
 function archFact(k){
   const a=ARCH[k];if(!a)return '';const t=ARCH_TYPES[a[0]];
   return `<div class="fact arch"><b>Vezelarchitectuur</b><div class="archrow"><svg viewBox="0 0 48 48" aria-hidden="true">${ARCH_ICON[a[0]]}</svg><div><strong>${t.l}</strong><p>${esc(t.x)}${a[1]?' '+esc(a[1]):''}</p></div></div></div>`;
@@ -503,12 +552,13 @@ function openSheet(name){
   if(client&&d){
     const c=CLIENT[k]||[title,d.function];
     head=`<h3>${esc(c[0])}</h3><p class="foot" style="margin:0">${esc(k)}</p>`;
-    body=`<div class="md-top client">${d.image?`<div class="md-img"><img src="${esc(d.image)}" alt="${esc(c[0])}" loading="lazy" onerror="this.parentNode.remove()"></div>`:''}${locator(k)}</div>
+    body=`<div class="md-top client${d.image?'':' noimg'}">${d.image?`<div class="md-img"><img class="zoomable" src="${esc(d.image)}" alt="${esc(c[0])}" loading="lazy" onerror="this.parentNode.parentNode.classList.add('noimg');this.parentNode.remove()"></div>`:''}${sheetMap(k,c[0])}</div>
      <div class="cue big" style="margin-top:14px"><b>Wat doet deze spier?</b>${esc(c[1])}</div>${exList}`;
   }else{
     head=`<h3>${esc(title)}</h3>${name!==title?`<p class="foot" style="margin:0">${esc(name)}</p>`:''}`;
     if(d){
-      body+=`<div class="md-top">${d.image?`<div class="md-img"><img src="${esc(d.image)}" alt="${esc(k)}" loading="lazy" onerror="this.parentNode.remove()"><p class="cr">Afbeelding: ${esc(d.imageCredit||"Gray's Anatomy (publiek domein)")}</p></div>`:''}${locator(k)}</div>
+      const cr='Afbeelding: '+(d.imageCredit||"Gray's Anatomy (publiek domein)");
+      body+=`<div class="md-top${d.image?'':' noimg'}">${d.image?`<div class="md-img"><img class="zoomable" data-cr="${esc(cr)}" src="${esc(d.image)}" alt="${esc(k)}" loading="lazy" onerror="this.parentNode.parentNode.classList.add('noimg');this.parentNode.remove()"><p class="cr">${esc(cr)} · tik om te vergroten</p></div>`:''}${sheetMap(k,k)}</div>
       <div class="facts">
        ${d.bundles?`<div class="fact"><b>Bundels</b><div class="bund">${d.bundles.map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>`:''}
        <div class="fact o"><b>Oorsprong (origo)</b><p>${esc(d.origin)}</p></div>
@@ -629,6 +679,7 @@ function renderO(){
   const acts=e.acts.map(([id,t,note])=>{const [j,m]=moveLabel(id);return `<button class="jump" data-jm="${id}"><span><b>${j}</b> · ${m}${note?` <small style="color:var(--muted)">(${esc(note)})</small>`:''}</span><em class="${t==='c'?'tc':'ti'}">${t==='c'?'Concentrisch':'Isometrisch'} →</em></button>`}).join('');
   $('exdetail').innerHTML=`<article class="card" id="exc">
    <div><h3>${e.n}</h3><p class="def">${e.d}</p></div>
+   <div class="exmap zoomable" role="button" tabindex="0" data-t="${esc(e.n)}" aria-label="Lichaamskaart vergroten">${bodymap(ms.map(x=>[x.ok?x.k:x.n,{hoofd:'ag',steun:'sy',stab:'st'}[x.r]]).filter(x=>client?x[1]!=='st':true),{label:'Spieren bij '+e.n})}${bmLegend(client?['hoofd','steun']:['hoofd','steun','stab'])}</div>
    ${client?`<div class="cue big"><b>Zo doe je het</b>${esc(e.cue)}</div>`:`<div><p class="lbl" style="margin-bottom:2px">Gewrichtsacties (opwaartse fase)</p>${acts}</div>`}
    ${exChips(by('hoofd'),'r-ag',client?'Dit train je vooral':'Hoofdspieren (concentrisch)')}
    ${exChips(by('steun'),'r-sy',client?'Dit werkt mee':'Ondersteunend (synergisten)')}
