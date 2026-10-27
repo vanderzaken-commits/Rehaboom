@@ -186,6 +186,10 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 .md-top.client .md-img img{max-height:340px}
 
 @media (max-width:520px){.tagl{display:none}}
+.strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin;margin-top:-2px}
+.strip figure{margin:0;flex:none;width:96px}
+.strip img{width:96px;height:96px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:10px;display:block}
+.strip figcaption{font-size:10.5px;color:var(--muted);line-height:1.2;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rom{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:12.5px;color:var(--ink)}
 .rom b{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-right:4px}
 .rom small{color:var(--muted)}
@@ -221,11 +225,11 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 .bmleg i{font-style:normal;display:inline-flex;align-items:center;gap:5px}
 .bmleg .sw{width:10px;height:10px;border-radius:3px;display:inline-block}
 .bmleg .sw.dp{background:transparent;border:1.5px dashed var(--muted)}
-.md-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:start}
+.md-top{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:10px;align-items:start}
 .md-top.noimg{grid-template-columns:minmax(0,1fr)}
 .md-top.noimg .mdmap{max-width:300px;justify-self:center;width:100%}
 .mdmap{background:var(--bg);border-radius:10px;padding:6px 4px 2px}
-.md-img img{max-height:260px}
+.md-img img{max-height:320px;background:#fff}
 .md-top.client .md-img img{max-height:300px}
 /* zoom */
 .zv{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column}
@@ -246,7 +250,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <header>
   <div class="wrap">
-    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.7</span><span class="tagl">Anatomisch &amp; kinesiologisch naslagwerk</span><button class="cmode" id="cmode" aria-pressed="false">Cliëntweergave</button></div>
+    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.8</span><span class="tagl">Anatomisch &amp; kinesiologisch naslagwerk</span><button class="cmode" id="cmode" aria-pressed="false">Cliëntweergave</button></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="0" aria-selected="true">Gewricht</button>
       <button class="tab" role="tab" data-tab="1" aria-selected="false">Spieren</button>
@@ -276,6 +280,8 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
     <details>
       <summary>Wat is er veranderd in v2</summary>
       <ul>
+        <li>v2.8: realistische 3D-renders (Anatomography/BodyParts3D) bij 54 van de 91 spieren; de render is nu het hoofdbeeld van de spierkaart.</li>
+        <li>v2.8: strook met afbeeldingen van de agonisten op elke bewegingskaart en van de hoofdspieren bij elke oefening.</li>
         <li>v2.7: normale bewegingsuitslag (AAOS) en normaal eindgevoel op elke bewegingskaart.</li>
         <li>v2.7: 9 nieuwe tests: Spurling, cervicale distractie en Deep Neck Flexor Endurance (nek); SLR, Slump en Biering-Sørensen (rug); anterior drawer, talar tilt en Thompson (enkel).</li>
         <li>v2.7: groepschips zoals "rotator cuff" en "buikwand" openen een groepskaart met lichaamskaart en de losse spieren.</li>
@@ -354,7 +360,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <div id="sheetRoot"></div>
 
-<script src="data.js?v=27"></script>
+<script src="data.js?v=28"></script>
 <script src="bodymap.js?v=27"></script>
 <script>
 const M='M',B='B',P='P';
@@ -500,6 +506,7 @@ function renderG(){
   $('cards').innerHTML=pl.moves.map(m=>{const o=m.an?findMove(m.an):null;return `<article class="card" id="c-${m.id}">
     <div class="cardtop"><div><h3>${m.t}</h3><p class="def">${m.d}</p>${romLine(m.id)}</div><div class="cardmap zoomable" role="button" tabindex="0" data-t="${esc(jt.short+' · '+m.t)}" aria-label="Lichaamskaart vergroten">${bodymap([...m.ag.map(([n])=>[n,'ag']),...m.sy.map(([n])=>[n,'sy']),...m.st.map(([n])=>[n,'st'])],{label:'Betrokken spieren bij '+m.t})}</div></div>
     ${chips(m.ag,'r-ag','Agonisten (primair)')}
+    ${imgStrip(m.ag.map(x=>x[0]),'Afbeeldingen van de agonisten')}
     ${chips(m.sy,'r-sy','Synergisten (ondersteunend)')}
     ${m.st.length?chips(m.st,'r-st','Stabilisatoren (fixatoren)'):''}
     ${chips(o?o.ag:m.anx,'r-an','Antagonisten (remmen deze beweging af)')}
@@ -586,6 +593,14 @@ const ARCH_ICON={
 // Wikimedia: verkleinde versie laden (scheelt tot 15 MB per animatie) en link naar de bestandspagina
 const wimg=(u,w)=>u&&u.includes('Special:FilePath/')?u+(u.includes('?')?'&':'?')+'width='+w:u;
 const wpage=u=>u&&u.includes('Special:FilePath/')?'https://commons.wikimedia.org/wiki/File:'+u.split('Special:FilePath/')[1]:u;
+/* Strook met (3D-)afbeeldingen van spieren, tik = vergroten */
+function imgStrip(names,label){
+  const seen=new Set(),items=[];
+  for(const n of names){const k=key(n);if(!k||seen.has(k))continue;const d=DETAILS[k];if(!d||!d.image)continue;seen.add(k);items.push([k,d]);}
+  if(!items.length)return '';
+  return `<div class="strip" aria-label="${esc(label)}">${items.slice(0,8).map(([k,d])=>{const nm=client&&CLIENT[k]?CLIENT[k][0]:k;
+    return `<figure><img class="zoomable" src="${esc(wimg(d.image,240))}" data-full="${esc(wimg(d.image,1000))}" data-cr="${esc('Afbeelding: '+(d.imageCredit||''))}" alt="${esc(nm)}" loading="lazy" onerror="this.parentNode.remove()"><figcaption>${esc(nm.replace(/^Mm?\. /,''))}</figcaption></figure>`;}).join('')}</div>`;
+}
 function sheetMap(k,t){
   return `<div class="mdmap zoomable" role="button" tabindex="0" data-t="${esc(t)}" aria-label="Lichaamskaart vergroten">${bodymap([[k,'on']],{label:'Ligging van '+t})}${bmLegend(['on'])}</div>`;
 }
@@ -756,6 +771,7 @@ function renderO(){
    <div class="exmap zoomable" role="button" tabindex="0" data-t="${esc(e.n)}" aria-label="Lichaamskaart vergroten">${bodymap(ms.map(x=>[x.ok?x.k:x.n,{hoofd:'ag',steun:'sy',stab:'st'}[x.r]]).filter(x=>client?x[1]!=='st':true),{label:'Spieren bij '+e.n})}${bmLegend(client?['hoofd','steun']:['hoofd','steun','stab'])}</div>
    ${client?`<div class="cue big"><b>Zo doe je het</b>${esc(e.cue)}</div>`:`<div><p class="lbl" style="margin-bottom:2px">Gewrichtsacties (opwaartse fase)</p>${acts}</div>`}
    ${exChips(by('hoofd'),'r-ag',client?'Dit train je vooral':'Hoofdspieren (concentrisch)')}
+   ${imgStrip(by('hoofd').map(x=>x.ok?x.k:x.n),'Afbeeldingen van de hoofdspieren')}
    ${exChips(by('steun'),'r-sy',client?'Dit werkt mee':'Ondersteunend (synergisten)')}
    ${client?'':exChips(by('stab'),'r-st','Stabiliserend (isometrisch)')}
    ${client?'':`<div class="why"><b class="whyl">Kinesiologisch inzicht</b>${esc(e.ins)}</div><div class="cue"><b>Coachingcue</b>${esc(e.cue)}</div>`}
