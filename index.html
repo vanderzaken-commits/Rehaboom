@@ -6,11 +6,12 @@
 <title>REHABOOM</title>
 <meta name="description" content="Anatomisch en kinesiologisch naslagwerk voor trainers en fysiotherapeuten.">
 <meta name="theme-color" content="#14212B">
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>html,body{margin:0}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: smalle mobiele kolom; tegels → vlakken → bewegingskaarten; tweede tab = insufficiëntie-simulator */
 :root{
@@ -243,25 +244,161 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 .zv-cr{font-size:11px;color:var(--muted);text-align:center;margin-top:8px}
 @media (prefers-reduced-motion:reduce){.zv-in{transition:none}}
 @media (max-width:420px){.joints{grid-template-columns:repeat(2,minmax(0,1fr))}.ctrl{grid-template-columns:1fr}.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* ===== v3 premium =====
+   Layout: compacte inktbalk boven, onderbalk voor duimbediening, grote titel per onderdeel;
+   één opvallend element: de lichtbak waarin spierafbeeldingen zonder kader op een egale ondergrond staan. */
+:root{--bg:#EDEFE8;--line:#DADDD3;--lightbox:#F3F4EF;--r-tile:14px;--r-card:16px;--r-chip:9px;--shadow-lift:0 1px 2px rgba(20,33,43,.06),0 8px 24px rgba(20,33,43,.08);--ease:cubic-bezier(.2,.8,.2,1);--bnav-h:64px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E171D;--line:#26343E;--lightbox:#EEF0EA;--shadow-lift:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35)}}
+:root[data-theme="dark"]{--bg:#0E171D;--line:#26343E;--lightbox:#EEF0EA;--shadow-lift:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35)}
+body{font-size:15px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+/* topbalk */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:12;background:var(--head);color:var(--head-fg)}
+header.top .top-in{display:flex;flex-direction:row;align-items:center;gap:12px;min-height:54px;padding-block:6px}
+.brand{align-items:baseline;gap:8px}
+.brand h1{font-size:25px;letter-spacing:.07em;font-weight:700}
+.ver{font-family:var(--f-body);font-size:10.5px;font-weight:500;border:0;padding:0;color:var(--head-muted)}
+.cmode{margin-left:auto;display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 13px 0 10px;border-radius:19px;border:1px solid rgba(255,255,255,.18);background:transparent;color:var(--head-fg);font:500 13px var(--f-body)}
+.cmode svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.cmode[aria-pressed="true"]{background:var(--coral);border-color:var(--coral);color:#fff}
+/* onderbalk */
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:15;display:grid;grid-template-columns:repeat(4,1fr);background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px);border-top:1px solid var(--line);padding:4px max(8px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.bnav .tab{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:56px;padding:0;border:0;background:none;color:var(--muted);font:500 11.5px var(--f-body);letter-spacing:0;cursor:pointer;position:relative}
+.bnav .tab svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s var(--ease)}
+.bnav .tab[aria-selected="true"]{color:var(--ink)}
+.bnav .tab[aria-selected="true"] svg{stroke:var(--coral);stroke-width:2}
+.bnav .tab[aria-selected="true"]::before{content:"";position:absolute;top:0;width:28px;height:3px;border-radius:0 0 3px 3px;background:var(--coral)}
+.bnav .tab:active svg{transform:scale(.9)}
+main{padding-bottom:calc(var(--bnav-h) + env(safe-area-inset-bottom,0px) + 8px)}
+main .wrap{padding-block:8px 32px;gap:26px}
+/* paginatitel */
+.phead{padding-top:14px}
+.phead h2{font-family:var(--f-display);font-weight:700;font-size:38px;line-height:1;margin:0;letter-spacing:.005em}
+.phead p{margin:8px 0 0;color:var(--muted);font-size:14.5px;max-width:52ch;text-wrap:pretty}
+/* labels zonder hoofdletters */
+.lbl,.role p,.sub,.fact b,.res b,.cue b,.whyl,.rom b,.sim .ex b,.jump em,.sheet li em{text-transform:none;letter-spacing:0}
+.lbl{font-size:13px;font-weight:600;color:var(--ink);margin:0 0 10px}
+.sub{font-size:13px;font-weight:600;color:var(--ink);margin:22px 0 4px}
+.fact b{font-size:12.5px;font-weight:600;margin-bottom:3px}
+.res b,.cue b,.whyl,.sim .ex b{font-size:12.5px;font-weight:600}
+.rom b{font-size:12px;font-weight:600;margin-right:5px}
+.jump em{font-size:12px;font-weight:600}
+/* segmentknop regio */
+#regs{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:3px;border-radius:12px;background:color-mix(in srgb,var(--ink) 7%,transparent);overflow:visible}
+#regs button{min-height:38px;border:0;border-radius:9px;background:none;padding:0 6px;font:600 13px var(--f-body);color:var(--muted);white-space:nowrap;transition:background .2s var(--ease),color .2s}
+#regs button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(20,33,43,.12),0 2px 8px rgba(20,33,43,.06)}
+/* overige pilrijen: rustiger */
+.seg button{border-radius:10px;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+/* gewrichtstegels met silhouet */
+.joints{gap:10px}
+.jt{flex-direction:row;align-items:center;gap:10px;min-height:68px;padding:8px 12px 8px 8px;border-radius:var(--r-tile);border-color:transparent;background:var(--surface);box-shadow:0 0 0 1px var(--line) inset;transition:transform .12s var(--ease),background .2s}
+.jt>span{display:flex;flex-direction:column;min-width:0}
+.jt b{font-size:18px;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere;line-height:1}
+.jfig{flex:none;width:26px;height:52px}
+.jfig path,.jfig ellipse{fill:color-mix(in srgb,var(--ink) 12%,transparent)}
+.jfig .jdot{fill:var(--coral)}
+.jt[aria-pressed="true"]{background:var(--ink);box-shadow:none}
+.jt[aria-pressed="true"] .jfig path,.jt[aria-pressed="true"] .jfig ellipse{fill:color-mix(in srgb,var(--surface) 26%,transparent)}
+/* drukfeedback */
+.jt:active,.cat:active,.mrow:active,.tool:active,.ex:active,.chip:active,.seg button:active,.jump:active{transform:scale(.98)}
+.cat,.mrow,.tool,.ex,.chip,.jump{transition:transform .12s var(--ease)}
+/* as & mannequin */
+.axis svg.mq{border:0;background:var(--surface);box-shadow:0 0 0 1px var(--line) inset;border-radius:var(--r-tile)}
+.axis strong{font-family:var(--f-display);font-size:21px;font-weight:600}
+/* legenda */
+.legend{gap:8px 16px;font-size:12.5px}
+.dot{width:9px;height:9px;border-radius:50%}
+.sp-demo{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;border:1px solid var(--muted);font:700 11px var(--f-display);margin-right:2px}
+/* kaarten */
+.card,.tcard,.sim,.offl{border-radius:var(--r-card);border-color:transparent;box-shadow:0 0 0 1px var(--line) inset;padding:18px}
+.card h3,.tcard h3{font-size:26px;font-weight:700;letter-spacing:.005em}
+.card .def{font-size:14px}
+.cardmap{background:var(--lightbox);border-radius:12px}
+.role{gap:8px}
+.role p{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600}
+.role p::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.chip{border-radius:var(--r-chip);min-height:36px;font-size:13px;padding:5px 11px 5px 7px}
+.chip .sp{font:700 11.5px var(--f-display);width:21px;height:21px}
+.anta-link{border-style:solid;border-color:color-mix(in srgb,var(--plum) 40%,transparent);border-radius:10px;min-height:40px;font-size:13px;display:inline-flex;align-items:center;gap:8px}
+.anta-link::after,.jump em::after{content:"";width:6px;height:6px;border-right:1.7px solid currentColor;border-bottom:1.7px solid currentColor;transform:rotate(-45deg);display:inline-block;margin-left:6px;flex:none}
+.jump em{display:inline-flex;align-items:center}
+.rom{gap:6px 16px;font-variant-numeric:tabular-nums}
+/* spieren-tab */
+.search input{border-radius:14px;min-height:50px;padding-left:44px;border-color:transparent;box-shadow:0 0 0 1px var(--line) inset;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237d8781' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='M16 16l4.5 4.5'/%3E%3C/svg%3E") 14px 50%/19px no-repeat}
+.search input:focus{outline:2px solid var(--steel);outline-offset:0}
+.cats{gap:10px}
+.cat{border-radius:var(--r-tile);border-color:transparent;box-shadow:0 0 0 1px var(--line) inset;min-height:58px;padding:8px 12px}
+.cat b{font-size:19px}
+.cat small{font:500 11.5px var(--f-body);font-variant-numeric:tabular-nums}
+.cat[aria-pressed="true"]{background:var(--ink);box-shadow:none}
+.mlist{border-radius:var(--r-card);border-color:transparent;box-shadow:0 0 0 1px var(--line) inset}
+.mrow{min-height:64px;padding:10px 14px}
+.mrow .th{width:46px;height:46px;border-radius:10px;border:0;background:var(--lightbox);object-fit:contain;mix-blend-mode:multiply}
+.mrow .ar{width:8px;height:8px;border-right:1.8px solid var(--muted);border-bottom:1.8px solid var(--muted);transform:rotate(-45deg);font-size:0;margin-right:4px}
+.tool{border-radius:var(--r-card);border-color:transparent;box-shadow:0 0 0 1px var(--line) inset;min-height:72px}
+.tool .ar{width:8px;height:8px;border-right:1.8px solid var(--muted);border-bottom:1.8px solid var(--muted);transform:rotate(-45deg);font-size:0;margin-right:4px}
+.offl-btn{border-radius:12px;background:var(--ink);color:var(--surface)}
+.ex{border-radius:10px}
+.ex[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.exmap{background:var(--lightbox)}
+.back{border-radius:10px}
+/* spierkaart (sheet) */
+.sheet-bg{background:rgba(9,15,20,.5);animation:fadein .22s ease}
+.sheet{border-radius:22px 22px 0 0;padding-top:10px;box-shadow:0 -10px 40px rgba(0,0,0,.28);animation:sheetup .32s var(--ease);max-height:92vh}
+.grab{display:block;width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 10px}
+.sheet h3{font-size:30px;font-weight:700;line-height:1.05;margin:4px 48px 4px 0;text-wrap:balance}
+.close{position:absolute;top:18px;right:max(14px,env(safe-area-inset-right,0px));float:none;width:38px;height:38px;min-width:0;min-height:0;display:grid;place-items:center;border:0;border-radius:50%;background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.close svg{width:16px;height:16px;fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round}
+@keyframes sheetup{from{transform:translateY(100%)}to{transform:none}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+/* lichtbak: afbeelding zonder kader op egale ondergrond, wit valt weg */
+.md-top{gap:10px;margin-top:14px}
+.md-img{background:var(--lightbox);border-radius:18px;padding:12px 12px 8px;position:relative}
+.md-img img{border:0;border-radius:0;background:transparent;mix-blend-mode:multiply;max-height:340px;width:100%;object-fit:contain}
+.md-img .cr{color:#6c756f;font-size:10.5px;margin-top:6px}
+.md-img .cr a{color:#2A6782}
+.mdmap{background:var(--lightbox);border-radius:18px;padding:10px 6px 4px}
+.mdmap .bmleg{color:#5B6560}
+.mdmap .bm-b,.exmap .bm-b,.cardmap .bm-b{fill:#E3E6DC;stroke:#B4BBAE}.mdmap .bm-o,.exmap .bm-o,.cardmap .bm-o{stroke:#C9CEC2}.mdmap .bm-t,.exmap .bm-t,.cardmap .bm-t{fill:#5B6560}.exmap .bmleg{color:#5B6560}
+.mdmap .bm-ag,.mdmap .bm-on,.exmap .bm-ag,.cardmap .bm-ag{fill:#B44A27;stroke:#B44A27}.exmap .bm-sy,.cardmap .bm-sy{fill:#2A6782;stroke:#2A6782}.exmap .bm-st,.cardmap .bm-st{fill:#5A6823;stroke:#5A6823}
+.strip img{border:0;background:var(--lightbox);mix-blend-mode:multiply;border-radius:12px;padding:4px}
+.strip figure{background:var(--lightbox);border-radius:12px}
+.strip figcaption{padding:0 2px 4px;color:#5B6560}
+.facts{gap:14px;margin-top:18px}
+.fact p{font-size:14.5px;line-height:1.5}
+.bund span{border-radius:8px}
+.sheet .jump,.card .jump{min-height:48px;border-bottom-color:var(--line);font-size:14px}
+/* tests */
+.res{border-radius:12px}
+.ext{border-radius:10px;border-color:color-mix(in srgb,var(--steel) 45%,transparent)}
+/* zoom */
+.zv-in img{mix-blend-mode:multiply;background:transparent}
+.zv-body{background:var(--lightbox)}
+.zv{background:var(--lightbox)}
+details{border:0;box-shadow:0 0 0 1px var(--line) inset;border-radius:var(--r-card)}
+@media (max-width:420px){.phead h2{font-size:34px}.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (prefers-reduced-motion:reduce){.sheet,.sheet-bg{animation:none}.jt,.cat,.mrow,.tool,.ex,.chip,.jump,.bnav .tab svg{transition:none}}
 </style>
 </head>
 <body>
 
 
-<header>
-  <div class="wrap">
-    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.8</span><span class="tagl">Anatomisch &amp; kinesiologisch naslagwerk</span><button class="cmode" id="cmode" aria-pressed="false">Cliëntweergave</button></div>
-    <div class="tabs" role="tablist">
-      <button class="tab" role="tab" data-tab="0" aria-selected="true">Gewricht</button>
-      <button class="tab" role="tab" data-tab="1" aria-selected="false">Spieren</button>
-      <button class="tab" role="tab" data-tab="2" aria-selected="false">Oefeningen</button>
-      <button class="tab" role="tab" data-tab="3" aria-selected="false">Testen</button>
-    </div>
+<header class="top">
+  <div class="wrap top-in">
+    <div class="brand"><h1>REHABOOM</h1><span class="ver">v3.0</span></div>
+    <button class="cmode" id="cmode" aria-pressed="false" aria-label="Cliëntweergave"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.8 3.6-6 7-6s6.2 2.2 7 6"/></svg><span>Cliënt</span></button>
   </div>
 </header>
+<nav class="bnav" role="tablist" aria-label="Onderdelen">
+  <button class="tab" role="tab" data-tab="0" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5l5-5M14.5 9.5l5-5"/><circle cx="12" cy="12" r="3.4"/><circle cx="4" cy="20" r="1.6"/><circle cx="20" cy="4" r="1.6"/></svg><span>Gewricht</span></button>
+  <button class="tab" role="tab" data-tab="1" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-4.6 4.4-4.6 14.6 0 19 4.6-4.4 4.6-14.6 0-19z"/><path d="M10.2 8.5c1.2.4 2.4.4 3.6 0M9.6 12c1.6.5 3.2.5 4.8 0M10.2 15.5c1.2.4 2.4.4 3.6 0"/></svg><span>Spieren</span></button>
+  <button class="tab" role="tab" data-tab="2" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 12h8"/><rect x="4.5" y="7" width="3.5" height="10" rx="1.2"/><rect x="16" y="7" width="3.5" height="10" rx="1.2"/><path d="M2.5 10v4M21.5 10v4"/></svg><span>Oefeningen</span></button>
+  <button class="tab" role="tab" data-tab="3" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2.2"/><path d="M9 4.5V3h6v1.5"/><path d="M8.5 12.5l2.4 2.4 4.6-5"/></svg><span>Testen</span></button>
+</nav>
 
 <main>
   <div class="wrap" id="view-g">
+    <div class="phead"><h2>Gewricht</h2><p>Kies een gewricht en een vlak. Per beweging zie je welke spieren werken, de normale uitslag en het eindgevoel.</p></div>
     <section><p class="lbl">Regio</p><div class="seg" id="regs"></div><div class="joints" id="joints" style="margin-top:10px"></div></section>
     <section><p class="lbl">Anatomisch vlak</p><div class="seg" id="planes"></div><div id="axis"></div></section>
     <section>
@@ -271,15 +408,16 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
         <i><span class="dot" style="background:var(--olive)"></span>Stabilisator</i>
         <i><span class="dot" style="background:var(--plum)"></span>Antagonist</i>
         <i><span class="dot" style="background:transparent;border:1.5px dashed var(--muted)"></span>Diep gelegen</i>
-        <i><b style="font-family:var(--f-mono);font-weight:500;white-space:nowrap">M · B · P</b> = mono-, bi-, poly-articulair (aantal gekruiste gewrichten)</i>
+        <i><span class="sp-demo">M</span><span class="sp-demo">B</span><span class="sp-demo">P</span> mono-, bi- of poly-articulair</i>
       </div>
       <div class="cards" id="cards"></div>
       <p class="foot" style="margin-top:12px">Tik op een spier voor oorsprong, aanhechting, functie en alle bewegingen waarin hij een rol speelt.</p>
       <p class="foot">Normale ROM: AAOS-referentiewaarden (actief, neutrale-0-methode), via <a href="https://www.physio-pedia.com/Range_of_Motion_Normative_Values" target="_blank" rel="noopener noreferrer">Physiopedia</a>; wervelkolom: referentiegrenzen US Department of Veterans Affairs. Dit zijn referentiewaarden, geen populatiegemiddelden; leeftijd, geslacht en meetmethode beïnvloeden ze. Eindgevoel: normaal eindgevoel volgens Cyriax/Magee.</p>
     </section>
     <details>
-      <summary>Wat is er veranderd in v2</summary>
+      <summary>Versiegeschiedenis</summary>
       <ul>
+        <li>v3.0: nieuw ontwerp: onderbalk met iconen voor duimbediening, grote paginatitels, gewrichtstegels met silhouet, lichtbak voor spierafbeeldingen en rustigere typografie.</li>
         <li>v2.8: realistische 3D-renders (Anatomography/BodyParts3D) bij 54 van de 91 spieren; de render is nu het hoofdbeeld van de spierkaart.</li>
         <li>v2.8: strook met afbeeldingen van de agonisten op elke bewegingskaart en van de hoofdspieren bij elke oefening.</li>
         <li>v2.7: normale bewegingsuitslag (AAOS) en normaal eindgevoel op elke bewegingskaart.</li>
@@ -318,6 +456,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
   </div>
 
   <div class="wrap" id="view-s" hidden>
+    <div class="phead"><h2>Spieren</h2><p>91 spieren met ligging, oorsprong, aanhechting, functie en de bewegingen waarin ze meedoen.</p></div>
     <section>
       <div class="search"><input id="q" type="search" placeholder="Zoek op spier, aanhechting, functie…" aria-label="Zoek spieren" autocomplete="off" enterkeyhint="search"><button id="qx" aria-label="Wissen" hidden>×</button></div>
     </section>
@@ -336,12 +475,14 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
   </div>
 
   <div class="wrap" id="view-o" hidden>
+    <div class="phead"><h2>Oefeningen</h2><p>Welke spieren een oefening traint, en waarom, verklaard vanuit de gewrichten.</p></div>
     <section id="excats" class="excats"></section>
     <section id="exdetail"></section>
     <p class="foot">Spieren zijn afgeleid uit de bewegingskaarten van de gewrichtentab. Tik op een gewrichtsactie om die kaart te openen.</p>
   </div>
 
   <div class="wrap" id="view-t" hidden>
+    <div class="phead"><h2>Testen</h2><p>Screeningstests per regio: uitvoering, wanneer positief, en welke spieren betrokken zijn.</p></div>
     <section><p class="lbl">Gewricht</p><div class="seg" id="tj"></div></section>
     <section class="cards" id="tests"></section>
     <p class="foot">Screeningstests, geen diagnose. Een positieve test is een reden om door te verwijzen of verder te onderzoeken.</p>
@@ -500,9 +641,9 @@ function findMove(id){for(const j of J)for(const p of j.planes)for(const m of p.
 function renderG(){
   const jt=J[ji],pl=jt.planes[pi];
   $('regs').innerHTML=REG.map(r=>`<button aria-pressed="${r.id===jt.reg}" data-r="${r.id}">${r.label}</button>`).join('');
-  $('joints').innerHTML=J.map((j,i)=>j.reg!==jt.reg?'':`<button class="jt" aria-pressed="${i===ji}" data-j="${i}"><b>${j.short}</b><small>${j.name}</small></button>`).join('');
+  $('joints').innerHTML=J.map((j,i)=>j.reg!==jt.reg?'':`<button class="jt" aria-pressed="${i===ji}" data-j="${i}"><svg class="jfig" viewBox="22 4 156 448" aria-hidden="true"><path d="${BM_BODY}"/><ellipse cx="100" cy="30" rx="15" ry="19"/><circle class="jdot" cx="${j.pt[0]}" cy="${j.pt[1]}" r="15"/></svg><span><b>${j.short}</b><small>${j.name}</small></span></button>`).join('');
   $('planes').innerHTML=jt.planes.map((p,i)=>`<button aria-pressed="${i===pi}" data-p="${i}">${p.plane}</button>`).join('');
-  $('axis').innerHTML=`<div class="axis">${mannequin(jt,pl)}<div><p class="lbl" style="margin:0 0 2px">${pl.axis==='T'?'Beweging':'Rotatie-as'}</p><strong>${AXIS[pl.axis]}</strong><p class="pvl">${esc(pl.plane)} · ${esc(jt.short)}</p>${pl.note?`<p class="pnote">${pl.note}</p>`:''}</div></div>`;
+  $('axis').innerHTML=`<div class="axis">${mannequin(jt,pl)}<div><p class="lbl" style="margin:0 0 2px">${pl.axis==='T'?'Beweging':'Rotatie-as'}</p><strong>${AXIS[pl.axis]}</strong><p class="pvl">${esc(pl.plane)}, ${esc(jt.short.toLowerCase())}</p>${pl.note?`<p class="pnote">${pl.note}</p>`:''}</div></div>`;
   $('cards').innerHTML=pl.moves.map(m=>{const o=m.an?findMove(m.an):null;return `<article class="card" id="c-${m.id}">
     <div class="cardtop"><div><h3>${m.t}</h3><p class="def">${m.d}</p>${romLine(m.id)}</div><div class="cardmap zoomable" role="button" tabindex="0" data-t="${esc(jt.short+' · '+m.t)}" aria-label="Lichaamskaart vergroten">${bodymap([...m.ag.map(([n])=>[n,'ag']),...m.sy.map(([n])=>[n,'sy']),...m.st.map(([n])=>[n,'st'])],{label:'Betrokken spieren bij '+m.t})}</div></div>
     ${chips(m.ag,'r-ag','Agonisten (primair)')}
@@ -510,7 +651,7 @@ function renderG(){
     ${chips(m.sy,'r-sy','Synergisten (ondersteunend)')}
     ${m.st.length?chips(m.st,'r-st','Stabilisatoren (fixatoren)'):''}
     ${chips(o?o.ag:m.anx,'r-an','Antagonisten (remmen deze beweging af)')}
-    ${o?`<button class="anta-link" data-go="${o.id}">Tegenbeweging: ${o.t} →</button>`:`<p class="pnote" style="margin:0">${m.ant}</p>`}
+    ${o?`<button class="anta-link" data-go="${o.id}">Tegenbeweging: ${o.t}</button>`:`<p class="pnote" style="margin:0">${m.ant}</p>`}
   </article>`}).join('');
 }
 document.addEventListener('click',e=>{
@@ -627,7 +768,7 @@ function openGroup(g,name){
   const body=`<div class="mdmap zoomable" role="button" tabindex="0" data-t="${esc(g)}" aria-label="Lichaamskaart vergroten" style="max-width:320px;margin:10px auto 0">${bodymap(ms.map(n=>[n,'on']),{label:'Ligging van '+g})}${bmLegend(['on'])}</div>
    <p style="margin:12px 0 0">${esc(GROUPNOTE[g]||'')}</p>
    <p class="sub">Spieren in deze groep</p><div class="mlist" style="margin-top:6px">${ms.map(k=>row(k,esc(client&&CLIENT[k]?CLIENT[k][1]:(DETAILS[k]?DETAILS[k].function:'')))).join('')}</div>`;
-  $('sheetRoot').innerHTML=`<div class="sheet-bg" data-close></div><div class="sheet wide" role="dialog" aria-label="${esc(g)}"><button class="close" aria-label="Sluiten">×</button>${head}${body}</div>`;
+  $('sheetRoot').innerHTML=`<div class="sheet-bg" data-close></div><div class="sheet wide" role="dialog" aria-label="${esc(g)}"><span class="grab" aria-hidden="true"></span><button class="close" aria-label="Sluiten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>${head}${body}</div>`;
   document.querySelector('.sheet-bg').onclick=closeSheet;
 }
 function openSheet(name){
@@ -636,7 +777,7 @@ function openSheet(name){
   const col={ag:'var(--coral)',sy:'var(--steel)',st:'var(--olive)'};
   const title=k||base(name);
   const exs=k?exercisesFor(k):[];
-  const exList=exs.length?`<p class="sub">${client?'Zo train je deze spier':'Hoofdspier in oefeningen'}</p><div>${exs.map(e=>`<button class="jump" data-ex="${EX.indexOf(e)}"><span>${e.n}</span><em style="color:var(--coral)">Oefening →</em></button>`).join('')}</div>`:'';
+  const exList=exs.length?`<p class="sub">${client?'Zo train je deze spier':'Hoofdspier in oefeningen'}</p><div>${exs.map(e=>`<button class="jump" data-ex="${EX.indexOf(e)}"><span>${e.n}</span><em style="color:var(--coral)">Oefening</em></button>`).join('')}</div>`:'';
   let body='',head='';
   if(client&&d){
     const c=CLIENT[k]||[title,d.function];
@@ -647,7 +788,7 @@ function openSheet(name){
     head=`<h3>${esc(title)}</h3>${name!==title?`<p class="foot" style="margin:0">${esc(name)}</p>`:''}`;
     if(d){
       const cr='Afbeelding: '+(d.imageCredit||"Gray's Anatomy (publiek domein)");
-      body+=`<div class="md-top${d.image?'':' noimg'}">${d.image?`<div class="md-img"><img class="zoomable" data-cr="${esc(cr)}" src="${esc(wimg(d.image,480))}" data-full="${esc(wimg(d.image,1000))}" alt="${esc(k)}" loading="lazy" onerror="this.parentNode.parentNode.classList.add('noimg');this.parentNode.remove()"><p class="cr">${esc(cr)} · <a href="${esc(wpage(d.image))}" target="_blank" rel="noopener noreferrer">bron</a> · tik om te vergroten</p></div>`:''}${sheetMap(k,k)}</div>
+      body+=`<div class="md-top${d.image?'':' noimg'}">${d.image?`<div class="md-img"><img class="zoomable" data-cr="${esc(cr)}" src="${esc(wimg(d.image,480))}" data-full="${esc(wimg(d.image,1000))}" alt="${esc(k)}" loading="lazy" onerror="this.parentNode.parentNode.classList.add('noimg');this.parentNode.remove()"><p class="cr">${esc(cr)}. <a href="${esc(wpage(d.image))}" target="_blank" rel="noopener noreferrer">Bron</a></p></div>`:''}${sheetMap(k,k)}</div>
       <div class="facts">
        ${d.bundles?`<div class="fact"><b>Bundels</b><div class="bund">${d.bundles.map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>`:''}
        <div class="fact o"><b>Oorsprong (origo)</b><p>${esc(d.origin)}</p></div>
@@ -655,11 +796,11 @@ function openSheet(name){
        <div class="fact f"><b>Functie</b><p>${esc(d.function)}</p></div>
        ${d.direction?`<div class="fact d"><b>Vezelverloop</b><p>${esc(d.direction)}</p></div>`:''}
        ${archFact(k)}
-      </div>${simFor(k)!==null?`<button class="anta-link" style="margin-top:12px" data-sim="${simFor(k)}">Bekijk in de insufficiëntie-simulator →</button>`:''}`;
+      </div>${simFor(k)!==null?`<button class="anta-link" style="margin-top:12px" data-sim="${simFor(k)}">Bekijk in de insufficiëntie-simulator</button>`:''}`;
     }else body+=`<p class="foot">Voor deze spier(groep) staan nog geen oorsprong, aanhechting en functie in de dataset.</p>`;
-    body+=`<p class="sub">Rol in ${rows.length} beweging${rows.length===1?'':'en'}</p>${rows.length?`<div>${rows.map(r=>`<button class="jump" data-jm="${r.id}"><span>${r.j} · ${r.m}${r.via?` <small style="color:var(--muted)">(als deel van ${esc(r.via)})</small>`:''}</span><em style="color:${col[r.r]}">${ROLE[r.r]} →</em></button>`).join('')}</div>`:'<p class="foot">Komt (nog) niet voor in de bewegingskaarten.</p>'}${exList}`;
+    body+=`<p class="sub">Rol in ${rows.length} beweging${rows.length===1?'':'en'}</p>${rows.length?`<div>${rows.map(r=>`<button class="jump" data-jm="${r.id}"><span><b>${r.j}</b> ${r.m.charAt(0).toLowerCase()+r.m.slice(1)}${r.via?` <small style="color:var(--muted)">(als deel van ${esc(r.via)})</small>`:''}</span><em style="color:${col[r.r]}">${ROLE[r.r]}</em></button>`).join('')}</div>`:'<p class="foot">Komt (nog) niet voor in de bewegingskaarten.</p>'}${exList}`;
   }
-  $('sheetRoot').innerHTML=`<div class="sheet-bg" data-close></div><div class="sheet wide" role="dialog" aria-label="${esc(title)}"><button class="close" aria-label="Sluiten">×</button>${head}${body}</div>`;
+  $('sheetRoot').innerHTML=`<div class="sheet-bg" data-close></div><div class="sheet wide" role="dialog" aria-label="${esc(title)}"><span class="grab" aria-hidden="true"></span><button class="close" aria-label="Sluiten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>${head}${body}</div>`;
   document.querySelector('.sheet-bg').onclick=closeSheet;
 }
 function closeSheet(){$('sheetRoot').innerHTML='';}
@@ -699,7 +840,7 @@ function renderS(){
   const gs=GROUPS[CATS[ci]];
   $('subs').innerHTML=gs.length>1?`<div class="seg">${gs.map((g,i)=>`<button aria-pressed="${i===gi}" data-g="${i}">${g.label}</button>`).join('')}</div>`:'';
   const g=gs[Math.min(gi,gs.length-1)];
-  $('mres').innerHTML=`<p class="lbl">${CATS[ci]}${g.label?' · '+g.label:''}</p><div class="mlist">${g.muscles.map(k=>row(k,esc(DETAILS[k]?DETAILS[k].function:''))).join('')}</div>`;
+  $('mres').innerHTML=`<p class="lbl">${CATS[ci]}${g.label?', '+g.label.charAt(0).toLowerCase()+g.label.slice(1):''}</p><div class="mlist">${g.muscles.map(k=>row(k,esc(DETAILS[k]?DETAILS[k].function:''))).join('')}</div>`;
 }
 $('q').addEventListener('input',renderS);
 $('qx').onclick=()=>{$('q').value='';renderS();$('q').focus();};
@@ -765,7 +906,7 @@ function renderO(){
   const e=EX[ei];
   $('excats').innerHTML=EXCATS.map(c=>`<div><p class="lbl">${c}</p><div class="exgrid">${EX.map((x,i)=>x.cat!==c?'':`<button class="ex" aria-pressed="${i===ei}" data-e="${i}">${x.n}</button>`).join('')}</div></div>`).join('');
   const ms=exMuscles(e),by=r=>ms.filter(x=>x.r===r);
-  const acts=e.acts.map(([id,t,note])=>{const [j,m]=moveLabel(id);return `<button class="jump" data-jm="${id}"><span><b>${j}</b> · ${m}${note?` <small style="color:var(--muted)">(${esc(note)})</small>`:''}</span><em class="${t==='c'?'tc':'ti'}">${t==='c'?'Concentrisch':'Isometrisch'} →</em></button>`}).join('');
+  const acts=e.acts.map(([id,t,note])=>{const [j,m]=moveLabel(id);return `<button class="jump" data-jm="${id}"><span><b>${j}</b> ${m.charAt(0).toLowerCase()+m.slice(1)}${note?` <small style="color:var(--muted)">(${esc(note)})</small>`:''}</span><em class="${t==='c'?'tc':'ti'}">${t==='c'?'Concentrisch':'Isometrisch'}</em></button>`}).join('');
   $('exdetail').innerHTML=`<article class="card" id="exc">
    <div><h3>${e.n}</h3><p class="def">${e.d}</p></div>
    <div class="exmap zoomable" role="button" tabindex="0" data-t="${esc(e.n)}" aria-label="Lichaamskaart vergroten">${bodymap(ms.map(x=>[x.ok?x.k:x.n,{hoofd:'ag',steun:'sy',stab:'st'}[x.r]]).filter(x=>client?x[1]!=='st':true),{label:'Spieren bij '+e.n})}${bmLegend(client?['hoofd','steun']:['hoofd','steun','stab'])}</div>
@@ -775,7 +916,7 @@ function renderO(){
    ${exChips(by('steun'),'r-sy',client?'Dit werkt mee':'Ondersteunend (synergisten)')}
    ${client?'':exChips(by('stab'),'r-st','Stabiliserend (isometrisch)')}
    ${client?'':`<div class="why"><b class="whyl">Kinesiologisch inzicht</b>${esc(e.ins)}</div><div class="cue"><b>Coachingcue</b>${esc(e.cue)}</div>`}
-   ${!client&&e.sim!==undefined?`<button class="anta-link" data-sim="${e.sim}">Bekijk ${S[e.sim].k.toLowerCase()} in de insufficiëntie-simulator →</button>`:''}
+   ${!client&&e.sim!==undefined?`<button class="anta-link" data-sim="${e.sim}">Bekijk ${S[e.sim].k.toLowerCase()} in de insufficiëntie-simulator</button>`:''}
   </article>`;
 }
 function exercisesFor(k){
