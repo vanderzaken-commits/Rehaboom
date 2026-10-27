@@ -141,6 +141,7 @@ details ul{margin:10px 0 0;padding-left:18px;font-size:13px;display:flex;flex-di
 .md-img{flex:1;min-width:0}
 .md-img img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;background:#F4F5EF;border:1px solid var(--line);display:block}
 .md-img .cr{font-size:10px;color:var(--muted);margin-top:4px}
+.md-img .cr a{color:var(--steel)}
 .facts{display:grid;gap:10px;margin-top:14px}
 .fact b{display:block;font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
 .fact p{margin:0;font-size:14px}
@@ -227,7 +228,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <header>
   <div class="wrap">
-    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.4</span><span class="tagl">Anatomisch &amp; kinesiologisch naslagwerk</span><button class="cmode" id="cmode" aria-pressed="false">Cliëntweergave</button></div>
+    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.5</span><span class="tagl">Anatomisch &amp; kinesiologisch naslagwerk</span><button class="cmode" id="cmode" aria-pressed="false">Cliëntweergave</button></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="0" aria-selected="true">Gewricht</button>
       <button class="tab" role="tab" data-tab="1" aria-selected="false">Spieren</button>
@@ -257,6 +258,9 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
     <details>
       <summary>Wat is er veranderd in v2</summary>
       <ul>
+        <li>v2.5: afbeeldingen nagelopen via de Wikimedia-beschrijvingen; 6 inhoudelijk foute plaatjes vervangen (o.a. latissimus, rechte en schuine buikspier, intercostales, adductor longus).</li>
+        <li>v2.5: eigen afbeelding voor serratus anterior, pectoralis minor, adductor brevis, gracilis, pectineus en peroneus tertius: alle 91 spieren hebben nu een plaatje.</li>
+        <li>v2.5: juiste bronvermelding en licentie per afbeelding, met link naar de bron. Verkleinde versies: animaties kosten geen 15 MB data meer.</li>
         <li>v2.4: eigen lichaamskaart (voor- en achterzijde) waarop elke spier wordt ingekleurd; diepe spieren gestippeld.</li>
         <li>v2.4: lichaamskaart op elke bewegingskaart (agonist, synergist, stabilisator) en bij elke oefening.</li>
         <li>v2.4: tik op een afbeelding of kaart om hem schermvullend te bekijken en in te zoomen.</li>
@@ -321,8 +325,8 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <div id="sheetRoot"></div>
 
-<script src="data.js?v=24"></script>
-<script src="bodymap.js?v=24"></script>
+<script src="data.js?v=25"></script>
+<script src="bodymap.js?v=25"></script>
 <script>
 const M='M',B='B',P='P';
 const J=[
@@ -516,7 +520,7 @@ function openZoom(inner,title,credit){
 }
 document.addEventListener('click',e=>{
   const z=e.target.closest('.zoomable');if(!z)return;
-  if(z.tagName==='IMG')openZoom(`<img src="${esc(z.src)}" alt="${esc(z.alt)}">`,z.alt,z.dataset.cr);
+  if(z.tagName==='IMG')openZoom(`<img src="${esc(z.dataset.full||z.src)}" alt="${esc(z.alt)}">`,z.alt,z.dataset.cr);
   else{const svg=z.querySelector('svg');if(svg)openZoom(svg.outerHTML,z.dataset.t||'Lichaamskaart',null);}
 });
 document.addEventListener('keydown',e=>{const z=e.target.closest&&e.target.closest('.zoomable');if(z&&(e.key==='Enter'||e.key===' ')){e.preventDefault();z.click();}});
@@ -535,6 +539,9 @@ const ARCH_ICON={
  uni:'<path d="M4 34h40"/><path d="M10 34l8-14M18 34l8-14M26 34l8-14M34 34l8-14"/>',
  bi:'<path d="M4 24h40"/><path d="M10 24l8-12M18 24l8-12M26 24l8-12M10 24l8 12M18 24l8 12M26 24l8 12"/>',
  multi:'<path d="M4 16h40M4 32h40"/><path d="M10 16l6-9M20 16l6-9M30 16l6-9M10 16l6 9M20 16l6 9M30 16l6 9M10 32l6-9M20 32l6-9M30 32l6-9M10 32l6 9M20 32l6 9M30 32l6 9"/>'};
+// Wikimedia: verkleinde versie laden (scheelt tot 15 MB per animatie) en link naar de bestandspagina
+const wimg=(u,w)=>u&&u.includes('Special:FilePath/')?u+(u.includes('?')?'&':'?')+'width='+w:u;
+const wpage=u=>u&&u.includes('Special:FilePath/')?'https://commons.wikimedia.org/wiki/File:'+u.split('Special:FilePath/')[1]:u;
 function sheetMap(k,t){
   return `<div class="mdmap zoomable" role="button" tabindex="0" data-t="${esc(t)}" aria-label="Lichaamskaart vergroten">${bodymap([[k,'on']],{label:'Ligging van '+t})}${bmLegend(['on'])}</div>`;
 }
@@ -552,13 +559,13 @@ function openSheet(name){
   if(client&&d){
     const c=CLIENT[k]||[title,d.function];
     head=`<h3>${esc(c[0])}</h3><p class="foot" style="margin:0">${esc(k)}</p>`;
-    body=`<div class="md-top client${d.image?'':' noimg'}">${d.image?`<div class="md-img"><img class="zoomable" src="${esc(d.image)}" alt="${esc(c[0])}" loading="lazy" onerror="this.parentNode.parentNode.classList.add('noimg');this.parentNode.remove()"></div>`:''}${sheetMap(k,c[0])}</div>
+    body=`<div class="md-top client${d.image?'':' noimg'}">${d.image?`<div class="md-img"><img class="zoomable" src="${esc(wimg(d.image,480))}" data-full="${esc(wimg(d.image,1000))}" alt="${esc(c[0])}" loading="lazy" onerror="this.parentNode.parentNode.classList.add('noimg');this.parentNode.remove()"><p class="cr">${esc(d.imageCredit||'')}</p></div>`:''}${sheetMap(k,c[0])}</div>
      <div class="cue big" style="margin-top:14px"><b>Wat doet deze spier?</b>${esc(c[1])}</div>${exList}`;
   }else{
     head=`<h3>${esc(title)}</h3>${name!==title?`<p class="foot" style="margin:0">${esc(name)}</p>`:''}`;
     if(d){
       const cr='Afbeelding: '+(d.imageCredit||"Gray's Anatomy (publiek domein)");
-      body+=`<div class="md-top${d.image?'':' noimg'}">${d.image?`<div class="md-img"><img class="zoomable" data-cr="${esc(cr)}" src="${esc(d.image)}" alt="${esc(k)}" loading="lazy" onerror="this.parentNode.parentNode.classList.add('noimg');this.parentNode.remove()"><p class="cr">${esc(cr)} · tik om te vergroten</p></div>`:''}${sheetMap(k,k)}</div>
+      body+=`<div class="md-top${d.image?'':' noimg'}">${d.image?`<div class="md-img"><img class="zoomable" data-cr="${esc(cr)}" src="${esc(wimg(d.image,480))}" data-full="${esc(wimg(d.image,1000))}" alt="${esc(k)}" loading="lazy" onerror="this.parentNode.parentNode.classList.add('noimg');this.parentNode.remove()"><p class="cr">${esc(cr)} · <a href="${esc(wpage(d.image))}" target="_blank" rel="noopener noreferrer">bron</a> · tik om te vergroten</p></div>`:''}${sheetMap(k,k)}</div>
       <div class="facts">
        ${d.bundles?`<div class="fact"><b>Bundels</b><div class="bund">${d.bundles.map(x=>`<span>${esc(x)}</span>`).join('')}</div></div>`:''}
        <div class="fact o"><b>Oorsprong (origo)</b><p>${esc(d.origin)}</p></div>
@@ -585,7 +592,7 @@ function goMove(id){
 const CATS=Object.keys(GROUPS);
 let ci=0,gi=0;
 const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
-function thumb(k){const d=DETAILS[k];return d&&d.image?`<img class="th" src="${esc(d.image)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=th></span>'">`:'<span class="th"></span>';}
+function thumb(k){const d=DETAILS[k];return d&&d.image?`<img class="th" src="${esc(wimg(d.image,96))}" alt="" loading="lazy" onerror="this.outerHTML='<span class=th></span>'">`:'<span class="th"></span>';}
 function row(k,sub){const c=client&&CLIENT[k];return `<button class="mrow" data-m="${esc(k)}">${thumb(k)}<span class="tx"><b>${esc(c?c[0]:k)}</b><small>${c?esc(k):sub}</small></span><span class="ar">›</span></button>`;}
 function renderS(){
   const q=$('q').value.trim();
