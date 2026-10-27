@@ -186,6 +186,10 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 .md-top.client .md-img img{max-height:340px}
 
 @media (max-width:520px){.tagl{display:none}}
+.rom{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:12.5px;color:var(--ink)}
+.rom b{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.rom small{color:var(--muted)}
+.foot a{color:var(--steel)}
 .tool{display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--ink);text-align:left;cursor:pointer;font:inherit}
 .tool .tx{flex:1;min-width:0}.tool b{display:block;font-family:var(--f-display);font-weight:600;font-size:19px;line-height:1.1}
 .tool small{display:block;font-size:12px;color:var(--muted)}.tool .ar{color:var(--muted)}
@@ -242,7 +246,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <header>
   <div class="wrap">
-    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.6</span><span class="tagl">Anatomisch &amp; kinesiologisch naslagwerk</span><button class="cmode" id="cmode" aria-pressed="false">Cliëntweergave</button></div>
+    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.7</span><span class="tagl">Anatomisch &amp; kinesiologisch naslagwerk</span><button class="cmode" id="cmode" aria-pressed="false">Cliëntweergave</button></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="0" aria-selected="true">Gewricht</button>
       <button class="tab" role="tab" data-tab="1" aria-selected="false">Spieren</button>
@@ -267,10 +271,14 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
       </div>
       <div class="cards" id="cards"></div>
       <p class="foot" style="margin-top:12px">Tik op een spier voor oorsprong, aanhechting, functie en alle bewegingen waarin hij een rol speelt.</p>
+      <p class="foot">Normale ROM: AAOS-referentiewaarden (actief, neutrale-0-methode), via <a href="https://www.physio-pedia.com/Range_of_Motion_Normative_Values" target="_blank" rel="noopener noreferrer">Physiopedia</a>; wervelkolom: referentiegrenzen US Department of Veterans Affairs. Dit zijn referentiewaarden, geen populatiegemiddelden; leeftijd, geslacht en meetmethode beïnvloeden ze. Eindgevoel: normaal eindgevoel volgens Cyriax/Magee.</p>
     </section>
     <details>
       <summary>Wat is er veranderd in v2</summary>
       <ul>
+        <li>v2.7: normale bewegingsuitslag (AAOS) en normaal eindgevoel op elke bewegingskaart.</li>
+        <li>v2.7: 9 nieuwe tests: Spurling, cervicale distractie en Deep Neck Flexor Endurance (nek); SLR, Slump en Biering-Sørensen (rug); anterior drawer, talar tilt en Thompson (enkel).</li>
+        <li>v2.7: groepschips zoals "rotator cuff" en "buikwand" openen een groepskaart met lichaamskaart en de losse spieren.</li>
         <li>v2.6: terug naar 4 tabs; de insufficiëntie-simulator zit nu onder Spieren, bij de spierkaarten van twee-gewrichtsspieren en bij oefeningen.</li>
         <li>v2.6: knop "Alles opslaan" (tab Spieren) zet alle spierafbeeldingen op je telefoon voor gebruik zonder bereik.</li>
         <li>v2.5: afbeeldingen nagelopen via de Wikimedia-beschrijvingen; 6 inhoudelijk foute plaatjes vervangen (o.a. latissimus, rechte en schuine buikspier, intercostales, adductor longus).</li>
@@ -346,8 +354,8 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <div id="sheetRoot"></div>
 
-<script src="data.js?v=25"></script>
-<script src="bodymap.js?v=25"></script>
+<script src="data.js?v=27"></script>
+<script src="bodymap.js?v=27"></script>
 <script>
 const M='M',B='B',P='P';
 const J=[
@@ -431,6 +439,21 @@ const J=[
  {plane:'Transversaal vlak',axis:'L',moves:[
   {id:'t-rot',t:'Rotatie',d:'De romp om de lengteas draaien.',ag:[['M. Obliquus Externus Abdominis (overstaande zijde)',P],['M. Obliquus Internus Abdominis (zelfde zijde)',P]],sy:[['M. Multifidus (overstaande zijde)',P],['Mm. Rotatores Thoracales',M],['Mm. Intercostales',M]],st:[['M. Transversus Abdominis',P]],ant:'De schuine buikspieren in de omgekeerde combinatie (rotatie naar de overkant).',anx:[['M. Obliquus Externus Abdominis (zelfde zijde)',P],['M. Obliquus Internus Abdominis (overstaande zijde)',P]]}]}]}
 ];
+/* Normale ROM (AAOS-referentiewaarden via Physiopedia; wervelkolom: VA-referentiegrenzen) en normaal eindgevoel (Magee/Cyriax) */
+const ROM={
+ 's-ante':['180°','vast'],'s-retro':['40–60°','vast'],'s-abd':['160–180°','vast'],'s-add':['30°','vast'],'s-endo':['70°','vast'],'s-exo':['90°','vast'],
+ 's-habd':[null,'vast'],'s-hadd':[null,'vast of zacht (weke delen)'],
+ 'e-flex':['140–150°','zacht (weke delen), bij weinig spiermassa vast'],'e-ext':['0°','hard (olecranon in de fossa)'],'e-sup':['80–90°','vast'],'e-pro':['80–90°','vast of hard'],
+ 'w-pf':['60–80°','vast'],'w-df':['60–70°','vast'],'w-rd':['20°','hard'],'w-ud':['30°','vast'],
+ 'h-flex':['120°','zacht (knie gebogen) of vast'],'h-ext':['20°','vast'],'h-abd':['40°','vast'],'h-add':['20°','vast'],'h-endo':['45°','vast'],'h-exo':['45°','vast'],
+ 'k-flex':['135°','zacht (weke delen)'],'k-ext':['0°','vast'],'k-endo':[null,'vast'],'k-exo':[null,'vast'],
+ 'a-pf':['50°','vast'],'a-df':['20°','vast'],'a-sup':['35°','vast'],'a-pro':['15°','hard of vast'],
+ 'n-flex':['45°','vast'],'n-ext':['45°','vast'],'n-lat':['45° per zijde','vast'],'n-rot':['80° per zijde','vast'],
+ 'g-elev':[null,null],'g-depr':[null,null],'g-urot':[null,null],'g-drot':[null,null],'g-prot':[null,null],'g-retr':[null,null],'a-inv':[null,null],'a-ev':[null,null],
+ 't-flex':['90°','vast'],'t-ext':['30°','vast'],'t-lat':['30° per zijde','vast'],'t-rot':['30° per zijde','vast']};
+const ROMNOTE={'g-elev':'schouderbladbeweging, geen standaardwaarde in graden','g-depr':'schouderbladbeweging, geen standaardwaarde in graden','g-urot':'circa 60° van het schouderblad bij volledige armheffing','g-drot':'schouderbladbeweging, geen standaardwaarde in graden','g-prot':'schouderbladbeweging, geen standaardwaarde in graden','g-retr':'schouderbladbeweging, geen standaardwaarde in graden','a-inv':'combinatiebeweging, geen enkelvoudige normaalwaarde','a-ev':'combinatiebeweging, geen enkelvoudige normaalwaarde','a-sup':'AAOS: inversie','a-pro':'AAOS: eversie','s-habd':'geen eenduidige normaalwaarde','s-hadd':'geen eenduidige normaalwaarde','k-endo':'geen AAOS-waarde; alleen bij gebogen knie','k-exo':'geen AAOS-waarde; alleen bij gebogen knie'};
+function romLine(id){const r=ROM[id];if(!r||client)return '';
+  return `<div class="rom"><span><b>Normaal</b> ${r[0]?esc(r[0]):'—'}${ROMNOTE[id]?` <small>(${esc(ROMNOTE[id])})</small>`:''}</span>${r[1]?`<span><b>Eindgevoel</b> ${esc(r[1])}</span>`:''}</div>`;}
 const AXIS={F:'Frontale as',S:'Sagittale as',L:'Longitudinale (verticale) as',O:'Schuine (oblique) as',T:'Geen vaste as (glijbeweging)'};
 const REG=[{id:'bo',label:'Arm & schouder'},{id:'rp',label:'Romp & nek'},{id:'ol',label:'Heup & been'}];
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -475,7 +498,7 @@ function renderG(){
   $('planes').innerHTML=jt.planes.map((p,i)=>`<button aria-pressed="${i===pi}" data-p="${i}">${p.plane}</button>`).join('');
   $('axis').innerHTML=`<div class="axis">${mannequin(jt,pl)}<div><p class="lbl" style="margin:0 0 2px">${pl.axis==='T'?'Beweging':'Rotatie-as'}</p><strong>${AXIS[pl.axis]}</strong><p class="pvl">${esc(pl.plane)} · ${esc(jt.short)}</p>${pl.note?`<p class="pnote">${pl.note}</p>`:''}</div></div>`;
   $('cards').innerHTML=pl.moves.map(m=>{const o=m.an?findMove(m.an):null;return `<article class="card" id="c-${m.id}">
-    <div class="cardtop"><div><h3>${m.t}</h3><p class="def">${m.d}</p></div><div class="cardmap zoomable" role="button" tabindex="0" data-t="${esc(jt.short+' · '+m.t)}" aria-label="Lichaamskaart vergroten">${bodymap([...m.ag.map(([n])=>[n,'ag']),...m.sy.map(([n])=>[n,'sy']),...m.st.map(([n])=>[n,'st'])],{label:'Betrokken spieren bij '+m.t})}</div></div>
+    <div class="cardtop"><div><h3>${m.t}</h3><p class="def">${m.d}</p>${romLine(m.id)}</div><div class="cardmap zoomable" role="button" tabindex="0" data-t="${esc(jt.short+' · '+m.t)}" aria-label="Lichaamskaart vergroten">${bodymap([...m.ag.map(([n])=>[n,'ag']),...m.sy.map(([n])=>[n,'sy']),...m.st.map(([n])=>[n,'st'])],{label:'Betrokken spieren bij '+m.t})}</div></div>
     ${chips(m.ag,'r-ag','Agonisten (primair)')}
     ${chips(m.sy,'r-sy','Synergisten (ondersteunend)')}
     ${m.st.length?chips(m.st,'r-st','Stabilisatoren (fixatoren)'):''}
@@ -571,7 +594,29 @@ function archFact(k){
   const a=ARCH[k];if(!a)return '';const t=ARCH_TYPES[a[0]];
   return `<div class="fact arch"><b>Vezelarchitectuur</b><div class="archrow"><svg viewBox="0 0 48 48" aria-hidden="true">${ARCH_ICON[a[0]]}</svg><div><strong>${t.l}</strong><p>${esc(t.x)}${a[1]?' '+esc(a[1]):''}</p></div></div></div>`;
 }
+/* Groepschips uit de bewegingskaarten → groepskaart met leden */
+const GROUPX={'Rotator cuff':['M. Supraspinatus','M. Infraspinatus','M. Teres Minor','M. Subscapularis'],
+ 'M. Infraspinatus / Teres Minor / Subscapularis':['M. Infraspinatus','M. Teres Minor','M. Subscapularis'],
+ 'Buikwand':['M. Rectus Abdominis','M. Obliquus Externus Abdominis','M. Obliquus Internus Abdominis','M. Transversus Abdominis'],
+ 'Mm. Obliqui':['M. Obliquus Externus Abdominis','M. Obliquus Internus Abdominis'],
+ 'Diepe exorotatoren':['M. Piriformis','Diepe pelvitrochantaire spieren','M. Quadratus Femoris']};
+const GROUPNOTE={'Rotator cuff':'Vier spieren rond het schoudergewricht die de humeruskop in de kom centreren tijdens armbewegingen.',
+ 'M. Infraspinatus / Teres Minor / Subscapularis':'Deze drie delen van de rotator cuff trekken de humeruskop omlaag, zodat de deltoideus de arm kan heffen zonder dat de kop tegen het acromion schuift.',
+ 'Buikwand':'De buikspieren samen. Bij heupflexie houden ze het bekken op zijn plek, zodat het niet in anteversie kantelt.',
+ 'Mm. Obliqui':'De buitenste en binnenste schuine buikspier. Ze werken bij rotatie en lateroflexie van de romp gekruist samen.',
+ 'Diepe exorotatoren':'Kleine diepe spieren achter de heup die het bovenbeen naar buiten draaien en de heupkop stabiliseren.'};
+function groupOf(name){const b=base(name);return GROUPX[name]?name:GROUPX[b]?b:null;}
+function openGroup(g,name){
+  const ms=GROUPX[g];
+  const head=`<h3>${esc(g)}</h3>${name!==g?`<p class="foot" style="margin:0">${esc(name)}</p>`:''}`;
+  const body=`<div class="mdmap zoomable" role="button" tabindex="0" data-t="${esc(g)}" aria-label="Lichaamskaart vergroten" style="max-width:320px;margin:10px auto 0">${bodymap(ms.map(n=>[n,'on']),{label:'Ligging van '+g})}${bmLegend(['on'])}</div>
+   <p style="margin:12px 0 0">${esc(GROUPNOTE[g]||'')}</p>
+   <p class="sub">Spieren in deze groep</p><div class="mlist" style="margin-top:6px">${ms.map(k=>row(k,esc(client&&CLIENT[k]?CLIENT[k][1]:(DETAILS[k]?DETAILS[k].function:'')))).join('')}</div>`;
+  $('sheetRoot').innerHTML=`<div class="sheet-bg" data-close></div><div class="sheet wide" role="dialog" aria-label="${esc(g)}"><button class="close" aria-label="Sluiten">×</button>${head}${body}</div>`;
+  document.querySelector('.sheet-bg').onclick=closeSheet;
+}
 function openSheet(name){
+  if(!key(name)&&groupOf(name))return openGroup(groupOf(name),name);
   const k=key(name),d=k&&DETAILS[k],rows=rolesOf(k,name);
   const col={ag:'var(--coral)',sy:'var(--steel)',st:'var(--olive)'};
   const title=k||base(name);
@@ -655,7 +700,7 @@ function renderT(){
    <div class="res pos"><b>Positief</b>${esc(t.positief)}</div>
    <div class="res neg"><b>Negatief</b>${esc(t.negatief)}</div>
    ${t.gekoppeldeSpieren&&t.gekoppeldeSpieren.length?`<div class="role r-sy"><p>Gekoppelde spieren</p><div class="chips">${t.gekoppeldeSpieren.map(n=>`<button class="chip" data-m="${esc(n)}" style="padding-left:10px"><span class="n">${esc(n)}</span></button>`).join('')}</div></div>`:''}
-   ${t.bronLink?`<a class="ext" href="${esc(t.bronLink)}" target="_blank" rel="noopener noreferrer">Uitleg &amp; video op Physiotutors ↗</a>`:''}
+   ${t.bronLink?`<a class="ext" href="${esc(t.bronLink)}" target="_blank" rel="noopener noreferrer">${/physiotutors/.test(t.bronLink)?'Uitleg &amp; video op Physiotutors':'Achtergrond en onderzoek'} ↗</a>`:''}
   </article>`).join('');
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();});
