@@ -1,4 +1,4 @@
-const CACHE='rehaboom-v2-7';
+const CACHE='rehaboom-v2-8';
 const IMG='rehaboom-img';   // spierafbeeldingen: blijft bewaard bij updates
 const CORE=['./','./index.html','./data.js?v=25','./bodymap.js?v=25','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/maskable-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()));});

@@ -186,6 +186,20 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 .md-top.client .md-img img{max-height:340px}
 
 @media (max-width:520px){.tagl{display:none}}
+.tool{display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+.tool .tx{flex:1;min-width:0}.tool b{display:block;font-family:var(--f-display);font-weight:600;font-size:19px;line-height:1.1}
+.tool small{display:block;font-size:12px;color:var(--muted)}.tool .ar{color:var(--muted)}
+.tool-ic{flex:none;width:44px;height:44px;border-radius:10px;background:var(--olive-bg);color:var(--olive);display:grid;place-items:center}
+.tool-ic svg{width:30px;height:18px}
+.back{align-self:flex-start;min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 13.5px var(--f-body);cursor:pointer}
+.offl{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.offl-h{display:flex;gap:12px;align-items:center}.offl-h>div{flex:1;min-width:0}
+.offl-h b{font-size:14.5px}.offl-h p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+.offl-btn{flex:none;min-height:42px;padding:0 16px;border-radius:21px;border:0;background:var(--steel);color:var(--surface);font:600 13.5px var(--f-body);cursor:pointer}
+.offl-btn:disabled{opacity:.6;cursor:default}
+.offl-bar{height:6px;border-radius:3px;background:var(--steel-bg);overflow:hidden}
+.offl-bar span{display:block;height:100%;width:0;background:var(--steel);transition:width .2s}
+@media (prefers-reduced-motion:reduce){.offl-bar span{transition:none}}
 /* lichaamskaart */
 .bm{display:block;width:100%;height:auto}
 .bm-b{fill:var(--bm-body);stroke:var(--bm-edge);stroke-width:1}
@@ -228,13 +242,12 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 <header>
   <div class="wrap">
-    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.5</span><span class="tagl">Anatomisch &amp; kinesiologisch naslagwerk</span><button class="cmode" id="cmode" aria-pressed="false">Cliëntweergave</button></div>
+    <div class="brand"><h1>REHABOOM</h1><span class="ver">v2.6</span><span class="tagl">Anatomisch &amp; kinesiologisch naslagwerk</span><button class="cmode" id="cmode" aria-pressed="false">Cliëntweergave</button></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="0" aria-selected="true">Gewricht</button>
       <button class="tab" role="tab" data-tab="1" aria-selected="false">Spieren</button>
       <button class="tab" role="tab" data-tab="2" aria-selected="false">Oefeningen</button>
       <button class="tab" role="tab" data-tab="3" aria-selected="false">Testen</button>
-      <button class="tab" role="tab" data-tab="4" aria-selected="false">Insufficiëntie</button>
     </div>
   </div>
 </header>
@@ -258,6 +271,8 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
     <details>
       <summary>Wat is er veranderd in v2</summary>
       <ul>
+        <li>v2.6: terug naar 4 tabs; de insufficiëntie-simulator zit nu onder Spieren, bij de spierkaarten van twee-gewrichtsspieren en bij oefeningen.</li>
+        <li>v2.6: knop "Alles opslaan" (tab Spieren) zet alle spierafbeeldingen op je telefoon voor gebruik zonder bereik.</li>
         <li>v2.5: afbeeldingen nagelopen via de Wikimedia-beschrijvingen; 6 inhoudelijk foute plaatjes vervangen (o.a. latissimus, rechte en schuine buikspier, intercostales, adductor longus).</li>
         <li>v2.5: eigen afbeelding voor serratus anterior, pectoralis minor, adductor brevis, gracilis, pectineus en peroneus tertius: alle 91 spieren hebben nu een plaatje.</li>
         <li>v2.5: juiste bronvermelding en licentie per afbeelding, met link naar de bron. Verkleinde versies: animaties kosten geen 15 MB data meer.</li>
@@ -292,13 +307,18 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
     <section>
       <div class="search"><input id="q" type="search" placeholder="Zoek op spier, aanhechting, functie…" aria-label="Zoek spieren" autocomplete="off" enterkeyhint="search"><button id="qx" aria-label="Wissen" hidden>×</button></div>
     </section>
+    <button class="tool" data-sim="0"><span class="tool-ic" aria-hidden="true"><svg viewBox="0 0 40 24"><path d="M2 20C10 20 12 4 20 4S30 20 38 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="20" cy="4" r="3" fill="currentColor"/></svg></span><span class="tx"><b>Insufficiëntie-simulator</b><small>Twee-gewrichtsspieren op lengte: actief en passief insufficiënt</small></span><span class="ar">›</span></button>
     <section id="browse">
       <p class="lbl">Spiergroep</p>
       <div class="cats" id="cats"></div>
       <div id="subs" style="margin-top:12px"></div>
     </section>
     <section id="mres"></section>
-    <p class="foot">Afbeeldingen: Gray's Anatomy (publiek domein) en Anatomography (CC BY-SA 2.1 Japan), via Wikimedia Commons.</p>
+    <section class="offl" id="offl">
+      <div class="offl-h"><div><b>Offline gebruik</b><p id="offl-st">Controleren welke afbeeldingen al op dit toestel staan…</p></div><button id="offl-btn" class="offl-btn">Alles opslaan</button></div>
+      <div class="offl-bar" hidden><span id="offl-fill"></span></div>
+    </section>
+    <p class="foot">Afbeeldingen via Wikimedia Commons: Gray's Anatomy (publiek domein), Anatomography (CC BY-SA 2.1 JP) en enkele bewerkingen (CC BY-SA 3.0). Bron en licentie staan bij elke afbeelding.</p>
   </div>
 
   <div class="wrap" id="view-o" hidden>
@@ -314,6 +334,7 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
   </div>
 
   <div class="wrap" id="view-i" hidden>
+    <button class="back" id="ib">← Terug</button>
     <section>
       <p class="lbl">Twee-gewrichtsspier</p>
       <div class="seg" id="scen"></div>
@@ -479,7 +500,7 @@ document.addEventListener('click',e=>{
   else if(t.dataset.b!==undefined){b=+t.dataset.b;renderI();}
   else if(t.dataset.e!==undefined){ei=+t.dataset.e;renderO();$('exdetail').scrollIntoView({behavior:'auto',block:'start'});}
   else if(t.dataset.ex!==undefined){closeSheet();ei=+t.dataset.ex;switchTab(2);renderO();}
-  else if(t.dataset.sim!==undefined){si=+t.dataset.sim;a=0;b=0;switchTab(4);renderI();}
+  else if(t.dataset.sim!==undefined){closeSheet();si=+t.dataset.sim;a=0;b=0;switchTab(4);renderI();}
   else if(t.id==='cmode'){setClient(!client);}
   else if(t.classList.contains('close')){closeSheet();}
 });
@@ -545,6 +566,7 @@ const wpage=u=>u&&u.includes('Special:FilePath/')?'https://commons.wikimedia.org
 function sheetMap(k,t){
   return `<div class="mdmap zoomable" role="button" tabindex="0" data-t="${esc(t)}" aria-label="Lichaamskaart vergroten">${bodymap([[k,'on']],{label:'Ligging van '+t})}${bmLegend(['on'])}</div>`;
 }
+function simFor(k){return ({'M. Gastrocnemius':0,'M. Triceps Surae':0,'Hamstrings':1,'M. Biceps Femoris':1,'M. Semitendinosus':1,'M. Semimembranosus':1,'M. Rectus Femoris':2,'M. Biceps Brachii':3,'M. Triceps Brachii':4})[k]??null;}
 function archFact(k){
   const a=ARCH[k];if(!a)return '';const t=ARCH_TYPES[a[0]];
   return `<div class="fact arch"><b>Vezelarchitectuur</b><div class="archrow"><svg viewBox="0 0 48 48" aria-hidden="true">${ARCH_ICON[a[0]]}</svg><div><strong>${t.l}</strong><p>${esc(t.x)}${a[1]?' '+esc(a[1]):''}</p></div></div></div>`;
@@ -573,7 +595,7 @@ function openSheet(name){
        <div class="fact f"><b>Functie</b><p>${esc(d.function)}</p></div>
        ${d.direction?`<div class="fact d"><b>Vezelverloop</b><p>${esc(d.direction)}</p></div>`:''}
        ${archFact(k)}
-      </div>`;
+      </div>${simFor(k)!==null?`<button class="anta-link" style="margin-top:12px" data-sim="${simFor(k)}">Bekijk in de insufficiëntie-simulator →</button>`:''}`;
     }else body+=`<p class="foot">Voor deze spier(groep) staan nog geen oorsprong, aanhechting en functie in de dataset.</p>`;
     body+=`<p class="sub">Rol in ${rows.length} beweging${rows.length===1?'':'en'}</p>${rows.length?`<div>${rows.map(r=>`<button class="jump" data-jm="${r.id}"><span>${r.j} · ${r.m}${r.via?` <small style="color:var(--muted)">(als deel van ${esc(r.via)})</small>`:''}</span><em style="color:${col[r.r]}">${ROLE[r.r]} →</em></button>`).join('')}</div>`:'<p class="foot">Komt (nog) niet voor in de bewegingskaarten.</p>'}${exList}`;
   }
@@ -737,7 +759,7 @@ function curve(l){
   return `<svg viewBox="0 0 320 150" role="img" aria-label="Lengte-spanningscurve, spier op ${l}% van rustlengte">
    <rect class="band" x="${X(100)}" y="20" width="${X(130)-X(100)}" height="100"/>
    <line class="ax" x1="36" y1="120" x2="300" y2="120"/><line class="ax" x1="36" y1="18" x2="36" y2="120"/>
-   <text x="30" y="24" text-anchor="end">kracht</text>${tick}
+   <text x="40" y="14" text-anchor="start">kracht</text>${tick}
    <text x="300" y="148" text-anchor="end">lengte (% rustlengte)</text>
    <path class="ln" d="${d}"/>
    <g class="mk" style="transform:translate(${X(l)}px,${Y(F(l))}px)"><circle r="7" fill="var(--coral)" stroke="var(--surface)" stroke-width="2.5"/></g>
@@ -757,18 +779,58 @@ function renderI(){
    <div class="curve">${curve(r.l)}</div>`;
 }
 const VIEWS=['view-g','view-s','view-o','view-t','view-i'];
+let cur=0,prev=1;
 function switchTab(i){
+  if(i===4&&cur!==4)prev=cur;
+  cur=i;
   VIEWS.forEach((v,x)=>$(v).hidden=x!==i);
-  document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',+t.dataset.tab===i));
+  const shown=i===4?1:i; // simulator hoort bij Spieren
+  document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',+t.dataset.tab===shown));
   window.scrollTo(0,0);
-  try{localStorage.setItem('rb-tab',i)}catch(e){}
+  try{localStorage.setItem('rb-tab',i===4?1:i)}catch(e){}
 }
+$('ib').onclick=()=>switchTab(prev);
+
+/* ---------- Offline: alle spierafbeeldingen in één keer opslaan ---------- */
+const OFFL_URLS=()=>[...new Set(Object.values(DETAILS).filter(d=>d.image).flatMap(d=>[wimg(d.image,480),wimg(d.image,96)]))];
+async function offlCount(){
+  try{const c=await caches.open('rehaboom-img');const ks=new Set((await c.keys()).map(r=>r.url));
+    const urls=OFFL_URLS();return [urls.filter(u=>ks.has(new URL(u).href)).length,urls.length];}catch(e){return null;}
+}
+async function offlStatus(){
+  const st=$('offl-st'),btn=$('offl-btn');
+  if(!('caches' in window)||!('serviceWorker' in navigator)){st.textContent='Deze browser ondersteunt geen offline opslag.';btn.hidden=true;return;}
+  const n=await offlCount();if(!n){st.textContent='Offline status onbekend.';return;}
+  const per=Math.round(n[0]/2),tot=Math.round(n[1]/2);
+  if(n[0]>=n[1]){st.textContent=`Alle ${tot} spierafbeeldingen staan op dit toestel. De app werkt volledig zonder internet.`;btn.textContent='Opnieuw ophalen';}
+  else st.textContent=n[0]?`${per} van de ${tot} afbeeldingen staan op dit toestel. Sla de rest op voor gebruik zonder bereik.`:`Sla alle ${tot} spierafbeeldingen op (enkele tientallen MB) om ze ook zonder bereik te zien. Doe dit bij voorkeur via wifi.`;
+}
+async function offlSave(){
+  const btn=$('offl-btn'),st=$('offl-st'),bar=document.querySelector('.offl-bar'),fill=$('offl-fill');
+  if(!navigator.serviceWorker.controller){st.textContent='Offline opslag is nog niet actief. Sluit de app en open hem opnieuw, en probeer het dan nog eens.';return;}
+  try{if(navigator.storage&&navigator.storage.persist)await navigator.storage.persist();}catch(e){}
+  const urls=OFFL_URLS();let done=0,fail=0;
+  btn.disabled=true;btn.textContent='Bezig…';bar.hidden=false;
+  const one=async u=>{
+    try{const r=await fetch(u,{mode:'cors'});if(!r.ok)throw 0;}
+    catch(e){try{await fetch(u,{mode:'no-cors'});}catch(e2){fail++;}}
+    done++;fill.style.width=(done/urls.length*100)+'%';st.textContent=`Opslaan… ${done} van ${urls.length} bestanden`;
+  };
+  // rustig tempo: 3 tegelijk, korte pauze, zodat Wikimedia niet blokkeert
+  const q=urls.slice();
+  await Promise.all([0,1,2].map(async()=>{while(q.length){await one(q.shift());await new Promise(r=>setTimeout(r,120));}}));
+  btn.disabled=false;bar.hidden=true;
+  await offlStatus();
+  if(fail)st.textContent+=` ${fail} bestand${fail===1?'':'en'} niet gelukt; probeer het later nog eens.`;
+}
+$('offl-btn').onclick=offlSave;
+if('serviceWorker' in navigator)navigator.serviceWorker.ready.then(offlStatus).catch(()=>{});else offlStatus();
 let client=false;
 function setClient(v){client=v;document.documentElement.toggleAttribute('data-client',v);$('cmode').setAttribute('aria-pressed',v);try{localStorage.setItem('rb-client',v?'1':'')}catch(e){}renderG();renderS();renderO();closeSheet();}
 try{client=localStorage.getItem('rb-client')==='1'}catch(e){}
 document.documentElement.toggleAttribute('data-client',client);$('cmode').setAttribute('aria-pressed',client);
 renderG();renderS();renderO();renderT();renderI();
-try{const s=+localStorage.getItem('rb-tab');if(s>0&&s<5)switchTab(s)}catch(e){}
+try{const s=+localStorage.getItem('rb-tab');if(s>0&&s<4)switchTab(s)}catch(e){}
 </script>
 
 <script>
