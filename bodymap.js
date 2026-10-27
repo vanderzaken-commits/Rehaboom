@@ -154,3 +154,25 @@ function bodymap(hl,opt={}){
   const w=views.length*200+(views.length-1)*10;
   return `<svg class="bm${opt.cls?' '+opt.cls:''}" viewBox="0 0 ${w} 464" role="img" aria-label="${opt.label||'Lichaamskaart'}">${views.map((v,i)=>fig(v,i*210)).join('')}</svg>`;
 }
+
+/* Icoon: uitsnede van de lichaamskaart met één groep spieren ingekleurd.
+   Kiest automatisch voor- of achterzijde en snijdt bij op de ingekleurde spieren. */
+function bmIcon(names,opt={}){
+  const ids=[...new Set(names.flatMap(n=>bmShapesFor(n)))].filter(id=>BM[id]&&!BM[id].deep);
+  const use=ids.length?ids:[...new Set(names.flatMap(n=>bmShapesFor(n)))];
+  const f=use.filter(id=>BM[id].v==='F').length,b=use.filter(id=>BM[id].v==='B').length;
+  const v=opt.view||(b>f?'B':'F');
+  const sel=use.filter(id=>BM[id].v===v);
+  let x0=200,y0=460,x1=0,y1=0;
+  for(const id of sel)for(const [x,y] of BM[id].p){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+  const limb=x1<84;                         // ledemaat: alleen de linkerkant tonen
+  if(!limb){x0=Math.min(x0,200-x1);x1=Math.max(x1,200-x0);}
+  const pad=opt.pad??Math.max(16,(Math.max(x1-x0,y1-y0))*.28),cx=(x0+x1)/2,cy=(y0+y1)/2;
+  const size=Math.max(x1-x0,y1-y0)+pad*2;
+  const box=[cx-size/2,cy-size/2,size,size].map(n=>n.toFixed(1)).join(' ');
+  const outl=[],hit=[];
+  for(const id of BM_ORDER){if(BM[id].v!==v)continue;
+    const on=sel.includes(id);
+    for(const d of BM_PATH[id]){if(on)hit.push(`<path d="${d}" class="ic-m"/>`);else if(!BM[id].deep)outl.push(`<path d="${d}" class="ic-o"/>`);}}
+  return `<svg class="bmi" viewBox="${box}" aria-hidden="true"><path d="${BM_BODY}" class="ic-b"/><ellipse cx="100" cy="30" rx="15" ry="19" class="ic-b"/>${outl.join('')}${hit.join('')}</svg>`;
+}

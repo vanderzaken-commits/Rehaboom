@@ -244,6 +244,21 @@ button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 .zv-cr{font-size:11px;color:var(--muted);text-align:center;margin-top:8px}
 @media (prefers-reduced-motion:reduce){.zv-in{transition:none}}
 @media (max-width:420px){.joints{grid-template-columns:repeat(2,minmax(0,1fr))}.ctrl{grid-template-columns:1fr}.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* spiergroep-icoontjes */
+.cat{flex-direction:row!important;align-items:center;justify-content:flex-start!important;gap:10px}
+.cat>span{display:flex;flex-direction:column;min-width:0}
+.cat b{font-size:18px!important;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere;line-height:1.02}
+.bmi{width:48px;height:48px}
+.bmi{flex:none;width:44px;height:44px;border-radius:10px;background:var(--lightbox)}
+.bmi .ic-b{fill:#DCE0D5;stroke:#B4BBAE;stroke-width:1.2;vector-effect:non-scaling-stroke}
+.bmi .ic-o{fill:none;stroke:#C5CABD;stroke-width:.7;vector-effect:non-scaling-stroke}
+.bmi .ic-m{fill:#B44A27;stroke:#8F3A1E;stroke-width:.6;vector-effect:non-scaling-stroke}
+.cat[aria-pressed="true"] .bmi{background:color-mix(in srgb,var(--surface) 14%,transparent)}
+.cat[aria-pressed="true"] .bmi .ic-b{fill:color-mix(in srgb,var(--surface) 32%,transparent);stroke:color-mix(in srgb,var(--surface) 45%,transparent)}
+.cat[aria-pressed="true"] .bmi .ic-o{stroke:color-mix(in srgb,var(--surface) 30%,transparent)}
+.cat[aria-pressed="true"] .bmi .ic-m{fill:#E0754F;stroke:#E0754F}
+.exlbl{display:flex;align-items:center;gap:10px;font-size:15px!important}
+.exlbl .bmi{width:34px;height:34px;border-radius:9px}
 /* ===== v3 premium =====
    Layout: compacte inktbalk boven, onderbalk voor duimbediening, grote titel per onderdeel;
    één opvallend element: de lichtbak waarin spierafbeeldingen zonder kader op een egale ondergrond staan. */
@@ -385,7 +400,7 @@ details{border:0;box-shadow:0 0 0 1px var(--line) inset;border-radius:var(--r-ca
 
 <header class="top">
   <div class="wrap top-in">
-    <div class="brand"><h1>REHABOOM</h1><span class="ver">v3.0</span></div>
+    <div class="brand"><h1>REHABOOM</h1><span class="ver">v3.1</span></div>
     <button class="cmode" id="cmode" aria-pressed="false" aria-label="Cliëntweergave"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.8 3.6-6 7-6s6.2 2.2 7 6"/></svg><span>Cliënt</span></button>
   </div>
 </header>
@@ -417,6 +432,7 @@ details{border:0;box-shadow:0 0 0 1px var(--line) inset;border-radius:var(--r-ca
     <details>
       <summary>Versiegeschiedenis</summary>
       <ul>
+        <li>v3.1: eigen anatomische icoontjes per spiergroep en per oefeningcategorie, getekend uit de lichaamskaart.</li>
         <li>v3.0: nieuw ontwerp: onderbalk met iconen voor duimbediening, grote paginatitels, gewrichtstegels met silhouet, lichtbak voor spierafbeeldingen en rustigere typografie.</li>
         <li>v2.8: realistische 3D-renders (Anatomography/BodyParts3D) bij 54 van de 91 spieren; de render is nu het hoofdbeeld van de spierkaart.</li>
         <li>v2.8: strook met afbeeldingen van de agonisten op elke bewegingskaart en van de hoofdspieren bij elke oefening.</li>
@@ -502,7 +518,7 @@ details{border:0;box-shadow:0 0 0 1px var(--line) inset;border-radius:var(--r-ca
 <div id="sheetRoot"></div>
 
 <script src="data.js?v=28"></script>
-<script src="bodymap.js?v=27"></script>
+<script src="bodymap.js?v=31"></script>
 <script>
 const M='M',B='B',P='P';
 const J=[
@@ -813,6 +829,17 @@ function goMove(id){
 
 /* ---------- Op spier ---------- */
 const CATS=Object.keys(GROUPS);
+/* Eigen icoon per spiergroep: kernspieren van de groep op de lichaamskaart */
+const CAT_IC={'Nek':['M. Sternocleidomastoideus','Mm. Scaleni'],'Borst':['M. Pectoralis Major','M. Serratus Anterior'],
+ 'Rug':['M. Trapezius','M. Latissimus Dorsi','M. Erector Spinae'],'Buik & romp':['M. Rectus Abdominis','M. Obliquus Externus Abdominis'],
+ 'Armen':['M. Deltoideus','M. Biceps Brachii','M. Brachioradialis','M. Flexor Carpi Radialis','M. Palmaris Longus','M. Flexor Carpi Ulnaris'],
+ 'Heup':['M. Gluteus Maximus','M. Gluteus Medius'],'Benen':['M. Rectus Femoris','M. Vastus Lateralis / Medialis / Intermedius','Adductoren','M. Sartorius'],
+ 'Onderbenen':['M. Gastrocnemius','M. Soleus']};
+const CAT_VIEW={'Armen':'F','Onderbenen':'B','Heup':'B','Rug':'B'};
+const _ic={};
+function catIcon(c){return _ic[c]||(_ic[c]=bmIcon(CAT_IC[c]||GROUPS[c].flatMap(g=>g.muscles),{view:CAT_VIEW[c]}));}
+const EX_IC={'Onderlichaam':[['M. Gluteus Maximus','M. Vastus Lateralis / Medialis / Intermedius','M. Rectus Femoris'],'F'],
+ 'Bovenlichaam':[['M. Pectoralis Major','M. Deltoideus','M. Biceps Brachii'],'F'],'Romp':[['M. Rectus Abdominis','M. Obliquus Externus Abdominis'],'F']};
 let ci=0,gi=0;
 const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
 function thumb(k){const d=DETAILS[k];return d&&d.image?`<img class="th" src="${esc(wimg(d.image,96))}" alt="" loading="lazy" onerror="this.outerHTML='<span class=th></span>'">`:'<span class="th"></span>';}
@@ -836,7 +863,7 @@ function renderS(){
     $('mres').innerHTML=`<p class="hits">${hit.length} spier${hit.length===1?'':'en'} gevonden</p>${hit.length?`<div class="mlist">${hit.map(h=>row(h[1],h[2])).join('')}</div>`:''}`;
     return;
   }
-  $('cats').innerHTML=CATS.map((c,i)=>`<button class="cat" aria-pressed="${i===ci}" data-c="${i}"><b>${c}</b><small>${GROUPS[c].reduce((n,g)=>n+g.muscles.length,0)} spieren</small></button>`).join('');
+  $('cats').innerHTML=CATS.map((c,i)=>`<button class="cat" aria-pressed="${i===ci}" data-c="${i}">${catIcon(c)}<span><b>${c}</b><small>${GROUPS[c].reduce((n,g)=>n+g.muscles.length,0)} spieren</small></span></button>`).join('');
   const gs=GROUPS[CATS[ci]];
   $('subs').innerHTML=gs.length>1?`<div class="seg">${gs.map((g,i)=>`<button aria-pressed="${i===gi}" data-g="${i}">${g.label}</button>`).join('')}</div>`:'';
   const g=gs[Math.min(gi,gs.length-1)];
@@ -904,7 +931,7 @@ function exChips(list,cls,title){
 }
 function renderO(){
   const e=EX[ei];
-  $('excats').innerHTML=EXCATS.map(c=>`<div><p class="lbl">${c}</p><div class="exgrid">${EX.map((x,i)=>x.cat!==c?'':`<button class="ex" aria-pressed="${i===ei}" data-e="${i}">${x.n}</button>`).join('')}</div></div>`).join('');
+  $('excats').innerHTML=EXCATS.map(c=>`<div><p class="lbl exlbl">${EX_IC[c]?bmIcon(EX_IC[c][0],{view:EX_IC[c][1]}):''}${c}</p><div class="exgrid">${EX.map((x,i)=>x.cat!==c?'':`<button class="ex" aria-pressed="${i===ei}" data-e="${i}">${x.n}</button>`).join('')}</div></div>`).join('');
   const ms=exMuscles(e),by=r=>ms.filter(x=>x.r===r);
   const acts=e.acts.map(([id,t,note])=>{const [j,m]=moveLabel(id);return `<button class="jump" data-jm="${id}"><span><b>${j}</b> ${m.charAt(0).toLowerCase()+m.slice(1)}${note?` <small style="color:var(--muted)">(${esc(note)})</small>`:''}</span><em class="${t==='c'?'tc':'ti'}">${t==='c'?'Concentrisch':'Isometrisch'}</em></button>`}).join('');
   $('exdetail').innerHTML=`<article class="card" id="exc">
