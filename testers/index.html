@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#14212b">
+  <title>Testers en updates | Rehaboom</title>
+  <link rel="icon" href="/icons/icon-192.png">
+  <link rel="stylesheet" href="/testers/panel.css">
+  <script src="/testers/panel.js" defer></script>
+</head>
+<body>
+  <header><nav aria-label="Rehaboom"><a href="/">REHABOOM</a><a href="/">Terug naar de app</a></nav></header>
+  <main>
+    <h1 id="title">Testers en updates</h1>
+    <p id="feedback" role="status" aria-live="polite" hidden></p>
+    <section id="tester" class="card" aria-labelledby="tester-title" hidden>
+      <h2 id="tester-title">Persoonlijke testuitnodiging</h2>
+      <form id="invite">
+        <p>Heb je een persoonlijke link ontvangen? Open die link of plak hem hieronder.</p>
+        <label for="invite-code">Persoonlijke testlink</label>
+        <input id="invite-code" required autocomplete="off" spellcheck="false">
+        <button>Uitnodiging openen</button>
+      </form>
+      <div id="invited" hidden>
+        <p id="greeting"></p>
+        <p>Als je start, bewaart Rehaboom je eerste en meest recente bezoek bij je testerlabel. De beheerder kan deze tijden zien. Je kunt je testdeelname op dit toestel stoppen.</p>
+        <button id="start" type="button">Start de test</button>
+      </div>
+      <div id="active" hidden>
+        <p id="active-name"></p>
+        <h3>Updateberichten</h3>
+        <p>Je kunt meldingen voor nieuwe versies aanzetten op dit toestel. Op iPhone of iPad open je Rehaboom hiervoor vanaf je beginscherm.</p>
+        <div class="row">
+          <button id="enable" type="button" disabled>Meldingen aanzetten</button>
+          <button id="disable" type="button" class="secondary" hidden>Meldingen uitzetten</button>
+          <a class="button secondary" href="/">Open Rehaboom</a>
+        </div>
+        <button id="leave" type="button" class="quiet">Stop testdeelname op dit toestel</button>
+      </div>
+      <p class="admin-link"><a href="?beheer">Naar testerbeheer</a></p>
+    </section>
+    <section id="login" class="card" aria-labelledby="login-title" hidden>
+      <h2 id="login-title">Beheer inloggen</h2>
+      <form id="login-form">
+        <label for="admin-code">Beheercode</label>
+        <input id="admin-code" type="password" required autocomplete="current-password" spellcheck="false">
+        <button>Open testerbeheer</button>
+      </form>
+    </section>
+    <div id="admin" hidden>
+      <div class="toolbar"><button id="refresh" type="button" class="secondary">Vernieuw overzicht</button><button id="logout" type="button" class="quiet">Uitloggen</button></div>
+      <section class="card" aria-labelledby="list-title">
+        <h2 id="list-title">Testers</h2>
+        <p>Maak per tester een eigen link. Deel iedere link alleen met de bedoelde tester. Tijden staan in Nederlandse tijd.</p>
+        <form id="create">
+          <label for="name">Naam of herkenbaar label</label>
+          <input id="name" maxlength="60" required autocomplete="off">
+          <button>Maak persoonlijke link</button>
+        </form>
+        <div id="new-invite" hidden><label for="new-link">Nieuwe persoonlijke testlink</label><input id="new-link" readonly></div>
+        <p id="empty">Er zijn nog geen testers.</p>
+        <div id="table-wrap" class="table-wrap" hidden>
+          <table>
+            <thead><tr><th scope="col">Tester</th><th scope="col">Eerste bezoek</th><th scope="col">Laatste bezoek</th><th scope="col">Pushapparaten</th><th scope="col">Acties</th></tr></thead>
+            <tbody id="testers"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card" aria-labelledby="update-title">
+        <h2 id="update-title">Pushbericht sturen</h2>
+        <p>Dit bericht gaat naar apparaten waarop testers meldingen hebben aangezet.</p>
+        <form id="send">
+          <label for="message-title">Titel</label>
+          <input id="message-title" value="Nieuwe Rehaboom-update" maxlength="70" required>
+          <label for="message">Bericht</label>
+          <textarea id="message" rows="3" maxlength="200" required placeholder="Wat is er nieuw in deze versie?"></textarea>
+          <button>Verstuur pushbericht</button>
+        </form>
+        <p id="send-result" role="status" aria-live="polite" hidden></p>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

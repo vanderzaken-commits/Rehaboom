@@ -1,35 +1,15 @@
-# REHABOOM v2 — installeren op Android
+# REHABOOM v4.10 (Premium)
 
-Dit is een PWA: een web-app die je als app op je telefoon installeert. Na de eerste keer openen werkt hij ook offline.
+Broncode van de versie die op https://rehaboom.vercel.app draait (deployment van 18 november 2026).
 
-## 1. Online zetten (kies één)
+## Bouwen
+`npm run build` controleert de scripts en kopieert de app naar `dist/`. Een build uit deze map levert exact dezelfde bestanden op als de live versie.
 
-**Vercel, zonder GitHub (snelst)**
-1. Ga op je computer naar vercel.com → *Add New* → *Project*.
-2. Sleep de map `rehaboom-pwa` in het uploadvenster.
-3. Framework: *Other*. Geen build-commando nodig. Klik *Deploy*.
+## Let op: servercode ontbreekt nog
+De live versie heeft drie serverfuncties die niet uit Vercel terug te halen waren:
+- `api/favorites.js` (favorieten synchroniseren)
+- `api/portal.js` (versleuteld cliëntportaal)
+- `api/testers.js` (testerspaneel)
+- en `lib/favorites.mjs`, `package-lock.json` en `tests/`
 
-**Vercel via GitHub (automatische updates)**
-1. Maak een nieuwe repo, zet de inhoud van deze map erin en push.
-2. Importeer de repo in Vercel. Framework: *Other*.
-3. Elke `git push` zet daarna automatisch een nieuwe versie live.
-
-## 2. Installeren op je Samsung / Android
-
-1. Open de Vercel-link in **Chrome** op je telefoon.
-2. Tik op ⋮ (rechtsboven) → **App installeren** (of *Toevoegen aan startscherm*).
-3. REHABOOM staat nu als app op je startscherm, zonder adresbalk.
-
-## 3. Updates
-
-Pas `index.html` aan en zet de nieuwe versie online. Verhoog dan ook het versienummer in `sw.js` (`rehaboom-v2-6` → `rehaboom-v2-7`), zodat telefoons de nieuwe versie ophalen. Sluit en open de app één keer om de update te zien.
-
-## Bestanden
-
-- `index.html` — de app (schermen en logica)
-- `data.js` — spierdata (91 spieren) en de 9 tests
-- `bodymap.js` — eigen lichaamskaart (voor- en achterzijde) met alle spiervormen
-- `manifest.webmanifest` — naam, kleuren en iconen voor installatie
-- `sw.js` — offline ondersteuning
-- `icons/` — app-iconen
-- `vercel.json` — zorgt dat updates direct worden opgepikt
+Zet deze bestanden in deze branch voordat je hem samenvoegt met `main`. Zonder deze bestanden zou een automatische deploy vanuit `main` die functies uitschakelen.

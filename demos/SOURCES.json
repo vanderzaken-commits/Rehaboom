@@ -1,0 +1,115 @@
+{
+  "bench": {
+    "src": "demos/bench.mp4",
+    "title": "Bench press op Smithmachine",
+    "author": "Goulart",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source": "https://wger.de/api/v2/exerciseinfo/73/",
+    "original": "https://wger.de/media/exercise-video/73/2bdb390c-312c-4497-a722-5eed2c823e5a.MOV",
+    "adaptation": "Verkleind naar maximaal 480p, H.264; geluid verwijderd.",
+    "retrieved": "2026-11-06",
+    "variant": "Deze video toont de Smithmachinevariant. Een vrije halter vraagt een andere stabilisatie en uitvoering."
+  },
+  "rdl": {
+    "src": "demos/rdl.mp4",
+    "title": "Roemeense deadlift met dumbbells",
+    "author": "Goulart",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source": "https://wger.de/api/v2/exerciseinfo/507/",
+    "original": "https://wger.de/media/exercise-video/507/307e7276-a14d-4ea0-b579-f5b0dbc6f5af.MOV",
+    "adaptation": "Verkleind naar maximaal 480p, H.264; geluid verwijderd.",
+    "retrieved": "2026-11-06",
+    "variant": "Deze video toont dumbbells. Kies de belasting en materiaalvariant uit je persoonlijke programma."
+  },
+  "thrust": {
+    "src": "demos/thrust.mp4",
+    "title": "Hip Thrust",
+    "author": "Goulart",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source": "https://wger.de/api/v2/exerciseinfo/294/",
+    "original": "https://wger.de/media/exercise-video/294/45bacf4b-1bb6-4d47-8bd1-9f00eddd4019.MOV",
+    "adaptation": "Verkleind naar maximaal 480p, H.264; geluid verwijderd.",
+    "retrieved": "2026-11-06"
+  },
+  "lunge": {
+    "src": "demos/lunge.mp4",
+    "title": "Dumbbell Lunges Walking",
+    "author": "Goulart",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source": "https://wger.de/api/v2/exerciseinfo/206/",
+    "original": "https://wger.de/media/exercise-video/206/47a65c45-6fd1-4181-b71a-3a6c882e516b.MOV",
+    "adaptation": "Verkleind naar maximaal 480p, H.264; geluid verwijderd.",
+    "retrieved": "2026-11-06"
+  },
+  "curl-l": {
+    "src": "demos/curl-l.mp4",
+    "title": "Leg Curls (laying)",
+    "author": "Goulart",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source": "https://wger.de/api/v2/exerciseinfo/365/",
+    "original": "https://wger.de/media/exercise-video/365/becaf013-5044-40d0-bae9-7ed60c973737.MOV",
+    "adaptation": "Verkleind naar maximaal 480p, H.264; geluid verwijderd.",
+    "retrieved": "2026-11-06"
+  },
+  "calf-z": {
+    "src": "demos/calf-z.mp4",
+    "title": "Sitting Calf Raises",
+    "author": "Goulart",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source": "https://wger.de/api/v2/exerciseinfo/590/",
+    "original": "https://wger.de/media/exercise-video/590/a325ae2e-686b-4a1f-aff2-ba37fa3fa157.MOV",
+    "adaptation": "Verkleind naar maximaal 480p, H.264; geluid verwijderd.",
+    "retrieved": "2026-11-06"
+  },
+  "calf-s": {
+    "src": "demos/calf-s.mp4",
+    "title": "Standing Calf Raises",
+    "author": "Goulart",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source": "https://wger.de/api/v2/exerciseinfo/622/",
+    "original": "https://wger.de/media/exercise-video/622/461171e5-2b16-407d-bf27-27aeef43f105.MOV",
+    "adaptation": "Verkleind naar maximaal 480p, H.264; geluid verwijderd.",
+    "retrieved": "2026-11-06"
+  },
+  "latraise": {
+    "src": "demos/latraise.mp4",
+    "title": "Lateral Raises",
+    "author": "Goulart",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source": "https://wger.de/api/v2/exerciseinfo/348/",
+    "original": "https://wger.de/media/exercise-video/348/de69928a-8a35-4096-821c-1f46de5e0e03.MOV",
+    "adaptation": "Verkleind naar maximaal 480p, H.264; geluid verwijderd.",
+    "retrieved": "2026-11-06"
+  },
+  "curl": {
+    "src": "demos/curl.mp4",
+    "title": "Biceps Curls With Dumbbell",
+    "author": "Goulart",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source": "https://wger.de/api/v2/exerciseinfo/92/",
+    "original": "https://wger.de/media/exercise-video/92/8bfb917c-3d0d-49b9-8073-5d7e01c1b894.MOV",
+    "adaptation": "Verkleind naar maximaal 480p, H.264; geluid verwijderd.",
+    "retrieved": "2026-11-06"
+  },
+  "pullup": {
+    "src": "demos/pullup.mp4",
+    "title": "Pull-up met bovenhandse greep",
+    "author": "Goulart",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source": "https://wger.de/api/v2/exerciseinfo/475/",
+    "original": "https://wger.de/media/exercise-video/475/83067ffe-ccb9-4e22-8507-5131b211ce74.MOV",
+    "adaptation": "Verkleind naar maximaal 480p, H.264; geluid verwijderd.",
+    "retrieved": "2026-11-06",
+    "variant": "De greepbreedte in de bronvideo kan afwijken van jouw programma."
+  }
+}
