@@ -262,6 +262,31 @@
       return v(...data.bones[bones.indexOf(bone(tailName))][2]).sub(v(...data.bones[bones.indexOf(bone(name))][2]));
     }
     const upper = endpoint('upperarm01','lowerarm01');
+    // Educational surface regions on the rig; these are schematic, not segmented MRI anatomy.
+    const deltoidAxis=upper.clone().normalize();
+    const deltoidLateral=v(-1,0,0).projectOnPlane(deltoidAxis).normalize();
+    const deltoidFront=v(0,0,1).projectOnPlane(deltoidAxis).normalize();
+    const restShoulder=v(...data.bones[bones.indexOf(bone('upperarm01'))][2]);
+    const originalColors=geom.attributes.color.array.slice();
+    const deltoidRegions=[[],[],[]];
+    for(let i=0;i<geom.attributes.position.count;i++){
+      const p=v().fromBufferAttribute(geom.attributes.position,i).sub(restShoulder);
+      const along=p.dot(deltoidAxis), radial=p.clone().addScaledVector(deltoidAxis,-along);
+      if(along<-.38||along>upper.length()*.62||radial.length()<.22||radial.length()>.98)continue;
+      const angle=Math.atan2(radial.dot(deltoidFront),radial.dot(deltoidLateral));
+      if(Math.abs(angle)>Math.PI*.73)continue;
+      deltoidRegions[angle>.48?0:angle<-.48?2:1].push(i);
+    }
+    let paintedDeltoid=null;
+    function paintDeltoid(index){
+      const selected=Number.isInteger(index)?index:null;
+      if(selected===paintedDeltoid)return;
+      const colors=geom.attributes.color.array;
+      colors.set(originalColors);
+      if(selected!==null)for(const i of deltoidRegions[selected]||[]){colors[i*3]=210;colors[i*3+1]=52;colors[i*3+2]=72;}
+      geom.attributes.color.needsUpdate=true;
+      paintedDeltoid=selected;
+    }
     const lower = endpoint('lowerarm01','wrist');
     const thigh = endpoint('upperleg01','lowerleg01');
     const shin = endpoint('lowerleg01','foot');
@@ -462,6 +487,13 @@
         lastId=cameraKey;
       }
       const {joint,tip}=pose(kind,blend(start,end,progress));
+      paintDeltoid(muscle?.deltoid);
+      if(Number.isInteger(muscle?.deltoid)){
+        const i=muscle.deltoid;
+        const offset=upper.clone().multiplyScalar(.24).addScaledVector(deltoidLateral,.54).addScaledVector(deltoidFront,i===0?.36:i===2?-.36:0);
+        const [mx,my]=project(worldPoint('upperarm01',offset));
+        svg.dataset.muscleX=String(mx/420*100);svg.dataset.muscleY=String(my/350*100);
+      }else{delete svg.dataset.muscleX;delete svg.dataset.muscleY;}
       scapula.visible=mark&&['elevate','scapular','girdle'].includes(kind);
       renderer.render(scene,camera);
       const [jx,jy]=project(joint);
@@ -597,3 +629,4 @@
 
   window.rbMotion3d={ definitions,draw,prepare,drawLesson };
 })();
+

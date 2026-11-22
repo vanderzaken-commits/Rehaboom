@@ -1,15 +1,16 @@
-# REHABOOM v4.10 (Premium)
+# REHABOOM v4.15
 
-Broncode van de versie die op https://rehaboom.vercel.app draait (deployment van 18 november 2026).
+Volledige oorspronkelijke broncode van deployment dpl_Cm1T7yNpqPLUp35pBcT7J8qj6jcF (21 november 2026), inclusief de drie serverfuncties, lib/favorites.mjs en package-lock.json. Alle 298 bronbestanden zijn per SHA1 gecontroleerd; zie docs/v4.15-source-sha1.json.
+
+Deze herstelbranch behoudt de oorspronkelijke v4.15-code. Niet rechtstreeks deployen of samenvoegen: eerst onafhankelijke controle door Claude volgens AGENTS.md en CLAUDE.md.
 
 ## Bouwen
-`npm run build` controleert de scripts en kopieert de app naar `dist/`. Een build uit deze map levert exact dezelfde bestanden op als de live versie.
 
-## Let op: servercode ontbreekt nog
-De live versie heeft drie serverfuncties die niet uit Vercel terug te halen waren:
-- `api/favorites.js` (favorieten synchroniseren)
-- `api/portal.js` (versleuteld cliëntportaal)
-- `api/testers.js` (testerspaneel)
-- en `lib/favorites.mjs`, `package-lock.json` en `tests/`
+npm ci
+npm run build
 
-Zet deze bestanden in deze branch voordat je hem samenvoegt met `main`. Zonder deze bestanden zou een automatische deploy vanuit `main` die functies uitschakelen.
+De oorspronkelijke build wijzigt sw.js en verrijkt de build-uitvoer. Dit wordt in de opvolgende herstelwijziging opgelost. De oorspronkelijke tests/ is niet in Vercel opgenomen en kon dus niet worden hersteld. Gerichte vervangende tests volgen in de opvolgende branch; npm test slaagt op deze historische snapshot nog niet.
+
+## Bekende punten
+
+Drie ontbrekende mediapaden blokkeren de serviceworker-installatie. De ontbrekende ROM-waarden, twee spierkaartkoppelingen, combinatiekaarten en mobiele knop worden apart onderzocht. Voetterminologie blijft ongewijzigd in afwachting van Harry’s keuze.
