@@ -20,3 +20,10 @@ for (const file of ['entry.js', 'panel.js', 'push.js']) {
 }
 if (!/<\/body>/i.test(html)) throw new Error('Missing app document body.');
 writeFileSync('dist/index.html',html.replace(/<\/body>/i,'<script defer src="/testers/entry.js?v=1"></script>\n</body>'));
+const worker=readFileSync('sw.js','utf8');
+const push=readFileSync('testers/push.js','utf8');
+const bypass="if(url.origin===location.origin&&url.pathname.startsWith('/api/'))return;";
+if (!worker.includes(bypass)) throw new Error('Update the service worker route exclusions.');
+writeFileSync('dist/sw.js',worker.replace(bypass,
+ "if(url.origin===location.origin&&(/^\\/(api|testers)(\\/|$)/).test(url.pathname))return;")+'\n'+push);
+console.log('Static app built; inline and upgrade scripts parsed.');
