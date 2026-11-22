@@ -1,4 +1,4 @@
-import {readFileSync, readdirSync, mkdirSync, copyFileSync, writeFileSync} from 'node:fs';
+import {readFileSync, readdirSync, mkdirSync, copyFileSync, rmSync} from 'node:fs';
 import vm from 'node:vm';
 const html=readFileSync('index.html','utf8');
 for (const [,s] of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)) new vm.Script(s);
@@ -14,16 +14,10 @@ function copy(dir='') {
   }
  }
 }
+rmSync('dist',{recursive:true,force:true});
 copy();
 for (const file of ['entry.js', 'panel.js', 'push.js']) {
  new vm.Script(readFileSync('testers/'+file,'utf8'));
 }
 if (!/<\/body>/i.test(html)) throw new Error('Missing app document body.');
-writeFileSync('dist/index.html',html.replace(/<\/body>/i,'<script defer src="/testers/entry.js?v=1"></script>\n</body>'));
-const worker=readFileSync('sw.js','utf8');
-const push=readFileSync('testers/push.js','utf8');
-const bypass="if(url.origin===location.origin&&url.pathname.startsWith('/api/'))return;";
-if (!worker.includes(bypass)) throw new Error('Update the service worker route exclusions.');
-writeFileSync('dist/sw.js',worker.replace(bypass,
- "if(url.origin===location.origin&&(/^\\/(api|testers)(\\/|$)/).test(url.pathname))return;")+'\n'+push);
-console.log('Static app built; inline and upgrade scripts parsed.');
+console.log('Static app built; source files copied unchanged.');
