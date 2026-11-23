@@ -78,3 +78,6 @@ Scherm: 7. Knop "Professional" rechtsboven valt ±10 px buiten een 390 px-scherm
 * 2026-11-22 — Codex: alle 298 oorspronkelijke v4.15-bestanden per SHA1 hersteld. Lokale v4.16-herstelwijziging en 13 gerichte tests voorbereid. GitHub-overdracht is nog onvolledig: automatische goedkeuringscontrole blokkeert openbare publicatie van servercode. Niet mergen of als voltooid beschouwen. Zie LEESMIJ.md.
 
 * 2026-11-22 — Codex: Harry heeft openbare publicatie inclusief servercode expliciet toegestaan. v4.15-live is volledig aangevuld en alle 298 oorspronkelijke bronbestanden zijn ook op GitHub per SHA1 gecontroleerd. v4.16 volgt als afzonderlijke herstelbranch. Geen merge naar main of productierelease uitgevoerd. De oorspronkelijke tests waren niet beschikbaar; 13 vervangende tests zijn toegevoegd in v4.16. Onafhankelijke controle door Claude en echte mobiele/offline/push-controle blijven vóór merge nodig.
+
+* 2026-11-23 — Codex: Harry vraagt expliciet alle 3D-animaties te bouwen. v4.17 voegt oorspronkelijke schematische 3D-details en gezamenlijke camera-/afspeelbediening toe op codex/v4.17-alle-3d-animaties. Bestanden: index.html, motion-3d.js, nieuwe motion-details.js en motion-controls.js, premium.js/css, sw.js, packagebestanden, scripts/build.mjs en tests/motion.test.mjs. Geen directe productie-deploy; onafhankelijke baselinecontrole blijft open.
+	
