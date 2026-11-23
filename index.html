@@ -553,13 +553,13 @@ details{border:0;box-shadow:0 0 0 1px var(--line) inset;border-radius:var(--r-ca
 .mf details summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:600}
 .mf details p{margin:0}
 </style>
-<link rel="stylesheet" href="upgrade.css?v=39"><link rel="stylesheet" href="premium.css?v=43-share"></head>
+<link rel="stylesheet" href="upgrade.css?v=39"><link rel="stylesheet" href="premium.css?v=417"></head>
 <body>
 
 
 <header class="top">
   <div class="wrap top-in">
-    <div class="brand"><h1>REHABOOM</h1><span class="ver">Premium · 4.16</span></div>
+    <div class="brand"><h1>REHABOOM</h1><span class="ver">Premium · 4.17</span></div>
     <button class="collection-toggle" id="collection-toggle" aria-label="Mijn collectie en apparaten">Mijn collectie</button>
     <button class="app-share" type="button" data-care="share-app" aria-label="Deel testlink" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h4m-7 4h3m4-7v7"/></svg><span>Deel testlink</span></button>
     <button class="theme-toggle" id="theme-toggle" aria-label="Donkere weergave" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14A8.7 8.7 0 0 1 10 3.5 8.7 8.7 0 1 0 20.5 14Z"/></svg></button>
@@ -1975,6 +1975,7 @@ function muscleFunctionMarkup(key) {
     <button type="button" data-mf-play disabled>Afspelen</button>
     <label>Bewegingsfase<input type="range" min="0" max="100" value="0" data-mf-progress disabled></label>
    </div>
+   ${window.rbMotionControls.markup()}
    <details><summary>Vlak en as</summary><p data-mf-axis></p></details>
  </section>`;
 }
@@ -1990,7 +1991,8 @@ function prepareMuscleFunction(section) {
  const motion=window.rbMotion3d;
  const hotspot=read('[data-mf-muscle-hit]'),explanation=read('[data-mf-muscle-explanation]');
  let explanationOpen=false;
- let ready=false, modelState=null, frame=0, last=0, chosen=0, progress=0, lastLocation;
+ let ready=false, modelState=null, frame=0, last=0, chosen=0, progress=0, lastLocation, travel=1;
+ const viewer=window.rbMotionControls.mount(section,svg,render);
  function stop(){
   cancelAnimationFrame(frame);
   frame=0;
@@ -2004,14 +2006,14 @@ function prepareMuscleFunction(section) {
   if(compare)read('[data-mf-calf]').hidden=!compareVisible;
   const shown=compareVisible?compare.value:highlight;
   const label=shown==='both'?'Gastrocnemius en soleus':shown==='gastrocnemius'?'Gastrocnemius':shown==='soleus'?'Soleus':groups[Number(part?.value||0)][0]||key;
-  const local=Boolean(MF_LOCAL[id]);
+  const local=Boolean(MF_LOCAL[id])&&!motion?.definitions[id];
   const companions=Boolean(highlight&&id==='g-urot');
   const shownDescription=compareVisible?(shown==='both'?'Beide spieren bewegen de voet omlaag via de achillespees. De gastrocnemius werkt ook over de knie.':shown==='soleus'?MUSCLE_FUNCTIONS['M. Soleus'][0][2][0][3]:MUSCLE_FUNCTIONS['M. Gastrocnemius'][0][2][0][3]):description;
   const bundle=partIndex===undefined?null:MUSCLE_PARTS[source]?.[partIndex];
   const detail=bundle?bundle[client?2:1]:'';
   const infoHtml=`<strong>${esc(role)}</strong> · ${esc(shownDescription)}${detail?`<small class="mf-bundle-note">${esc(detail)}</small>`:''}`;
   if(info.innerHTML!==infoHtml)info.innerHTML=infoHtml;
-  const caption=highlight?label+(shown==='both'?' · rood: gastrocnemius · blauw: soleus':companions?' · rood: geselecteerd · blauw: samenwerkend':' · rood: geselecteerd')+'. Gekleurde lijnen tonen het spierverloop schematisch.':local?'Schematische detailanimatie':'3D-weergave van de gekozen gewrichtsbeweging';
+  const caption=highlight?label+(shown==='both'?' · rood: gastrocnemius · blauw: soleus':companions?' · rood: geselecteerd · blauw: samenwerkend':' · rood: geselecteerd')+'. Gekleurde lijnen tonen het spierverloop schematisch.':MF_LOCAL[id]?'Schematisch 3D-detailmodel · oorspronkelijke Rehaboom-geometrie':'3D-weergave van de gekozen gewrichtsbeweging';
   if(legend.textContent!==caption)legend.textContent=caption;
   axis.textContent=mfAxis(id);
   const locationKey=highlight?'':source+'|'+partIndex;
@@ -2062,7 +2064,7 @@ function prepareMuscleFunction(section) {
  }
  function reset(){
   stop();
-  progress=0;
+  progress=0;travel=1;
   slider.value='0';
   render();
  }
@@ -2076,13 +2078,14 @@ function prepareMuscleFunction(section) {
   reset();
  }
  function tick(time){
-  if(!section.isConnected||!ready){stop();return;}
+  if(!section.isConnected||!ready||document.hidden){stop();return;}
   if(last&&time-last<32){frame=requestAnimationFrame(tick);return;}
-  progress=Math.min(1,progress+(last?Math.min(time-last,100)/1700:0));
+  const step=window.rbMotionControls.advance(progress,travel,last?time-last:0,viewer);
+  progress=step.progress;travel=step.direction;
   last=time;
   slider.value=String(Math.round(progress*100));
   render();
-  if(ready&&progress<1)frame=requestAnimationFrame(tick);
+  if(ready&&!step.done)frame=requestAnimationFrame(tick);
   else stop();
  }
  part?.addEventListener('change',setOptions);
@@ -2093,12 +2096,12 @@ function prepareMuscleFunction(section) {
  }
  slider.addEventListener('input',()=>{
   stop();
-  progress=Number(slider.value)/100;
+  progress=Number(slider.value)/100;travel=1;
   render();
  });
  play.addEventListener('click',()=>{
   if(frame){stop();return;}
-  if(progress===1){progress=0;slider.value='0';}
+  if(progress===1){progress=0;travel=1;slider.value='0';}
   play.textContent='Pauzeren';
   frame=requestAnimationFrame(tick);
  });
@@ -2442,7 +2445,9 @@ if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.ser
 <script src="secure-data.js?v=40"></script>
 <script src="video-catalog.js?v=40"></script>
 <script src="shoulder-motion.js?v=2"></script>
-<script src="motion-3d.js?v=416"></script>
+<script src="motion-details.js?v=417"></script>
+<script src="motion-controls.js?v=417"></script>
+<script src="motion-3d.js?v=417"></script>
 <script>
 (() => {
   const lesson=document.getElementById('joint-planes-lesson');
@@ -2705,9 +2710,10 @@ if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.ser
   });
 })();
 </script>
-<script src="premium.js?v=43-share"></script>
+<script src="premium.js?v=417"></script>
 <script defer src="/testers/entry.js?v=1"></script>
 </body>
 </html>
 
 
+  

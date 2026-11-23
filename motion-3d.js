@@ -1,6 +1,7 @@
 /* Rehaboom motion atlas. MakeHuman Community CC0 geometry and rig, posed for education. */
 (() => {
   const definitions = {
+    ...window.rbMotionDetails.definitions,
     's-ante':['shoulderSide','shoulder',0,167], 's-retro':['shoulderExtension','shoulder',0,-44],
     's-abd':['shoulderFront','abduct',0,165], 's-add':['shoulderFront','abduct',90,0],
     's-endo':['shoulderHigh','shoulderTwist',0,-58], 's-exo':['shoulderHigh','shoulderTwist',0,66],
@@ -28,6 +29,11 @@
   };
   // Position, camera offset, vertical span and orientation labels.
   const views = {
+    detailHand:[[0,.7,.1],[.35,.35,1],6.9,'Hand · schematisch 3D-model','',''],
+    detailThumb:[[-.55,-.1,.1],[.25,.35,1],5.8,'Duim · schematisch 3D-model','',''],
+    detailFoot:[[0,-.2,0],[.25,-.35,1],5.6,'Voet · schematisch 3D-model','',''],
+    detailRibs:[[0,.2,.1],[.5,.18,1],6.7,'Ribben · schematisch 3D-model','',''],
+    detailBrace:[[0,0,0],[.5,.18,1],4.9,'Buikwand · schematisch 3D-model','',''],
     muscleScapula:[[-.95,4.9,-.15],[-.38,.25,-1],6.7,'Schouderblad · achteraanzicht','',''],
     muscleAnkle:[[-1.6,-5.65,1.25],[-1,.1,.04],8.25,'Onderbeen · zijaanzicht','Hiel','Tenen'],
     shoulderSide:[[0,5.2,.65],[-1,.07,.06],15.4,'Zijaanzicht','Achter','Voor'],
@@ -168,7 +174,9 @@
         body.skeleton.update();
         const projection=transform.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse).elements;
         for(const [mesh,store] of vertexStores) {
-          if(!mesh.visible||(mesh.parent!==scene&&!mesh.parent.visible))continue;
+          let visible=true;
+          for(let node=mesh;node&&node!==scene;node=node.parent)if(!node.visible){visible=false;break;}
+          if(!visible)continue;
           project(store,projection);raster(store);
         }
         context.putImageData(image,0,0);
@@ -226,12 +234,14 @@
       new T.MeshStandardMaterial({color:0xf0d9b4,roughness:.62}));
     scapula.add(ridge);
     scene.add(scapula);
+    const details=window.rbMotionDetails.create(T);
+    scene.add(details.root);
     const canvas = document.createElement('canvas');
     canvas.className='motion-3d-canvas';
     canvas.setAttribute('aria-hidden','true');
     const options={alpha:true,antialias:true,powerPreference:'low-power'};
     const gl=canvas.getContext('webgl2',options);
-    const renderer=gl?new T.WebGLRenderer({...options,canvas,context:gl}):softwareRenderer(T,canvas,body,[bench,scapula,ridge]);
+    const renderer=gl?new T.WebGLRenderer({...options,canvas,context:gl}):softwareRenderer(T,canvas,body,[bench,scapula,ridge,...details.meshes]);
     if(gl) {
       renderer.setClearColor(0xffffff,0);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.55));
@@ -321,6 +331,9 @@
     const leftLower = endpoint('lowerarm01.L','wrist.L');
     const leftHand = v(.47,-1.15,1.25);
     function pose(kind, angle) {
+      const detail=Boolean(window.rbMotionDetails.definitions[kind]);
+      body.visible=!detail;details.root.visible=detail;
+      if(detail){bench.visible=false;scapula.visible=false;return details.pose(kind,angle);}
       for (const b of bones) {b.position.copy(origins.get(b));b.quaternion.identity();}
       body.updateMatrixWorld(true);
       aim('upperarm01.L',leftUpper,neutralArmLeft);
@@ -478,13 +491,19 @@
       const view=muscle&&id.startsWith('g-')?'muscleScapula':muscle&&id==='a-pf'?'muscleAnkle':defaultView;
       const cameraKey=id+'|'+view+'|'+end;
       const [focus,offset,height,title,left,right]=views[view];
-      if(lastId!==cameraKey) {
+      const state=window.rbMotionControls?.state(svg)||{yaw:0,pitch:0,zoom:1,axis:false};
+      const key=cameraKey+'|'+state.yaw+'|'+state.pitch+'|'+state.zoom;
+      if(lastId!==key) {
         const center=v(...focus);
-        camera.left=-height*.6;camera.right=height*.6;camera.top=height*.5;camera.bottom=-height*.5;
-        camera.position.copy(center).addScaledVector(v(...offset).normalize(),27);
+        const span=height/state.zoom;
+        camera.left=-span*.6;camera.right=span*.6;camera.top=span*.5;camera.bottom=-span*.5;
+        const eye=v(...offset).normalize().applyAxisAngle(Y,radians(state.yaw));
+        const right=v().crossVectors(Y,eye).normalize();
+        eye.applyAxisAngle(right,radians(-state.pitch));
+        camera.position.copy(center).addScaledVector(eye,27);
         camera.lookAt(center);camera.updateProjectionMatrix();camera.updateMatrixWorld();
         trace=Array.from({length:19},(_,i)=>project(pose(kind,blend(start,end,i/18)).tip));
-        lastId=cameraKey;
+        lastId=key;
       }
       const {joint,tip}=pose(kind,blend(start,end,progress));
       paintDeltoid(muscle?.deltoid);
@@ -502,8 +521,18 @@
       const [sx,sy]=trace[0];
       const line=direction?'<path d="M'+route+'" fill="none" stroke="#fdf8eb" stroke-width="5" stroke-linecap="round"/><path d="M'+route+'" fill="none" stroke="#a7452b" stroke-width="2.4" stroke-linecap="round" marker-end="url(#rb3-arrow)"/><circle cx="'+sx+'" cy="'+sy+'" r="3.5" fill="#fdf8eb" stroke="#a7452b" stroke-width="1.6"/><circle cx="'+tx+'" cy="'+ty+'" r="2.9" fill="#a7452b" stroke="#fff9eb" stroke-width="1.3"/>':'';
       const pin=mark?'<circle cx="'+jx+'" cy="'+jy+'" r="6.3" fill="#fff6e8" fill-opacity=".86" stroke="#087775" stroke-width="1.8"/><circle cx="'+jx+'" cy="'+jy+'" r="2.2" fill="#087775"/>':'';
+      const axes={shoulder:X,abduct:Z,horizontal:Y,shoulderTwist:down,elbow:X,forearm:Z,wristFlex:X,wristSide:Y,hip:X,hipSide:Z,hipTwist:Z,knee:X,kneeTwist:down,ankle:X,footTilt:Z,footCombo:v(.6,0,1).normalize(),neckX:X,neckY:Y,neckZ:Z,spineX:X,spineY:Y,spineZ:Z};
+      const axis=axes[kind]||(kind==='thumb-abd'?Z:/^(finger|thumb|toe|hallux)/.test(kind)?X:null);
+      let axisOverlay='';
+      if(state.axis&&axis){
+        const [ax,ay]=project(joint.clone().addScaledVector(axis,-height*.2));
+        const [bx,by]=project(joint.clone().addScaledVector(axis,height*.2));
+        axisOverlay=Math.hypot(bx-ax,by-ay)<12
+          ?`<circle cx="${jx}" cy="${jy}" r="10" fill="none" stroke="#2e6f8c" stroke-width="2"/><circle cx="${jx}" cy="${jy}" r="3" fill="#2e6f8c"/>`
+          :`<path d="M${ax} ${ay}L${bx} ${by}" stroke="#2e6f8c" stroke-width="2" stroke-dasharray="6 4"/>`;
+      }
       svg.innerHTML='<defs><marker id="rb3-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5 0 10 2 5Z" fill="#a7452b"/></marker></defs>'+
-        (muscle?.primary?fiberOverlay(muscle):'')+line+pin+'<g fill="#314b51" stroke="#fffaf1" stroke-width="3.2" stroke-linejoin="round" paint-order="stroke fill" font-family="system-ui,sans-serif" font-weight="650"><text x="17" y="27" font-size="15">'+title+'</text><text x="17" y="53" font-size="12">'+left+'</text><text x="403" y="53" font-size="12" text-anchor="end">'+right+'</text></g>';
+        (muscle?.primary?fiberOverlay(muscle):'')+line+axisOverlay+pin+'<g fill="#314b51" stroke="#fffaf1" stroke-width="3.2" stroke-linejoin="round" paint-order="stroke fill" font-family="system-ui,sans-serif" font-weight="650"><text x="17" y="27" font-size="15">'+(state.yaw||state.pitch?'Vrij aanzicht · 3D':title)+'</text><text x="17" y="53" font-size="12">'+left+'</text><text x="403" y="53" font-size="12" text-anchor="end">'+right+'</text></g>';
       return title;
     }
     const planeColors={sagittal:'#66b4ff',frontal:'#72dd9b',transverse:'#ff8184'};
@@ -630,3 +659,4 @@
   window.rbMotion3d={ definitions,draw,prepare,drawLesson };
 })();
 
+  
