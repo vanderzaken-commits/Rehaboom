@@ -1,0 +1,25 @@
+{
+  "version": "4.17",
+  "assets": [
+    {
+      "file": "anatomy/motion-human.json",
+      "creator": "MakeHuman Community",
+      "license": "CC0",
+      "source": "https://www.makehumancommunity.org/about/license.html",
+      "usage": "Existing rigged teaching body; no new source download."
+    },
+    {
+      "file": "anatomy/motion-three.js",
+      "creator": "three.js authors",
+      "license": "MIT",
+      "usage": "Existing bundled renderer; license header retained."
+    },
+    {
+      "file": "motion-details.js",
+      "creator": "Original Rehaboom procedural geometry, created for Harry",
+      "source": "Created in this repository; no external model or illustration copied",
+      "usage": "Schematic hand, thumb, foot, rib and abdominal teaching models; not scanned anatomy or exact muscle insertions."
+    }
+  ]
+}
+  
