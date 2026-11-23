@@ -47,11 +47,11 @@ Lees dit document aan het begin van elke taak. Bij twijfel: stoppen en Harry vra
 * Cliëntgegevens (tab Begeleiding) staan nu onversleuteld in localStorage; alleen de portaal-sync is versleuteld (AES-GCM). Niet uitbreiden met gezondheidsgegevens zonder overleg met Harry (AVG).
 * Alles wat Harry en eerder bespreekt, wordt uitgevoerd, tenzij samen anders besloten. Niets stilletjes laten vallen.
 7. Openstaande punten (bijgewerkt 23 november 2026)
-Opgelost in v4.16/v4.17 (PR #4): broncode in GitHub; offline-cache met niet-bestaande bestanden; ROM voor alle 46 bewegingen; M. Iliacus en M. ECRB op de lichaamskaart; combikaarten FDS/FDP, ECRL/ECRB en Iliopsoas niet meer dubbel; knop rechtsboven past op 390 px; voetbegrippen besloten.
+Opgelost in v4.16/v4.17 (PR #4): broncode in GitHub; offline-cache met niet-bestaande bestanden; ROM: 34 bewegingen met normwaarde, 12 bewust zonder graden met toelichting (ROMNOTE); M. Iliacus en M. ECRB op de lichaamskaart; combikaarten FDS/FDP, ECRL/ECRB en Iliopsoas niet meer dubbel; knop rechtsboven past op 390 px; voetbegrippen besloten.
 
 Nog open:
 1. Sneller laden: service worker downloadt bij installatie en bij elke versie opnieuw ±7 MB → Claude, branch claude/v4.18-sneller-laden.
-2. Controlelijst voor review door een fysiotherapeut → Claude (document, geen code).
+2. Controlelijst voor review door een fysiotherapeut: KLAAR (23 nov), Claude Sheet "REHABOOM — Controlelijst fysiotherapeut" (46 bewegingen, 103 spieren, 18 testen). Correcties uit de review alleen via Harry verwerken.
 3. Vezelarchitectuur bij 59 van 103 spieren leeg (bewust; alleen invullen met eenduidige bron).
 4. Testen ontbreken voor elleboog, pols en enkel; geen sensitiviteit/specificiteit en doorverwijscriteria.
 5. AVG: cliëntgegevens in localStorage onversleuteld; vereist vóór commercieel gebruik.
