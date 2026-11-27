@@ -1,7 +1,7 @@
 /* Shared, independent camera and playback settings for every movement viewer. */
 (() => {
   const states=new WeakMap();
-  const initial=()=>({yaw:0,pitch:0,zoom:1,axis:false,speed:1,repeat:false});
+  const initial=()=>({yaw:0,pitch:0,zoom:1,axis:false,speed:1,repeat:false,layer:'active',selected:'',part:null});
   function state(svg){if(!states.has(svg))states.set(svg,initial());return states.get(svg);}
   function markup(){return `<details class="rb-motion-tools"><summary>3D-beeld en afspelen</summary>
     <div class="rb-motion-grid">
@@ -23,7 +23,7 @@
     });
     scope.addEventListener('input',event=>{
       const input=event.target.closest('[data-rb-view]');if(!input)return;
-      current[input.dataset.rbView]=input.type==='checkbox'?input.checked:Number(input.value);
+      current[input.dataset.rbView]=input.type==='checkbox'?input.checked:input.dataset.rbView==='layer'?input.value:Number(input.value);
       redraw();
     });
     scope.querySelector('[data-rb-view-reset]')?.addEventListener('click',()=>{
@@ -42,7 +42,15 @@
       stage.setPointerCapture?.(event.pointerId);
       current.yaw=((drag.yaw+dx*.55+540)%360)-180;sync();redraw();
     });
-    for(const name of ['pointerup','pointercancel','lostpointercapture'])stage.addEventListener(name,()=>{drag=null;});
+    stage.addEventListener('pointerup',event=>{
+      if(drag&&Math.hypot(event.clientX-drag.x,event.clientY-drag.y)<8){
+        const box=svg.getBoundingClientRect();
+        const picked=window.rbMotion3d?.pick(svg,(event.clientX-box.left)/box.width,(event.clientY-box.top)/box.height);
+        if(picked)stage.dispatchEvent(new CustomEvent('rb-anatomy-select',{bubbles:true,detail:picked}));
+      }
+      drag=null;
+    });
+    for(const name of ['pointercancel','lostpointercapture'])stage.addEventListener(name,()=>{drag=null;});
     sync();return current;
   }
   // Time based playback: no jump when speed changes, and no large leap after backgrounding.
@@ -52,6 +60,7 @@
     if(next<=0&&direction<0)return {progress:-next,direction:1,done:!settings.repeat};
     return {progress:next,direction,done:false};
   }
-  window.rbMotionControls={state,markup,mount,advance};
+  const layerMarkup=()=>'<label class="rb-anatomy-layer">3D-weergave<select data-rb-view="layer"><option value="active">Botten en gekozen spier</option><option value="muscles">Alle beschikbare spieren</option><option value="bones">Alleen botten</option></select></label>';
+  window.rbMotionControls={state,markup,layerMarkup,mount,advance};
 })();
   

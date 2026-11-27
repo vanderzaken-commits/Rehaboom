@@ -1,5 +1,5 @@
 {
-  "version": "4.17",
+  "version": "4.19",
   "assets": [
     {
       "file": "anatomy/motion-human.json",
@@ -19,7 +19,16 @@
       "creator": "Original Rehaboom procedural geometry, created for Harry",
       "source": "Created in this repository; no external model or illustration copied",
       "usage": "Schematic hand, thumb, foot, rib and abdominal teaching models; not scanned anatomy or exact muscle insertions."
+    },
+    {
+      "file": "anatomy/motion-anatomy.json",
+      "creator": "BodyParts3D, The Database Center for Life Science (DBCLS)",
+      "license": "CC BY-SA 2.1 JP",
+      "source": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/desc.html",
+      "mirror": "https://github.com/Kevin-Mattheus-Moerman/BodyParts3D",
+      "commit": "2c83c698788cff57f6317bddcf712e7acfbea7d8",
+      "changes": "STL welding, polygon reduction, shared coordinate transform, educational joint landmarks and approximate skinning. Geometry derivative remains CC BY-SA 2.1 JP.",
+      "manifest": "docs/anatomy-source-manifest.json"
     }
   ]
 }
-  
