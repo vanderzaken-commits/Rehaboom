@@ -1,3 +1,19 @@
+# REHABOOM v4.18 — sneller laden
+
+## Nieuw
+
+- Installeren downloadt alleen de app-schil (±1 MB in plaats van ±7 MB).
+- De 3D-viewer, spierbeelden en atlasbeelden (±8,7 MB, 212 bestanden) worden daarna op de achtergrond binnengehaald, 4 tegelijk. Wat al binnen is, wordt niet opnieuw gedownload.
+- Beelden en 3D staan in een aparte cache (`rehaboom-media`) die bij een update blijft staan. Een nieuwe versie kost daardoor ±1 MB in plaats van opnieuw ±7 MB. Een nieuwe bestandsversie gaat via een nieuwe `?v=` in de URL; de oude versie wordt dan opgeruimd.
+- Na de eerste volledige achtergronddownload werkt alles offline, ook de 3D-viewer.
+
+## Gecontroleerd
+
+- `npm run build` en `npm test` (21 tests, waarvan 4 nieuw in `tests/offline.test.mjs`).
+- Chromium 390 × 844: service worker installeert, mediacache gevuld (212/212), daarna offline herladen: alle tabbladen, afbeeldingen en de 3D-viewer werken, geen JavaScript-fouten.
+
+Gebouwd op `codex/v4.17-alle-3d-animaties` (PR #4). Eerst PR #4 mergen.
+
 # REHABOOM v4.17 — alle bewegingen in 3D
 
 ## Nieuw

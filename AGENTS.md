@@ -3,28 +3,14 @@ Datum: 22 november 2026 Eigenaar en eindbeslisser: Harry Doel: Claude (Anthropic
 
 
 Lees dit document aan het begin van elke taak. Bij twijfel: stoppen en Harry vragen.
-1. Huidige stand (22 november 2026)
-Plek
-	Versie
-	Opmerking
-	Vercel, project rehaboom → rehaboom.vercel.app
-	v4.15 ("klikbare deltoideus")
-	Gedeployed door Codex op 21 nov, rechtstreeks, niet via GitHub
-	GitHub vanderzaken-commits/Rehaboom, branch v4.10-live
-	v4.10
-	Frontend van 18 nov, zonder servercode
-	GitHub main en gh-pages
-	v3.3
-	Verouderd. NIET naar pushen of deployen tot stap 2 hieronder klaar is
-	
+1. Huidige stand (23 november 2026, 19:00)
+* GitHub main = v4.15 (fast-forward van v4.15-live, SHA1-gecontroleerd tegen de oude CLI-deploy). main is nu de enige bron van waarheid.
+* Vercel-project rehaboom is gekoppeld aan GitHub; Production Branch = main. Productie (rehaboom.vercel.app) draait sinds 23 nov vanaf main (v4.15). Elke push of merge naar main gaat automatisch live. Andere branches krijgen alleen een preview-URL.
+* Open PR #4: codex/v4.17-alle-3d-animaties → main (bevat v4.16 + v4.17). Door Claude gecontroleerd en goedgekeurd; wacht op telefoontest en merge door Harry.
+* Open: claude/v4.18-sneller-laden, gebouwd bovenop v4.17 (zie sectie 9).
+* Branches v4.10-live, v4.15-live, codex/v4.16-herstel en gh-pages zijn historisch. Niet meer op verder bouwen.
 
-Wat ontbreekt in GitHub en alleen bij Codex/Vercel staat:
-
-
-* api/favorites.js, api/portal.js, api/testers.js
-* lib/favorites.mjs, package-lock.json, tests/, scripts/deltoid-build.mjs
-* gewijzigde index.html, motion-3d.js, sw.js, package.json, scripts/build.mjs (v4.15)
-2. Eerst uitvoeren (eenmalig)
+2. Eerst uitvoeren (eenmalig) — AFGEROND op 23 nov 2026: stap 1 (Codex), 2 en 3 (Claude) en 4 (Vercel stond al op main) zijn uitgevoerd.
 1. Codex: push de volledige v4.15-broncode naar een nieuwe branch v4.15-live in vanderzaken-commits/Rehaboom. Niet mergen.
 2. Claude: controleer v4.15-live tegen de live deployment (SHA1 per bestand via Vercel) en zet hem daarna als nieuwe main.
 3. Voeg dit document toe als AGENTS.md en CLAUDE.md in de root.
@@ -49,7 +35,7 @@ Wat ontbreekt in GitHub en alleen bij Codex/Vercel staat:
 * Taal: interface en data in het Nederlands, spiernamen in Latijnse conventie (M. ..., Mm. ...).
 * Vlak ↔ as: sagittaal vlak ↔ frontale (transversale) as; frontaal vlak ↔ sagittale as; transversaal vlak ↔ longitudinale as.
 * M/B/P: telt het aantal gewrichten dat een spier letterlijk overspant: [M] mono-articulair, [B] bi-articulair, [P] poly-articulair. Gebruik deze telling consequent; bij twijfel niet wijzigen maar aan Harry voorleggen.
-* Voetbegrippen: OPEN VRAAG. In oktober koos Harry: supinatie/pronatie = kanteling in het frontale vlak, inversie/eversie = samengestelde beweging om de schuine as. De live data (v4.10) gebruikt het omgekeerde. Niets aan wijzigen tot Harry heeft gekozen; daarna hier vastleggen.
+* Voetbegrippen: BESLOTEN door Harry op 23 nov 2026: supinatie/pronatie = samengestelde beweging (supinatie = inversie + adductie + plantairflexie; pronatie = eversie + abductie + dorsaalflexie); inversie/eversie = kanteling van de voetzool. Dit is hoe de data in v4.17 al staat. Niet meer wijzigen. (Vervangt de keuze van oktober 2026.)
 * Afbeeldingen: nooit een afbeeldings-URL verzinnen. Alleen toevoegen na echte controle van de bron. Toegestaan: Gray's Anatomy (publiek domein) en Anatomography/BodyParts3D (CC BY-SA 2.1 JP) via Wikimedia Commons; licentievermelding moet in de app zichtbaar zijn.
 * Visible Body en andere commerciële atlassen: niets kopiëren of nabouwen.
 * Geen medische claims. REHABOOM is een naslagwerk; inhoud wordt vóór klinisch gebruik door een fysiotherapeut gecontroleerd.
@@ -60,18 +46,17 @@ Wat ontbreekt in GitHub en alleen bij Codex/Vercel staat:
 * Navigatie met tegels en doorklikken heeft de voorkeur boven zoeklijsten.
 * Cliëntgegevens (tab Begeleiding) staan nu onversleuteld in localStorage; alleen de portaal-sync is versleuteld (AES-GCM). Niet uitbreiden met gezondheidsgegevens zonder overleg met Harry (AVG).
 * Alles wat Harry en eerder bespreekt, wordt uitgevoerd, tenzij samen anders besloten. Niets stilletjes laten vallen.
-7. Openstaande punten (uit controle van 22 november 2026)
-Kritiek:
+7. Openstaande punten (bijgewerkt 23 november 2026)
+Opgelost in v4.16/v4.17 (PR #4): broncode in GitHub; offline-cache met niet-bestaande bestanden; ROM: 34 bewegingen met normwaarde, 12 bewust zonder graden met toelichting (ROMNOTE); M. Iliacus en M. ECRB op de lichaamskaart; combikaarten FDS/FDP, ECRL/ECRB en Iliopsoas niet meer dubbel; knop rechtsboven past op 390 px; voetbegrippen besloten.
 
+Nog open:
+1. Sneller laden: service worker downloadt bij installatie en bij elke versie opnieuw ±7 MB → Claude, branch claude/v4.18-sneller-laden.
+2. Controlelijst voor review door een fysiotherapeut: KLAAR (23 nov), Claude Sheet "REHABOOM — Controlelijst fysiotherapeut" (46 bewegingen, 103 spieren, 18 testen). Correcties uit de review alleen via Harry verwerken.
+3. Vezelarchitectuur bij 59 van 103 spieren leeg (bewust; alleen invullen met eenduidige bron).
+4. Testen ontbreken voor elleboog, pols en enkel; geen sensitiviteit/specificiteit en doorverwijscriteria.
+5. AVG: cliëntgegevens in localStorage onversleuteld; vereist vóór commercieel gebruik.
+6. index.html (±377 kB) bevat data, opmaak en code door elkaar; opsplitsen zodat Claude en Codex parallel kunnen werken. Alleen na overleg met Harry.
 
-1. Broncode v4.15 + servercode in GitHub zetten (sectie 2).
-2. Offline werkt niet: sw.js cachet vooraf media/d9b59d53822a-still.webp, media/d9b59d53822a-thumb.webp en media/d9165fbdcd66-thumb.webp, die niet bestaan (404). Regels verwijderen of bestanden toevoegen.
-
-
-Inhoud (gecontroleerd op v4.10, nog te bevestigen op v4.15): 3. Voetbegrippen: keuze van Harry afwachten (sectie 5). 4. ROM ontbreekt bij 12 van 46 bewegingen: schoudergordel (6), horizontale abductie/adductie schouder, endo/exorotatie knie, supinatie/pronatie voet. 5. M. Iliacus en M. Extensor Carpi Radialis Brevis hebben geen plek op de lichaamskaart (MUSCLE_REGION). 6. Combikaarten FDS/FDP, ECRL/ECRB en Iliopsoas naast de losse spieren: controleren op dubbele weergave.
-
-
-Scherm: 7. Knop "Professional" rechtsboven valt ±10 px buiten een 390 px-scherm.
 8. Logboek
 * 2026-11-22 — Claude: controle v4.10 (GitHub) en v4.15 (Vercel); dit document opgesteld.
 
@@ -80,4 +65,11 @@ Scherm: 7. Knop "Professional" rechtsboven valt ±10 px buiten een 390 px-scherm
 * 2026-11-22 — Codex: Harry heeft openbare publicatie inclusief servercode expliciet toegestaan. v4.15-live is volledig aangevuld en alle 298 oorspronkelijke bronbestanden zijn ook op GitHub per SHA1 gecontroleerd. v4.16 volgt als afzonderlijke herstelbranch. Geen merge naar main of productierelease uitgevoerd. De oorspronkelijke tests waren niet beschikbaar; 13 vervangende tests zijn toegevoegd in v4.16. Onafhankelijke controle door Claude en echte mobiele/offline/push-controle blijven vóór merge nodig.
 
 * 2026-11-23 — Codex: Harry vraagt expliciet alle 3D-animaties te bouwen. v4.17 voegt oorspronkelijke schematische 3D-details en gezamenlijke camera-/afspeelbediening toe op codex/v4.17-alle-3d-animaties. Bestanden: index.html, motion-3d.js, nieuwe motion-details.js en motion-controls.js, premium.js/css, sw.js, packagebestanden, scripts/build.mjs en tests/motion.test.mjs. Geen directe productie-deploy; onafhankelijke baselinecontrole blijft open.
-	
+
+* 2026-11-23 — Claude: v4.15-live per SHA1 gelijk aan productie bevestigd en main daarnaartoe fast-forward gezet; productie draait nu vanaf main. v4.16 + v4.17 onafhankelijk gecontroleerd (build, 17 tests, service worker, datakruiscontrole, 390 × 844, 3D-viewer) en als PR #4 aangeboden. Harry koos de voetbegrippen (sectie 5). Claude start v4.18 (sneller laden), zie sectie 9.
+
+9. Wie werkt waaraan (claims)
+Werk alleen aan bestanden die niet door de ander geclaimd zijn. Claim vrijgeven = PR gemerged of hier doorgestreept.
+* Claude — branch claude/v4.18-sneller-laden (sinds 23 nov 2026): sw.js, package.json, package-lock.json, LEESMIJ.md, tests/offline.test.mjs (nieuw), AGENTS.md, CLAUDE.md. Codex: deze bestanden niet aanpassen tot de PR gemerged is.
+* Codex — geen open claim. Nieuw werk pas starten nadat PR #4 en de v4.18-PR zijn gemerged, vanaf de nieuwste main.
+
