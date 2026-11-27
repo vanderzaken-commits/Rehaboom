@@ -36,7 +36,25 @@
  .app-share{width:38px;padding:0}
  .app-share span,.top .brand .ver{display:none}
 }
-@media(max-width:375px){
+@media(max-width:430px){
  .top .cmode{width:38px;min-width:0;padding:0;justify-content:center}
  .top .cmode span{display:none}
 }
+
+@media(max-width:550px){.top .brand{min-width:0;flex:1}.top .cmode{flex-shrink:0;min-height:40px}.top .app-share{min-height:40px;min-width:40px}}
+
+/* v4.17: shared 3D camera and playback controls. */
+.rb-motion-tools{margin:14px 0;border:1px solid var(--line);border-radius:10px;padding:0 12px;min-width:0}
+.rb-motion-tools summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-size:14px;font-weight:600}
+.rb-motion-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.rb-motion-grid label{display:grid;gap:5px;min-width:0;font-size:14px;color:var(--ink)}
+.rb-motion-grid input,.rb-motion-grid select{min-height:44px;width:100%;min-width:0;box-sizing:border-box;accent-color:var(--steel)}
+.rb-motion-grid select{font-size:14px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.rb-motion-toggles{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin:8px 0}
+.rb-motion-toggles label{display:flex;align-items:center;gap:7px;min-height:44px;font-size:14px}
+.rb-motion-toggles button{min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.rb-motion-hint{font-size:13px;color:var(--muted);line-height:1.6}
+.motion-diagram,.mf-image{touch-action:pan-y;cursor:grab}
+.motion-diagram:active,.mf-image:active{cursor:grabbing}
+@media(max-width:430px){.rb-motion-grid{grid-template-columns:minmax(0,1fr)}}
+ 

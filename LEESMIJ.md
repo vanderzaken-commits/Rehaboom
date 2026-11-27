@@ -1,16 +1,55 @@
-# REHABOOM v4.15
+# REHABOOM v4.17 — alle bewegingen in 3D
 
-Volledige oorspronkelijke broncode van deployment dpl_Cm1T7yNpqPLUp35pBcT7J8qj6jcF (21 november 2026), inclusief de drie serverfuncties, lib/favorites.mjs en package-lock.json. Alle 298 bronbestanden zijn per SHA1 gecontroleerd; zie docs/v4.15-source-sha1.json.
+## Nieuw
 
-Deze herstelbranch behoudt de oorspronkelijke v4.15-code. Niet rechtstreeks deployen of samenvoegen: eerst onafhankelijke controle door Claude volgens AGENTS.md en CLAUDE.md.
+- Alle 62 bestaande bewegings-ID’s gebruiken de 3D-viewer: 46 gewrichtsbewegingen, twee aanvullende heup-/stabilisatiedemonstraties en 14 detailbewegingen.
+- De eerdere vlakke details voor vingers, duim, tenen, ribben en buikwand zijn vervangen door oorspronkelijke, scharnierende 3D-leermodellen. Dit zijn schematische modellen, geen gescande of klinisch gevalideerde anatomie.
+- Alle viewers hebben eigen kijkhoek, hoogte, zoom, afspeelsnelheid en heen-en-terug-herhaling. De rotatie-as kan bij enkelvoudige rotaties zichtbaar worden gemaakt. Buikwandstabilisatie heeft geen vaste rotatie-as.
+- Horizontaal slepen draait het model; dezelfde bediening is via schuifregelaars met het toetsenbord beschikbaar.
+- Afspelen stopt aan het einde, tenzij herhalen is aangezet. Animaties pauzeren zodra het tabblad op de achtergrond staat.
+- Ook de software-renderer toont alle 62 animaties; WebGL is niet vereist.
+- Geen externe modellen, abonnementen of nieuwe afhankelijkheden toegevoegd. Bestaande spierdata, voetterminologie en ROM-referenties blijven behouden.
 
-## Bouwen
+## Controle
+
+`npm run build`, `npm test` en `node scripts/audit-data.mjs`.
+
+De rendertests controleren elke animatie op zichtbare geometrie, verschillende begin-/eindstanden en eindige projectiecoördinaten. Ook camerabeweging, onafhankelijke viewers, afspeelsnelheid, eindstop en herhaling worden gecontroleerd.
+
+## Status
+
+Gebouwd op de bestaande herstelbranch v4.16, met de nieuwste main opgehaald ter vergelijking. Main bevat nog v3.3 en is niet als basis over de nieuwere broncode heen gezet. Deze wijziging staat op `codex/v4.17-alle-3d-animaties`; de v4.15-snapshot en v4.16-herstelbranch blijven beschikbaar. Publicatie loopt via GitHub. Geen directe Vercel-upload of merge naar productie.
+
+De onafhankelijke baselinecontrole en inhoudelijke anatomiecontrole blijven open. De nieuwe modellen ondersteunen uitleg over de beweging; zij tonen geen individuele diagnose, gemeten bewegingsuitslag of exacte spierdeformatie. Het rechtenregister voor de nieuwe geometrie staat in `motion-assets.json`.
+
+---
+
+# REHABOOM v4.16 — voorgestelde herstelversie
+
+Deze lokale branch bouwt op de exact herstelde v4.15-broncode. Alle 298 oorspronkelijke bestanden van Vercel zijn bewaard in de lokale branch recovery-v4.15; de SHA1-lijst staat in docs/v4.15-source-sha1.json.
+
+## Wijzigingen
+
+- Ontbrekende bestanden uit de serviceworker-CORE-lijst verwijderd; de offline-installatie wordt niet meer door die drie 404-responses geblokkeerd.
+- Build kopieert de definitieve HTML en serviceworker byte voor byte en herschrijft geen bronbestanden. Testerpaneel, private-route-uitsluitingen en push-handler staan in de broncode zelf.
+- Iliacus en extensor carpi radialis brevis aan de lichaamskaart gekoppeld; deltoideusdelen hebben ook een regiokoppeling.
+- Iliopsoas, ECRL/ECRB en FDS/FDP worden bij bladeren en zoeken via de afzonderlijke spieren getoond. Bestaande groepskaarten en bewaarde groepsfavorieten blijven toegankelijk.
+- ROM zonder betrouwbare standaardhoek toont de bestaande toelichting als referentie, in plaats van een leeg getal. Geen nieuwe numerieke ROM-waarden toegevoegd.
+- Compacte weergave van de Professional-knop tot 430 px; tikvlakken minimaal 40 px.
+- De miniatuur van flexor carpi ulnaris gebruikt het bestaande, bijbehorende bronbeeld.
+
+## Controleren
 
 npm ci
 npm run build
+npm test
+node scripts/audit-data.mjs
 
-De oorspronkelijke build wijzigt sw.js en verrijkt de build-uitvoer. Dit wordt in de opvolgende herstelwijziging opgelost. De oorspronkelijke tests/ is niet in Vercel opgenomen en kon dus niet worden hersteld. Gerichte vervangende tests volgen in de opvolgende branch; npm test slaagt op deze historische snapshot nog niet.
+13 gerichte tests slagen. De datacontrole van 46 bewegingen, oefening- en testverwijzingen, spierkaartregio’s en vlak-as-koppelingen heeft geen onopgeloste verwijzingen.
 
-## Bekende punten
+## Publicatiestatus
 
-Drie ontbrekende mediapaden blokkeren de serviceworker-installatie. De ontbrekende ROM-waarden, twee spierkaartkoppelingen, combinatiekaarten en mobiele knop worden apart onderzocht. Voetterminologie blijft ongewijzigd in afwachting van Harry’s keuze.
+GitHub-branch v4.15-live bevat de volledige oorspronkelijke broncode. De 298 bronbestanden zijn ook na publicatie tegen de SHA1-lijst gecontroleerd. Harry heeft op 22 november 2026 expliciet ingestemd met openbare publicatie, inclusief de drie serverbestanden. Deze herstelwijziging staat op de aparte branch codex/v4.16-herstel. Er is niets samengevoegd met main en de productieversie is niet aangepast.
+
+Vóór merge blijven nodig: onafhankelijke controle door Claude, echte mobiele browsercontrole op 390 × 844, en functionele controle van serviceworker/offline/push in de browser. Bestaande klinische inhoud moet nog inhoudelijk worden gevalideerd. De voetterminologie blijft ongewijzigd in afwachting van Harry’s keuze. Het ontbrekende EDL-bronbeeld blijft een apart mediapunt; de ontbrekende bestanden blokkeren de offline-installatie niet meer.
+  
