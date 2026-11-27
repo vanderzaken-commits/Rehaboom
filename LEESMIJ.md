@@ -1,4 +1,12 @@
-# REHABOOM v4.18 — sneller laden
+# REHABOOM v4.19 — anatomische 3D-weergave
+
+424 bronstructuren, waaronder 219 spiermeshes links/rechts, uit BodyParts3D 3.0 (DBCLS, CC BY-SA 2.1 Japan), met afzonderlijke deltoideus- en trapeziusdelen. Botten en de geselecteerde spier, alle beschikbare spieren of alleen botten. Tik op een spier voor de bestaande spierkaart. Oorsprong, aanhechting en functie blijven uit de bestaande gegevens komen.
+
+De bronvormen zijn met polygoonreductie geschikt gemaakt voor mobiel. Het rig en de vervorming visualiseren de bewegingsrichting; het zijn geen gemeten gewrichtshoeken, patiëntspecifieke anatomie of gevalideerde weefselmechanica. Niet elke tekstuele spieronderverdeling heeft een afzonderlijke bronmesh: daarvoor wordt geen segment verzonnen. De afzonderlijke M. Longissimus Lumborum heeft geen eigen bronmesh; de app vermeldt dit expliciet. Tekstuele vezelgroepen binnen een onverdeelde bronmesh worden niet als afzonderlijk gesegmenteerde anatomie voorgesteld. Manifest: `docs/anatomy-source-manifest.json`. Conversie: `scripts/anatomy-build.py`; niet onderdeel van de normale appbuild.
+
+## Eerdere versies (historisch)
+
+### REHABOOM v4.18 — sneller laden
 
 ## Nieuw
 

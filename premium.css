@@ -57,4 +57,14 @@
 .motion-diagram,.mf-image{touch-action:pan-y;cursor:grab}
 .motion-diagram:active,.mf-image:active{cursor:grabbing}
 @media(max-width:430px){.rb-motion-grid{grid-template-columns:minmax(0,1fr)}}
+
+.motion-anatomy-info{padding:14px 16px;border-left:3px solid var(--coral);background:var(--bg);font-size:13px;line-height:1.6}
+.motion-anatomy-info dl{margin:10px 0;display:grid;gap:4px}
+.motion-anatomy-info dt{font-weight:600;color:var(--muted)}
+.motion-anatomy-info dd{margin:0 0 6px;overflow-wrap:anywhere}
+.motion-anatomy-info button{min-height:44px;border:1px solid var(--line);border-radius:8px;padding:8px 12px;color:var(--ink);background:var(--surface);font:inherit;cursor:pointer}
+.motion-anatomy-choice select{min-height:44px}
+.rb-anatomy-layer{display:grid;gap:6px;font-size:13px;font-weight:600;margin:8px 0 14px}
+.rb-anatomy-layer select{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit}
+@media(max-width:550px){.top .brand{flex-direction:column;align-items:flex-start;gap:3px}.top .brand .ver{display:block;border:0;padding:0;margin:0;font-size:10px;line-height:1.2;white-space:nowrap}}
  

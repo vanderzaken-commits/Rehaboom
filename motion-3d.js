@@ -36,7 +36,7 @@
     detailBrace:[[0,0,0],[.5,.18,1],4.9,'Buikwand · schematisch 3D-model','',''],
     muscleScapula:[[-.95,4.9,-.15],[-.38,.25,-1],6.7,'Schouderblad · achteraanzicht','',''],
     muscleAnkle:[[-1.6,-5.65,1.25],[-1,.1,.04],8.25,'Onderbeen · zijaanzicht','Hiel','Tenen'],
-    shoulderSide:[[0,5.2,.65],[-1,.07,.06],15.4,'Zijaanzicht','Achter','Voor'],
+    shoulderSide:[[0,5.5,.65],[-1,.07,.35],13.4,'Schuin zijaanzicht','Achter','Voor'],
     shoulderExtension:[[0,3.6,-.52],[-1,.07,.06],11.6,'Zijaanzicht','Achter','Voor'],
     shoulderFront:[[-1.5,5.15,0],[.03,.08,1],15.5,'Vooraanzicht','Rechterzijde',''],
     shoulderHigh:[[-2.2,4.9,1.35],[-.48,1,.75],11.9,'Schuin bovenaanzicht','',''],
@@ -63,7 +63,7 @@
     torsoHigh:[[0,3.6,.1],[-.2,.74,1],12.2,'Schuin bovenaanzicht','',''],
   };
 
-  const asset = './anatomy/motion-human.json?v=2';
+  const asset = './anatomy/motion-anatomy.json?v=419';
   const rendererAsset = './anatomy/motion-three.js?v=3';
   let engine, loading, failed = false;
   const radians = angle => angle*Math.PI/180;
@@ -102,7 +102,7 @@
         mesh,coordinates,normals:g.attributes.normal.array,count,indexed,color,flat,
         joints:skinned?g.attributes.skinIndex.array:null,
         weights:skinned?g.attributes.skinWeight.array:null,
-        screen:new Float32Array(count*6),
+        screen:new Float32Array(count*6),active:null,
       };
     }
     for(const mesh of [body,...objects])vertexStores.set(mesh,meshData(mesh,mesh===body));
@@ -112,6 +112,7 @@
       const world=mesh.matrixWorld.elements;
       const bones=joints?body.skeleton.boneMatrices:null;
       for(let i=0;i<count;i++) {
+        if(store.active&&!store.active[i])continue;
         const p=3*i, j=4*i, s=6*i;
         const x=coordinates[p],y=coordinates[p+1],z=coordinates[p+2];
         const nx=normals[p],ny=normals[p+1],nz=normals[p+2];
@@ -173,6 +174,8 @@
         depth.fill(Infinity);
         body.skeleton.update();
         const projection=transform.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse).elements;
+        const store=vertexStores.get(body),currentIndex=body.geometry.index.array;
+        if(store.indexed!==currentIndex){store.indexed=currentIndex;store.active=new Uint8Array(store.count);for(const i of currentIndex)store.active[i]=1;}
         for(const [mesh,store] of vertexStores) {
           let visible=true;
           for(let node=mesh;node&&node!==scene;node=node.parent)if(!node.visible){visible=false;break;}
@@ -203,7 +206,7 @@
     geom.setAttribute('color',new T.BufferAttribute(bytes(data.colors),3,true));
     geom.setAttribute('skinIndex',new T.BufferAttribute(bytes(data.joints),4));
     geom.setAttribute('skinWeight',new T.BufferAttribute(bytes(data.weights),4,true));
-    geom.setIndex(new T.BufferAttribute(new Uint16Array(bytes(data.triangles).buffer),1));
+    geom.setIndex(new T.BufferAttribute(new (data.indexType==='uint32'?Uint32Array:Uint16Array)(bytes(data.triangles).buffer),1));
     geom.computeVertexNormals();
     const body = new T.SkinnedMesh(geom,new T.MeshStandardMaterial({vertexColors:true,roughness:.68}));
     body.frustumCulled=false;
@@ -300,9 +303,9 @@
     const lower = endpoint('lowerarm01','wrist');
     const thigh = endpoint('upperleg01','lowerleg01');
     const shin = endpoint('lowerleg01','foot');
-    const hand = v(-.47,-1.15,1.25);
-    const thumb = v(.39,-.45,1.12);
-    const footTip = v(.14,-.55,1.91);
+    const hand = v(...(data.handDirection||[-.47,-1.15,1.25]));
+    const thumb = v(...(data.thumbDirection||[.39,-.45,1.12]));
+    const footTip = v(...(data.footTip||[.14,-.55,1.91]));
     function worldPoint(name,offset) {
       return bone(name).localToWorld(offset.clone());
     }
@@ -329,11 +332,12 @@
     const neutralArmLeft = v(.09,-1,0);
     const leftUpper = endpoint('upperarm01.L','lowerarm01.L');
     const leftLower = endpoint('lowerarm01.L','wrist.L');
-    const leftHand = v(.47,-1.15,1.25);
+    const leftHand = data.handDirection?v(...data.handDirection):v(.47,-1.15,1.25);
     function pose(kind, angle) {
       const detail=Boolean(window.rbMotionDetails.definitions[kind]);
       body.visible=!detail;details.root.visible=detail;
-      if(detail){bench.visible=false;scapula.visible=false;return details.pose(kind,angle);}
+      if(detail&&!data.meshes){bench.visible=false;scapula.visible=false;return details.pose(kind,angle);}
+      if(data.meshes){body.visible=true;details.root.visible=false;}
       for (const b of bones) {b.position.copy(origins.get(b));b.quaternion.identity();}
       body.updateMatrixWorld(true);
       aim('upperarm01.L',leftUpper,neutralArmLeft);
@@ -344,11 +348,43 @@
       bench.visible=['hipTwist','kneeTwist','seatedAbduct'].includes(kind);
       scapula.visible=false;
       let pivot='upperarm01', tip=()=>worldPoint('wrist',hand.clone().normalize().multiplyScalar(1.15));
-      if(kind==='shoulder'||kind==='abduct'||kind==='horizontal') {
+      if(detail&&data.meshes){
+        bench.visible=false;scapula.visible=false;
+        if(kind.startsWith('finger')||kind.startsWith('thumb')){
+          arm(neutralArm,Z);palm(Z,Y);
+          for(const digit of ['index','middle','ring','little']){
+            const angles=kind==='finger-pip'?[0,85*angle,25*angle]:kind==='finger-dip'?[0,0,75*angle]:kind==='finger-ext'?[42*(1-angle),55*(1-angle),25*(1-angle)]:[0,0,0];
+            ['proximal','middle','distal'].forEach((part,i)=>{if(byName[digit+'-'+part+'.R'])around(digit+'-'+part+'.R',X,-angles[i]);});
+          }
+          if(kind==='thumb-ext')around('thumb-distal.R',X,-45*(1-angle));
+          if(kind==='thumb-abd')around('thumb-cmc.R',Y,-35*angle);
+          pivot=kind.startsWith('thumb')?'thumb-proximal.R':kind==='finger-dip'?'middle-distal.R':'middle-middle.R';
+          tip=()=>worldPoint(kind.startsWith('thumb')?'thumb-distal.R':'middle-distal.R',v(0,-.3,0));
+        }else if(kind.startsWith('toe')||kind.startsWith('hallux')){
+          const hallux=kind.startsWith('hallux'),sgn=kind.endsWith('ext')?-1:1;
+          for(const digit of ['big','second','third','fourth','little']){
+            if((digit==='big')!==hallux)continue;
+            for(const part of ['proximal','middle','distal'])if(byName['toe-'+digit+'-'+part+'.R'])around('toe-'+digit+'-'+part+'.R',X,sgn*angle*(part==='proximal'?35:25));
+          }
+          pivot='toe-'+(hallux?'big':'second')+'-proximal.R';tip=()=>position('toe-'+(hallux?'big':'second')+'-distal.R');
+        }else if(kind.startsWith('rib')){
+          const phase=kind==='rib-down'?1-angle:angle;
+          for(const b of bones.filter(b=>b.name.startsWith('rib-'))){
+            if(kind==='rib-one'&&!b.name.startsWith('rib-first'))continue;
+            if(kind==='rib-two'&&!b.name.startsWith('rib-second'))continue;
+            around(b.name,X,-7*phase);around(b.name,Z,(b.name.endsWith('.R')?-1:1)*4*phase);
+          }
+          pivot=kind==='rib-two'?'rib-second.R':'rib-first.R';tip=()=>worldPoint(pivot,v(-.8,0,1));
+        }else{
+          // Bracing is an activation cue, not a fictitious joint rotation.
+          pivot='spine04';tip=()=>worldPoint('spine04',v(1+.1*Math.sin(angle*Math.PI/2),0,0));
+        }
+      }else if(kind==='shoulder'||kind==='abduct'||kind==='horizontal') {
         const lift=kind==='horizontal'?90:Math.max(0,angle);
         if(lift>22) {
           around('clavicle',Z,-Math.min(20,(lift-22)*.14));
           around('shoulder01',Y,-Math.min(12,(lift-22)*.09));
+          if(data.meshes)around('shoulder01',Z,-Math.min(40,(lift-22)*.25));
         }
         const dir=kind==='horizontal'?rotated(Z,Y,-angle):
           rotated(kind==='shoulder'?down:neutralArm,kind==='shoulder'?X:Z,-angle);
@@ -364,7 +400,7 @@
         const yaw=kind==='girdle'?angle:0;
         around('clavicle',Z,-elevate*24);
         around('clavicle',Y,yaw);
-        around('shoulder01',Z,kind==='scapular'?-angle*.23:0);
+        around('shoulder01',Z,kind==='scapular'?-angle*(data.meshes?1:.23):0);
         arm(kind==='scapular'?rotated(neutralArm,Z,-angle*2.4):neutralArm);
         palm(kind==='scapular'?rotated(neutralArm,Z,-angle*2.4):neutralArm,Z);
         const shoulder=position('upperarm01');
@@ -382,8 +418,8 @@
         const dir=rotated(rotated(Z,X,flex),Y,dev);
         arm(neutralArm,Z,dir);
         if(kind==='forearm') {
-          around('lowerarm01',Z,angle*.37);
-          around('lowerarm02',Z,angle*.42);
+          if(data.meshes)around('radius.R',Z,angle);
+          else{around('lowerarm01',Z,angle*.37);around('lowerarm02',Z,angle*.42);}
           aim('wrist',hand,Z);
           palm(Z,rotated(Y,Z,angle));
           pivot='lowerarm01';
@@ -447,6 +483,76 @@
       return {joint:position(pivot),tip:tip()};
     }
 
+    const anatomical=Boolean(data.meshes);
+    const allIndices=geom.index.array.slice();
+    const partId={
+      FMA34680:'deltoid-0',FMA34682:'deltoid-1',FMA34684:'deltoid-2',
+      FMA33586:'trapUpper',FMA33584:'trapMiddle',FMA33581:'trapLower',
+      FMA34690:'pectoralis-0',FMA79979:'pectoralis-1',FMA45874:'pectoralis-2',
+      FMA37686:'biceps-0',FMA37684:'biceps-1',
+      FMA37699:'triceps-0',FMA37697:'triceps-1',FMA37695:'triceps-2',
+      FMA45888:'femoris-0',FMA45891:'femoris-1',
+      FMA46283:'colli-0',FMA46285:'colli-1',FMA46287:'colli-2',
+      FMA13392:'scaleni-0',FMA13390:'scaleni-1',FMA13388:'scaleni-2',
+    };
+    let anatomyKey='';
+    const canonical=name=>String(name||'').replace(/\s*\([^)]*\)/g,'').trim();
+    function selectedEntries(selection,part){
+      const key=canonical(selection);
+      if(!part&&key==='M. Deltoideus'&&/pars /.test(selection))part='deltoid-'+(/clavicularis/.test(selection)?0:/acromialis/.test(selection)?1:2);
+      if(!part&&key==='M. Pectoralis Major'&&/pars /.test(selection))part='pectoralis-'+(/clavicularis/.test(selection)?0:/sternocostalis/.test(selection)?1:2);
+      if(!part&&/caput /.test(selection)){
+        const prefix=key==='M. Biceps Brachii'?'biceps':key==='M. Triceps Brachii'?'triceps':key==='M. Biceps Femoris'?'femoris':null;
+        if(prefix)part=prefix+'-'+(/longum/.test(selection)?0:/laterale/.test(selection)?1:key==='M. Triceps Brachii'?2:1);
+      }
+      const aliases={'gastrocnemius':'M. Gastrocnemius','soleus':'M. Soleus','rhomboidMajor':'M. Rhomboideus Major','rhomboidMinor':'M. Rhomboideus Minor','serratus':'M. Serratus Anterior'};
+      const resolved=aliases[key]||key;
+      if(/^trap/.test(selection))return data.meshes.filter(m=>partId[m.id]===selection);
+      const groups={
+        'Mm. Rhomboidei':['M. Rhomboideus Major','M. Rhomboideus Minor'],
+        'M. Triceps Surae':['M. Gastrocnemius','M. Soleus'],
+        'M. Iliopsoas':['M. Iliacus','M. Psoas Major'],
+        'M. Flexor Digitorum Superficialis / Profundus':['M. Flexor Digitorum Superficialis','M. Flexor Digitorum Profundus'],
+        'M. Extensor Carpi Radialis Longus / Brevis':['M. Extensor Carpi Radialis Longus','M. Extensor Carpi Radialis Brevis'],
+        'M. Peroneus Longus / Brevis':['M. Peroneus Longus','M. Peroneus Brevis'],
+        'Hamstrings':['M. Biceps Femoris','M. Semimembranosus','M. Semitendinosus'],
+        'Adductoren':['M. Adductor Longus','M. Adductor Brevis','M. Adductor Magnus','M. Gracilis','M. Pectineus'],
+        'M. Erector Spinae':['M. Iliocostalis Lumborum','M. Iliocostalis Thoracis','M. Longissimus Thoracis','M. Spinalis Thoracis'],
+        'M. Splenius Capitis / Cervicis':['M. Splenius Capitis','M. Splenius Capitis / Cervicis'],
+        'M. Vastus Lateralis / Medialis / Intermedius':['M. Vastus Lateralis','M. Vastus Medialis','M. Vastus Intermedius'],
+        'Mm. Rotatores':['Mm. Rotatores Lumbales','Mm. Rotatores Thoracales'],
+      };
+      const keys=groups[resolved]||[resolved];
+      return data.meshes.filter(m=>m.kind==='muscle'&&m.side!=='L'&&keys.includes(m.key)&&(!part||partId[m.id]===part));
+    }
+    function anatomy(state,muscle,progress,kind){
+      if(!anatomical)return [];
+      const selection=muscle?.source||state.selected;
+      const prefixes={'M. Pectoralis Major':'pectoralis','M. Biceps Brachii':'biceps','M. Triceps Brachii':'triceps','M. Biceps Femoris':'femoris','M. Longus Colli':'colli','Mm. Scaleni':'scaleni'};
+      const part=Number.isInteger(muscle?.deltoid)?'deltoid-'+muscle.deltoid:muscle?.primary?.startsWith('trap')?muscle.primary:Number.isInteger(muscle?.partIndex)&&prefixes[selection]?prefixes[selection]+'-'+muscle.partIndex:state.part;
+      const active=selectedEntries(selection,part),primaryIds=new Set(active.map(m=>m.id));
+      if(muscle?.primary==='both')active.push(...selectedEntries('soleus'));
+      if(muscle?.companions)for(const primary of ['trapUpper','trapLower','serratus'])active.push(...selectedEntries(primary));
+      const ids=new Set(active.map(m=>m.id));
+      const handDetail=/^(finger|thumb|wrist|forearm)/.test(kind||'');
+      const footDetail=/^(toe|hallux)/.test(kind||'');
+      const cacheKey=state.layer+'|'+[...ids].join(',')+'|'+(handDetail?'hand':footDetail?'foot':'body')+'|'+(kind==='abd-brace'?Math.round(progress*8):'');
+      if(cacheKey!==anatomyKey){
+        anatomyKey=cacheKey;
+        const indices=[];const colors=geom.attributes.color.array;
+        for(const m of data.meshes){
+          if(m.kind==='bone'&&handDetail&&(m.side==='L'||!(/^(lowerarm|radius|wrist|thumb|index|middle|ring|little)/.test(m.rig||''))))continue;
+          if(m.kind==='bone'&&footDetail&&(m.side==='L'||!(/^(lowerleg|foot|toe)/.test(m.rig||''))))continue;
+          if(m.kind==='muscle'&&state.layer!=='muscles'&&(state.layer==='bones'||!ids.has(m.id)))continue;
+          for(let i=m.triangleFirst;i<m.triangleFirst+m.triangleCount;i++)indices.push(allIndices[i]);
+          const color=m.kind==='bone'?[225,211,182]:ids.has(m.id)?primaryIds.has(m.id)?[206,57+Math.round(kind==='abd-brace'?(1-progress)*30:0),54]:[44,112,154]:[146,91,86];
+          for(let i=m.first;i<m.first+m.count;i++)colors.set(color,i*3);
+        }
+        geom.setIndex(new T.BufferAttribute(new Uint32Array(indices),1));
+        geom.attributes.color.needsUpdate=true;
+      }
+      return active;
+    }
     let lastId=null, trace;
     function project(point) {
       const ndc=point.clone().project(camera);
@@ -490,8 +596,16 @@
       const end=muscle?.otherSide?-finish:finish;
       const view=muscle&&id.startsWith('g-')?'muscleScapula':muscle&&id==='a-pf'?'muscleAnkle':defaultView;
       const cameraKey=id+'|'+view+'|'+end;
-      const [focus,offset,height,title,left,right]=views[view];
+      let [focus,offset,height,title,left,right]=views[view];
       const state=window.rbMotionControls?.state(svg)||{yaw:0,pitch:0,zoom:1,axis:false};
+      if(anatomical&&defaultView.startsWith('detail')){
+        pose(kind,blend(start,end,.5));
+        focus=position(kind.startsWith('finger')||kind.startsWith('thumb')?'wrist':kind.startsWith('toe')||kind.startsWith('hallux')?'foot':'spine01').toArray();
+        if(kind.startsWith('finger')||kind.startsWith('thumb')){focus[2]+=.8;offset=[-1,.55,.65];height=4;}
+        else if(kind.startsWith('toe')||kind.startsWith('hallux')){focus[2]+=.8;offset=[-.3,1,1];height=4.3;}
+        else{focus[1]-=.7;offset=[-.5,.2,1];height=8.5;}
+        title=kind.startsWith('finger')||kind.startsWith('thumb')?'Hand · anatomisch 3D-model':kind.startsWith('toe')||kind.startsWith('hallux')?'Voet · anatomisch 3D-model':kind==='abd-brace'?'Buikwand · activatie':'Borstkas · anatomisch 3D-model';
+      }
       const key=cameraKey+'|'+state.yaw+'|'+state.pitch+'|'+state.zoom;
       if(lastId!==key) {
         const center=v(...focus);
@@ -506,14 +620,22 @@
         lastId=key;
       }
       const {joint,tip}=pose(kind,blend(start,end,progress));
-      paintDeltoid(muscle?.deltoid);
-      if(Number.isInteger(muscle?.deltoid)){
+      const active=anatomy(state,muscle,progress,kind);
+      if(!anatomical)paintDeltoid(muscle?.deltoid);
+      if(anatomical&&active.length){
+        const m=active[0],point=v();let count=0;
+        for(let i=m.first;i<m.first+m.count;i+=Math.max(1,Math.floor(m.count/25))){
+          const q=v().fromBufferAttribute(geom.attributes.position,i);body.applyBoneTransform(i,q);point.add(q);count++;
+        }
+        const [mx,my]=project(point.divideScalar(count));
+        svg.dataset.muscleX=String(mx/420*100);svg.dataset.muscleY=String(my/350*100);
+      }else if(Number.isInteger(muscle?.deltoid)){
         const i=muscle.deltoid;
         const offset=upper.clone().multiplyScalar(.24).addScaledVector(deltoidLateral,.54).addScaledVector(deltoidFront,i===0?.36:i===2?-.36:0);
         const [mx,my]=project(worldPoint('upperarm01',offset));
         svg.dataset.muscleX=String(mx/420*100);svg.dataset.muscleY=String(my/350*100);
       }else{delete svg.dataset.muscleX;delete svg.dataset.muscleY;}
-      scapula.visible=mark&&['elevate','scapular','girdle'].includes(kind);
+      scapula.visible=!anatomical&&mark&&['elevate','scapular','girdle'].includes(kind);
       renderer.render(scene,camera);
       const [jx,jy]=project(joint);
       const [tx,ty]=project(tip);
@@ -532,7 +654,9 @@
           :`<path d="M${ax} ${ay}L${bx} ${by}" stroke="#2e6f8c" stroke-width="2" stroke-dasharray="6 4"/>`;
       }
       svg.innerHTML='<defs><marker id="rb3-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5 0 10 2 5Z" fill="#a7452b"/></marker></defs>'+
-        (muscle?.primary?fiberOverlay(muscle):'')+line+axisOverlay+pin+'<g fill="#314b51" stroke="#fffaf1" stroke-width="3.2" stroke-linejoin="round" paint-order="stroke fill" font-family="system-ui,sans-serif" font-weight="650"><text x="17" y="27" font-size="15">'+(state.yaw||state.pitch?'Vrij aanzicht · 3D':title)+'</text><text x="17" y="53" font-size="12">'+left+'</text><text x="403" y="53" font-size="12" text-anchor="end">'+right+'</text></g>';
+        (!anatomical&&muscle?.primary?fiberOverlay(muscle):'')+line+axisOverlay+pin+'<g fill="#314b51" stroke="#fffaf1" stroke-width="3.2" stroke-linejoin="round" paint-order="stroke fill" font-family="system-ui,sans-serif" font-weight="650"><text x="17" y="27" font-size="15">'+(state.yaw||state.pitch?'Vrij aanzicht · 3D':title)+'</text><text x="17" y="53" font-size="12">'+left+'</text><text x="403" y="53" font-size="12" text-anchor="end">'+right+'</text></g>';
+      svg.dataset.anatomical=String(anatomical);
+      svg.dataset.selectedMeshCount=String(active.length);
       return title;
     }
     const planeColors={sagittal:'#66b4ff',frontal:'#72dd9b',transverse:'#ff8184'};
@@ -554,6 +678,7 @@
       camera.left=-12.3;camera.right=12.3;camera.top=10.25;camera.bottom=-10.25;
       camera.position.copy(center).addScaledVector(v(Math.sin(angle),.24,Math.cos(angle)),27);
       camera.lookAt(center);camera.updateProjectionMatrix();camera.updateMatrixWorld();
+      if(anatomical)anatomy({layer:'muscles',selected:''},null,progress,definition?.[1]);
       renderer.render(scene,camera);
       const origin=definition?joint:v(0,.45,0);
       const screen=p=>{const q=p.clone().project(camera);return [(q.x+1)*315,(1-q.y)*262.5];};
@@ -594,7 +719,15 @@
         '<g font-family="system-ui,sans-serif" font-size="17" font-weight="650" paint-order="stroke" stroke="#13222c" stroke-width="3" stroke-linejoin="round">'+polygons+lines+'</g>'+
         (definition?'<circle cx="'+x+'" cy="'+y+'" r="5" fill="#fff4c0" stroke="#13222c" stroke-width="2"/>':'');
     }
-    return {canvas,draw,drawLesson};
+    function pick(svg,x,y){
+      if(!anatomical)return null;
+      const ray=new T.Raycaster();ray.setFromCamera(new T.Vector2(x*2-1,1-y*2),camera);
+      body.computeBoundingSphere();body.computeBoundingBox();
+      const hit=ray.intersectObject(body,false)[0];if(!hit)return null;
+      const m=data.meshes.find(m=>hit.face.a>=m.first&&hit.face.a<m.first+m.count);
+      return m?{key:m.key,id:m.id,name:m.name,part:partId[m.id]||null,kind:m.kind}:null;
+    }
+    return {canvas,draw,drawLesson,pick,catalog:()=>anatomical?data.meshes.filter(m=>m.kind==='muscle').map(m=>({key:m.key,id:m.id,name:m.name,part:partId[m.id]||null})):[]};
   }
 
   function draw(svg,id,progress,mark,direction,onReady,muscle) {
@@ -656,7 +789,7 @@
     }
   }
 
-  window.rbMotion3d={ definitions,draw,prepare,drawLesson };
+  window.rbMotion3d={ definitions,draw,prepare,drawLesson,pick:(svg,x,y)=>engine?.pick(svg,x,y),catalog:()=>engine?.catalog()||[] };
 })();
 
   

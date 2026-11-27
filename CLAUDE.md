@@ -71,5 +71,7 @@ Nog open:
 9. Wie werkt waaraan (claims)
 Werk alleen aan bestanden die niet door de ander geclaimd zijn. Claim vrijgeven = PR gemerged of hier doorgestreept.
 * Claude — branch claude/v4.18-sneller-laden (sinds 23 nov 2026): sw.js, package.json, package-lock.json, LEESMIJ.md, tests/offline.test.mjs (nieuw), AGENTS.md, CLAUDE.md. Codex: deze bestanden niet aanpassen tot de PR gemerged is.
-* Codex — geen open claim. Nieuw werk pas starten nadat PR #4 en de v4.18-PR zijn gemerged, vanaf de nieuwste main.
+* Codex — v4.19-anatomische-3d (27 november 2026): motion-3d.js, motion-controls.js, index.html, premium.js/css, sw.js, packagebestanden, anatomische bronassets, conversiescript en tests. PR #4 en #5 zijn op 27 november gemerged. Nieuw werk vanaf bijgewerkte main.
 
+
+* 2026-11-27 — Codex: Harry vraagt de besproken anatomische 3D-weergave af te bouwen. PR #4 en #5 na build, 21 tests en mobiele controle samengevoegd. v4.19 gebruikt BodyParts3D 3.0 bronmeshes met zichtbare CC BY-SA 2.1 JP-credit, expliciete bronmanifesten en benaderende onderwijs-skinning. Geen anatomische data of voetterminologie gewijzigd.
