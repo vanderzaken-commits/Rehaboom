@@ -13,7 +13,7 @@ function viewer(){
   return {createImageData:(width,height)=>({data:new Uint8ClampedArray(width*height*4)}),putImageData:frame=>{pixels=frame.data.slice();},clearRect(){},drawImage(){}};
  };
  w.SVGElement.prototype.getClientRects=()=>[{}];
- w.fetch=async()=>({ok:true,json:async()=>JSON.parse(readFileSync('anatomy/motion-human.json','utf8'))});
+ w.fetch=async()=>({ok:true,json:async()=>JSON.parse(readFileSync('anatomy/motion-anatomy.json','utf8'))});
  const context=dom.getInternalVMContext();
  for(const path of ['anatomy/motion-three.js','motion-details.js','motion-controls.js','motion-3d.js'])vm.runInContext(readFileSync(path,'utf8'),context,{filename:path});
  return {dom,w,context,svg:w.document.querySelector('svg'),pixels:()=>pixels};
@@ -43,6 +43,7 @@ test('all 62 animations rasterize distinct start and end poses without WebGL',as
  const a=viewer();try{
   assert.equal(await a.w.rbMotion3d.prepare(),true);
   for(const id of Object.keys(a.w.rbMotion3d.definitions)){
+   a.w.rbMotionControls.state(a.svg).selected=id==='abd-brace'?'M. Transversus Abdominis':'';
    const hashes=[];
    for(const progress of [0,1]){
     assert.equal(a.w.rbMotion3d.draw(a.svg,id,progress,true,true),true,id);
@@ -52,6 +53,32 @@ test('all 62 animations rasterize distinct start and end poses without WebGL',as
    }
    assert.notEqual(hashes[0],hashes[1],id+' changes the 3D pose');
   }
+ }finally{a.dom.window.close();}
+});
+
+test('real anatomical data retains separate deltoid/trapezius parts and normalized skin weights',()=>{
+ const data=JSON.parse(readFileSync('anatomy/motion-anatomy.json','utf8'));
+ assert.equal(data.license,'CC BY-SA 2.1 JP');
+ assert.ok(data.meshes.filter(m=>m.kind==='muscle').length>=100);
+ for(const id of ['FMA34680','FMA34682','FMA34684','FMA33586','FMA33584','FMA33581'])assert.ok(data.meshes.some(m=>m.id===id),id);
+ const weights=Buffer.from(data.weights,'base64'),joints=Buffer.from(data.joints,'base64');
+ for(let i=0;i<weights.length;i+=4){assert.equal(weights[i]+weights[i+1]+weights[i+2]+weights[i+3],255);for(let k=0;k<4;k++)assert.ok(joints[i+k]<data.bones.length);}
+ const triangles=new Uint32Array(Uint8Array.from(Buffer.from(data.triangles,'base64')).buffer),count=Buffer.from(data.positions,'base64').length/6;
+ assert.ok(Math.max(...triangles.subarray(0,1000))<count);
+ for(const i of triangles)assert.ok(i<count);
+ assert.ok(data.bones.some(b=>b[0]==='radius.R'));
+ assert.ok(data.bones.some(b=>b[0]==='thumb-cmc.R'));
+});
+
+test('anatomical layers and individual deltoid selections change the rendered model',async()=>{
+ const a=viewer();try{
+  assert.equal(await a.w.rbMotion3d.prepare(),true);
+  const settings=a.w.rbMotionControls.state(a.svg);settings.selected='M. Deltoideus (pars clavicularis)';
+  a.w.rbMotion3d.draw(a.svg,'s-ante',.4,true,true);assert.equal(a.svg.dataset.selectedMeshCount,'1');
+  const withMuscle=a.pixels();settings.layer='bones';a.w.rbMotion3d.draw(a.svg,'s-ante',.4,true,true);
+  assert.notDeepEqual(a.pixels(),withMuscle);
+  settings.layer='active';settings.selected='M. Deltoideus (pars spinalis)';a.w.rbMotion3d.draw(a.svg,'s-retro',.4,true,true);
+  assert.equal(a.svg.dataset.selectedMeshCount,'1');
  }finally{a.dom.window.close();}
 });
 

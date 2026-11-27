@@ -27,7 +27,7 @@ test('media cache survives an update; shell cache carries the package version', 
 });
 
 test('3D renderer and model are fetched on demand and cached for offline use', () => {
-  for (const a of ['./anatomy/motion-three.js', './anatomy/motion-human.json']) {
+  for (const a of ['./anatomy/motion-three.js', './anatomy/motion-anatomy.json']) {
     assert.ok(ASSETS.some(u => u.startsWith(a)), a);
   }
   assert.match(worker, /e\.waitUntil\(warm\(\)\)/);
